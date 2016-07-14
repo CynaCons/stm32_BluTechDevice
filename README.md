@@ -109,3 +109,28 @@ Write the uart IRQHandle for your user uart :
       	HAL_UART_IT_IRQHandler(&huart6);
       }
 
+
+# Once it's all complete, load the program, plug your user uart and start the board. You should see this menu ! 
+
+
+      "******* Application Menu *********\r\n",
+      			"==================================\r\n",
+      			"\r\n",
+      			"Application Control\r\n",
+      			"    menu : display this menu\r\n",
+      			"    rs   : to reset the input buffer (type this if you made a typing mistake\r\n",
+      			"    get sensor value : to display the current sensor value\r\n",
+      			"    set automode on  : to start sending data periodically\r\n",
+      			"    set automode off : to start sending data periodically\r\n",
+      			"    send data        : to send data to the device just once\r\n",
+      			"\r\n",
+      			"BluTech Device Control\r\n",
+      			"    rf signal check  : perform a signal check\r\n",
+      			"    network join     : join the Gateway network\r\n",
+      			"    send sample data : to send a sample of data for testing\r\n",
+      			"\r\n",
+      			"Systick Control\r\n",
+      			"    set timer period : to set the value (in seconds) for the periodical timer period\r\n",
+      			"    get timer period : to get the current value for periodical timer period\r\n",
+      			"\r\n",
+      			"WARNING : You have to join a network in order to send data though the RF module \r\n"
