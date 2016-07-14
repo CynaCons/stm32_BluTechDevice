@@ -14,13 +14,13 @@ Drivers to command the BluTech devices using an STM32 device
                        |              |                                    XXX
                        |              | ----------------------------+    XXX XXX
                        +--------------+                                XXX     XXX
-                                         +perform commands (like
-                                      ^  network join)
-                       +              |  +input settings (timer period) The user !
-                       |              |  +send sample data & other
+                                              +perform commands (like
+                                      ^        network join)
+                       +              |       +input settings (timer period) The user !
+                       |              |        +send sample data & other
                        |              |
                        |              |
-                       |    de^ice    |
+                       |    device    |
                        |    uart      | +Response following a command
        UART Commands   |              |
        (like networkjoi|              | +Commands from REST API
