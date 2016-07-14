@@ -5,11 +5,11 @@ Drivers to command the BluTech devices using an STM32 device
                                                                           XXXXX
                                           +display commands menu          XXXXX
                                           +display values which are sent  XXXXX
-+-------+   sensor data+--------------+                                     X       You can plug to the device to input
-|       |              |              | ---------------------------->       X       some settings or check if it's working
-| sensor+-------------->              |                                 XXXXXXXXXX
-|       |              |              |                                     X       Once the settings are finished,the
-+-------+              |   STM32Fxxx  |        user uart                    X       devicewill work on it's own.
+    +-------+ sensor data+------------+                                     X       You can plug to the device to input
+    |       |          |              | ---------------------------->       X       some settings or check if it's working
+    | sensor+---------->              |                                 XXXXXXXXXX
+    |       |          |              |                                     X       Once the settings are finished,the
+    +-------+          |   STM32Fxxx  |        user uart                    X       devicewill work on it's own.
                        |              |                                     X
                        |              |                                    XXX
                        |              | ----------------------------+    XXX XXX
