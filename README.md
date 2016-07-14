@@ -1,7 +1,7 @@
 # stm32_BluTechDevice
 Drivers to command the BluTech devices using an STM32 device
 
-
+                                                                        The user !
                                                                           XXXXX
                                           +display commands menu          XXXXX
                                           +display values which are sent  XXXXX
@@ -16,7 +16,7 @@ Drivers to command the BluTech devices using an STM32 device
                        +--------------+                                XXX     XXX
                                               +perform commands (like
                                       ^        network join)
-                       +              |       +input settings (timer period) The user !
+                       +              |       +input settings (timer period) 
                        |              |        +send sample data & other
                        |              |
                        |              |
