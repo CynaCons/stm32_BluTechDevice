@@ -12,6 +12,8 @@
 
 //HELLO WORLD
 
+//THIS IS DONE FROM ECLIPSE
+
 
 
 #if defined(STM32F103RCTx) || defined(STM32F103xx) || defined(STM32F103)|| defined(STM32F103xE)
