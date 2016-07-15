@@ -5,11 +5,8 @@
  *      Author: cynako
  */
 
-#ifndef APPLICATION_INC_STM32FXXX_HAL_BTDEVICE_H_
-#define APPLICATION_INC_STM32FXXX_HAL_BTDEVICE_H_
-
-
-
+#ifndef STM32FXXX_HAL_BTDEVICE_H_
+#define STM32FXXX_HAL_BTDEVICE_H_
 
 
 typedef enum {
@@ -34,6 +31,7 @@ typedef struct {
 	UART_HandleTypeDef *userHuart;
 	UART_HandleTypeDef *deviceHuart;
 	uint8_t *userInputBuffer;
+	void (*resetInputBufferHandler)(void);
 } BTDevice_InitTypeDef;
 
 
@@ -53,9 +51,11 @@ void BTDevice_displayMenu(void);
  * @pre user uart must have been set before
  * @pre the user rxBuffer must have been set before
  */
-uint8_t BTDevice_readInputBuffer(void);
+void BTDevice_readInputBuffer(void);
 
 
+
+uint8_t BTDevice_timerCallback(void);
 
 /**********************
  * AutoMode functions
@@ -97,19 +97,19 @@ uint8_t BTDevice_getAutoModeStatus(void);
 /**
  * Returns the current timer period
  */
-uint32_t BTDevice_getTimerPeriod();
+//uint32_t BTDevice_getTimerPeriod();
 
 
 /**
  * Returns the current number of period that occured since last data sending (one period = one PeriodElapsedCallback = one TIMx UP IT)
  */
-uint32_t BTDevice_getPeriodCounter();
+//uint32_t BTDevice_getPeriodCounter();
 
 
 /**
  * Add +1 to the period count value
  */
-void BTDevice_incrementPeriodCounter();
+//void BTDevice_incrementPeriodCounter();
 
 
 /**
@@ -121,7 +121,7 @@ void BTDevice_init(BTDevice_InitTypeDef *BTDevice_InitStruct);
 /**
  * Set period counter to 0
  */
-void BTDevice_resetPeriodCounter();
+//void BTDevice_resetPeriodCounter();
 
 
 /*****************************
@@ -134,7 +134,7 @@ void BTDevice_resetPeriodCounter();
  * @param [in] txBuffer pointer to the data buffer to send
  * @param [in] txLength the length of the data buffer to send
  */
-void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataLength);
+void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataMaxLength);
 
 
 
@@ -144,8 +144,8 @@ void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataLength);
 
 
 /* Unused function since using a Timer is more accurate than using Systick IRQs */
-void BTDevice_getSystickValue(void);//TODO Incoherent that get returns void
-void BTDevice_setSystickValue(void);
+//void BTDevice_getSystickValue(void);//TODO Incoherent that get returns void
+//void BTDevice_setSystickValue(void);
 
-#endif /* APPLICATION_INC_STM32FXXX_HAL_BTDEVICE_H_ */
+#endif /* STM32FXXX_HAL_BTDEVICE_H_ */
 

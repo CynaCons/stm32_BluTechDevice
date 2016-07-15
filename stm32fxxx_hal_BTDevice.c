@@ -10,10 +10,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-//HELLO WORLD
-
-//THIS IS DONE FROM ECLIPSE
-
 
 
 #if defined(STM32F103RCTx) || defined(STM32F103xx) || defined(STM32F103)|| defined(STM32F103xE)
@@ -24,6 +20,11 @@
 #if defined(STM32F4DISCOVERY)|| defined(STM32F407VGTx)|| defined(STM32F407xx)
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_uart.h"
+#endif
+
+#if defined(STM32L152xC) || defined(STM32L1)
+#include "stm32l1xx_hal.h"
+#include "stm32l1xx_hal_uart.h"
 #endif
 
 #include "stm32fxxx_hal_BTDevice.h"
@@ -40,10 +41,15 @@ static void setUserUartInCommandMode(void);
 static void setDeviceHuart(UART_HandleTypeDef *huartx);
 static void setUserHuart(UART_HandleTypeDef *huartx);
 static void setUserInputBuffer(uint8_t *ptrBuffer);
+static void setResetInputBufferHandler(void (*fPtr)());
 static void sendDataToDevice(uint8_t *dataBuffer, uint16_t dataLength);
 static void startAutoMode();
 static void stopAutoMode();
 static uint8_t setTimerPeriod();
+static void resetPeriodCounter(void);
+static void incrementPeriodCounter(void);
+static uint32_t getPeriodCounter(void);
+static uint32_t getTimerPeriod(void);
 
 
 
@@ -68,7 +74,7 @@ typedef enum {
 	AUTO_ON, /*!< Start Auto Mode */
 	AUTO_OFF, /*!< Stop Auto Mode */
 	SEND_DATA, /*!< Send data to the device (also on the user uart */
-	DISPLAY_SENSOR_VALUE, /*!< Display the current sensor value */
+	GET_SENSOR_VALUE, /*!< Display the current sensor value */
 	RFSIGNALCHECK, /*!< Send command to the device to perform a signal check */
 	NETWORKJOIN, /*!< Send command to the device to join the BT LoRa network */
 	SENDSAMPLEDATA, /*!< Send data sample to the device */
@@ -86,7 +92,7 @@ uint8_t commandArray[COMMAND_NB][32] = {
 		"set automode on",
 		"set automode off",
 		"send data",
-		"get sensor value"
+		"get sensor value",
 		"rf signal check",
 		"network join",
 		"send sample data",
@@ -119,8 +125,12 @@ static uint32_t periodCounter = 0; /*!< Number of seconds to wait between two da
 
 
 
+void (*resetInputBufferHandler)();
+
 static UART_HandleTypeDef userHuart; /*!< This uart is used to communicate with the user through serial cable */
 static UART_HandleTypeDef deviceHuart; /*!< This uart is used to send/receive commands from the BT device using BT's UART commands */
+
+
 
 
 static uint8_t autoModeStatus = AUTOMODE_OFF; /*!< Definition in header file. When AutoMode is on data will be send every timer period */
@@ -217,6 +227,11 @@ static void setUserUartInCommandMode(){
 }
 
 
+static void setResetInputBufferHandler(void (*fPtr)()){
+	resetInputBufferHandler = fPtr;
+}
+
+
 /**
  * Set the uart to be used as user uart for the BTDevice library. This user uart is then used to display the UI and configure the board.
  * @param [in] huartx UART_HandleTypeDef's address of the uart handler to use.
@@ -281,17 +296,24 @@ static uint8_t getUserUartMode(void){
 /**
  * Send a data buffer using the BT device. The sending is done using BT's UART commands and respects it's format (03 0xlength 0xData)
  * @param in dataBuffer pointer to the data buffer
- * @param in dataLength the number of
+ * @param in maxDataLength maximum size of the buffer
  */
-static void sendDataToDevice(uint8_t * dataBuffer, uint16_t dataLength){
-	uint8_t *commandBuffer = malloc(sizeof(uint8_t)*(dataLength+2));
+static void sendDataToDevice(uint8_t * dataBuffer, uint16_t dataMaxLength){
+	uint8_t *commandBuffer = malloc(strlen((const char *)dataBuffer)+2);
 	uint16_t i = 0;
 	commandBuffer[0] = 0x03;
-	commandBuffer[1] = dataLength+2;
-	for(i=0; i<dataLength; i++){
+	commandBuffer[1] = strlen((const char *)dataBuffer);
+	for(i=0; i<strlen((const char *)dataBuffer); i++){
 		commandBuffer[i+2] = dataBuffer[i];
 	}
-	HAL_UART_Transmit(&userHuart,commandBuffer,sizeof(commandBuffer),10);
+	HAL_UART_Transmit(&deviceHuart,commandBuffer,sizeof(commandBuffer),10);
+	uint8_t txBuffer[128];
+	memset(txBuffer,0,sizeof(txBuffer));
+	sprintf((char *)txBuffer, "The following data was just sent : ");
+	strcat((char *)txBuffer,(const char *)dataBuffer);
+	strcat((char *)txBuffer,"\r\n");
+	HAL_UART_Transmit(&userHuart,txBuffer,strlen((const char *)txBuffer),10);
+	free(dataBuffer);
 }
 
 
@@ -396,7 +418,7 @@ static void sendSampleDataHandler(void){
 }
 
 static void getTimerPeriodHandler(void){
-	uint32_t timerPeriodValue = BTDevice_getTimerPeriod();
+	uint32_t timerPeriodValue = getTimerPeriod();
 	uint8_t txBuffer[64];
 	memset(txBuffer,0,sizeof(txBuffer));
 	sprintf((char *)txBuffer,"Current timer period value : %lu\r\n",timerPeriodValue);
@@ -410,25 +432,26 @@ static void setTimerPeriodHandler(void){
 /*****************************
  * BTDevice public functions
  *****************************/
-uint32_t BTDevice_getTimerPeriod(){
+static uint32_t getTimerPeriod(){
 	return timerPeriod;
 }
 
-uint32_t BTDevice_getPeriodCounter(){
+static uint32_t getPeriodCounter(){
 	return periodCounter;
 }
 
 
-uint8_t BTDevice_getAutoModeStatus(void){
+static uint8_t getAutoModeStatus(void){
 	return autoModeStatus;
 }
 
 
-void BTDevice_incrementPeriodCounter(){
+static void incrementPeriodCounter(){
 	periodCounter++;
 }
 
-uint8_t BTDevice_readInputBuffer(){
+
+void BTDevice_readInputBuffer(){
 	uint8_t commandIterator;
 	uint8_t commandRecognized = 0;
 	uint16_t len = strlen((const char *)userInputBuffer);
@@ -437,7 +460,7 @@ uint8_t BTDevice_readInputBuffer(){
 	case  COMMAND_MODE:
 		if(checkForInputBufferReset() == 1){
 			rsHandler();
-			return RESET_BUFFER;
+			resetInputBufferHandler();
 		}else{
 			for(commandIterator = 0; commandIterator < COMMAND_NB; commandIterator++){
 				if(strcmp((const char *)commandArray[commandIterator],(const char *)userInputBuffer) == 0){
@@ -448,21 +471,20 @@ uint8_t BTDevice_readInputBuffer(){
 		}
 		if(commandRecognized == 1){
 			(commandFunctionArray[commandIterator])();
-			return RESET_BUFFER;
+			resetInputBufferHandler();
 		}
 		break;
 	case DATA_INPUT:
 		if(getDataFromUser() == RESET_BUFFER){
-			return RESET_BUFFER;
+			resetInputBufferHandler();
 		}
 		break;
 	case TIMER_SETTINGS:
 		if(setTimerPeriod() == RESET_BUFFER){
-			return RESET_BUFFER;
+			resetInputBufferHandler();
 		}
 		break;
 	}
-	return NO_RESET;
 }
 
 
@@ -470,28 +492,37 @@ void BTDevice_init(BTDevice_InitTypeDef *BTDevice_InitStruct){
 	setUserHuart(BTDevice_InitStruct->userHuart);
 	setDeviceHuart(BTDevice_InitStruct->deviceHuart);
 	setUserInputBuffer(BTDevice_InitStruct->userInputBuffer);
+	setResetInputBufferHandler(BTDevice_InitStruct->resetInputBufferHandler);
+
 }
 
-void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataLength){
+void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataMaxLength){
 
 	uint8_t txBuffer[64];
 	memset(txBuffer,0, sizeof(txBuffer));
-	//First we extract the data value from the data buffer
-	memset(txBuffer, 0, sizeof(txBuffer));
-	if(BTDevice_getAutoModeStatus() == AUTOMODE_ON){
+	if(getAutoModeStatus() == AUTOMODE_ON){
 		sprintf((char *)txBuffer,"AutoMode is ON\r\n");
 		HAL_UART_Transmit(&userHuart, txBuffer,sizeof(txBuffer),10);
 	}else{
 		sprintf((char *)txBuffer,"AutoMode is OFF\r\n");
 		HAL_UART_Transmit(&userHuart, txBuffer,sizeof(txBuffer),10);
 	}
-	sendDataToDevice(dataBuffer,dataLength);
+	sendDataToDevice(dataBuffer,dataMaxLength);
 }
 
 
+uint8_t BTDevice_timerCallback(){
+	if(getAutoModeStatus() == AUTOMODE_ON){
+		incrementPeriodCounter();
+		if(getPeriodCounter() >= getTimerPeriod()){
+			resetPeriodCounter();
+			return 1;
+		}
+	}
+	return 0;
+}
 
-
-void BTDevice_resetPeriodCounter(){
+static void resetPeriodCounter(){
 	periodCounter = 0;
 }
 
