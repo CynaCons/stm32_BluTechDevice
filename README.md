@@ -215,16 +215,16 @@ Details for each function can be found in the example files (main.c, stm32fxxx_i
 
 Write the uart IRQHandle for your peripherals
 		
-	```
-		void USART6_IRQHandler(void){
-		      	HAL_UART_IRQHandler(&huart6);
-		}
-		
-		
-		void TIM3_IRQHandler(void){
-		      	HAL_TIM_IRQHandler(&htim1);
-		}
-	```
+    ```
+        void USART6_IRQHandler(void){
+            HAL_UART_IRQHandler(&huart6);
+        }
+
+
+         void TIM3_IRQHandler(void){
+            HAL_TIM_IRQHandler(&htim1);
+         }
+    ```
 
 # Once it's all complete, load the program, plug your user uart and start the board. You should see this menu ! 
 
