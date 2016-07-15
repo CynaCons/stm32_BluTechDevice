@@ -43,155 +43,171 @@ How to use ?
 I highly recommend to use the STM32CubeMX project generator. This driver uses the HAL library.
 STM32CubeMX will generate the project architecture and initialize all the required peripherals.
 
-To understand how to use, read the example files (main.c, stm32fxxx_it.c)
+To understand how to use, read the example files (main.c, stm32fxxx_it.c) and this readme
 
-<<<<<<< HEAD
 Details for each function can be found in the example files (main.c, stm32fxxx_it.c)
 
 # In main.c
 
 - include necessary header files :
-	//Header file of the driver
-	#include "stm32fxxx_hal_BTDevice.h" 
-	
-	//Include the uart related functions. Replace first x !
-	#include "stm32fxxx_hal_uart.h"
-	
-	#include <string.h> //For string manipulation
-	#include <stdlib.h> //For malloc (freeing is done in the drivers)
-
+	```
+		//Header file of the driver
+		#include "stm32fxxx_hal_BTDevice.h" 
+		
+		//Include the uart related functions. Replace first x !
+		#include "stm32fxxx_hal_uart.h"
+		
+		#include <string.h> //For string manipulation
+		#include <stdlib.h> //For malloc (freeing is done in the drivers)
+	```
 - define the sensor data maximum length. The amout of data retrieved from the sensor should not exceed this value. You can hardcode it if you don't want to #define it
 	
-	#define SENSOR_DATA_MAX_LENGTH 128
+	```	#define SENSOR_DATA_MAX_LENGTH 128```
 	
 - to receive characters input from the user lets use a buffer and it's index. I also like to use a one byte buffer (husart6RxBuffer) to store user input before filling the main input buffer (rxITBuffer)
-	
-	//When a command is recognized, the input buffer is filles with \0 and the index is set to 0.
-	
-	//Use this buffer to store data received from user uart
-	uint8_t rxITBuffer[256];
-	
-	//Input buffer index. 
-	uint16_t rxITIndex = 0;
-	
-	//Single byte buffer to store characters temporarily
-	uint8_t husart6RxBuffer = 0;
-
+	```
+		//When a command is recognized, the input buffer is filles with \0 and the index is set to 0.
+		
+		//Use this buffer to store data received from user uart
+		uint8_t rxITBuffer[256];
+		
+		//Input buffer index. 
+		uint16_t rxITIndex = 0;
+		
+		//Single byte buffer to store characters temporarily
+		uint8_t husart6RxBuffer = 0;
+	```
 
 - in main.c, make sure all peripherals are intialized. To use this driver, the following peripherals must be initialized :
 	- one uart to interact with the user
 	- one uart to send and receive commands to the BTDevice
 	- one timer to be able to send sensor data periodically
 
-	
-	MX_USART2_UART_Init(); //This will be used to communicate with BTDevice
-	MX_USART6_UART_Init(); //This will be used to communicate with user
-	MX_TIM1_Init(); //This will time the timer between each data sending
-	
+		```
+		MX_USART2_UART_Init(); //This will be used to communicate with BTDevice
+		MX_USART6_UART_Init(); //This will be used to communicate with user
+		MX_TIM1_Init(); //This will time the timer between each data sending
+		```
+		
 - make sure the input buffer is clean :
-
-	memset(rxITBuffer,0,sizeof(rxITBuffer); //fill the input buffer with \0
-
+	
+		```
+		memset(rxITBuffer,0,sizeof(rxITBuffer); //fill the input buffer with \0
+		```
+		
 - enable character receive in non blocking mode (using interupts)
-
-	//One character will be received in IT mode then the RxCompleteCallback will be called.
-	HAL_UART_Receive_IT(&huart6, &husart6RxBuffer, 1);
-
+	
+		```
+		//One character will be received in IT mode then the RxCompleteCallback will be called.
+		HAL_UART_Receive_IT(&huart6, &husart6RxBuffer, 1);
+		```
+		
 - start the timer. Timer should be configured to call the PeriodEllapsedCallback every second. It is then possible to set a custom period (like 60 seconds or other) between two data transfer using the uart commands
 	
-	//Start timer for periodical data transfer
-	HAL_TIM_Base_Start_IT(&htim1);
-	
-- initialize the drivers using the appropriate function. To do this, simply fill the BTDevice_InitTypeDef structure and call BTDevice_init(BTDev_struct);
-
-	//Before main loop, initialize the drivers
-	initBTDevice();
-	
-	//initBTDevice function definition
-	static void initBTDevice(){
-		BTDevice_InitTypeDef BTDevice_InitStruct; //Declare the structure to fill
-	
-		BTDevice_InitStruct.userHuart = &huart6; //userHuart
-		BTDevice_InitStruct.deviceHuart = &huart2; //deviceHuart
-		BTDevice_InitStruct.userInputBuffer = rxITBuffer; //input buffer
-		BTDevice_InitStruct.resetInputBufferHandler = &resetInputBuffer; //reset input buffer function
+		```
+		//Start timer for periodical data transfer
+		HAL_TIM_Base_Start_IT(&htim1);
+		```
 		
-		BTDevice_init(&BTDevice_InitStruct); 
-	}
+- initialize the drivers using the appropriate function. To do this, simply fill the BTDevice_InitTypeDef structure and call BTDevice_init(BTDev_struct);
 	
+		```
+		//Before main loop, initialize the drivers
+		initBTDevice();
+
+	//initBTDevice function definition
+		static void initBTDevice(){
+			BTDevice_InitTypeDef BTDevice_InitStruct; //Declare the structure to fill
+		
+			BTDevice_InitStruct.userHuart = &huart6; //userHuart
+			BTDevice_InitStruct.deviceHuart = &huart2; //deviceHuart
+			BTDevice_InitStruct.userInputBuffer = rxITBuffer; //input buffer
+			BTDevice_InitStruct.resetInputBufferHandler = &resetInputBuffer; //reset input buffer function
+			
+			BTDevice_init(&BTDevice_InitStruct); 
+		}
+		```
+		
 - now that it's all initialized, display the uart commands menu ! 
 
-	BTDevice_displayMenu();
+	```
+		BTDevice_displayMenu();
+	```
 	
 - outside main function, write the PeriodEllapsedCallback for the timer
-
-	/**
-	 * TIMER Callback function. Periodically, data will be sent.
-	 * Period value can be set through uart interface (userHuart)
-	 */
-	void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	    //Make sur it's the right timer 
-		if(htim->Instance == TIM1){ 
-			if(BTDevice_timerCallback()){ //Is it time to send the next data ?
-				//If yes, which mean we have waited the required amout of seconds
-				//Then send the data !
-				BTDevice_sendData(getSensorData(),SENSOR_DATA_MAX_LENGTH);
+	
+	```
+		/**
+		 * TIMER Callback function. Periodically, data will be sent.
+		 * Period value can be set through uart interface (userHuart)
+		 */
+		void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+		    //Make sur it's the right timer 
+			if(htim->Instance == TIM1){ 
+				if(BTDevice_timerCallback()){ //Is it time to send the next data ?
+					//If yes, which mean we have waited the required amout of seconds
+					//Then send the data !
+					BTDevice_sendData(getSensorData(),SENSOR_DATA_MAX_LENGTH);
+				}
 			}
-		}
-	}	
+		}	
+	```
 	
 - write the uart RxCompleteCallback (it's important that this function is called after each character we receive, that's why we always set data length to 1 in the HAL_UART_Receive_IT function )
 
 	
-	/**
-	 * Example of UART reception complete callback
-	 */
-	void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
-		//Make sur it's the right uart
-		if(huart->Instance == USART6){
-			storeNewValueIntoInputBuffer(); //Store newly received character into the rxITBuffer
-			BTDevice_readInputBuffer(); //Parse the rxITBuffer to recognize commands
-			HAL_UART_Receive_IT(&huart6,&husart6RxBuffer,1); //Enable receiving ot the new character
+	```
+		/**
+		 * Example of UART reception complete callback
+		 */
+		void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+			//Make sur it's the right uart
+			if(huart->Instance == USART6){
+				storeNewValueIntoInputBuffer(); //Store newly received character into the rxITBuffer
+				BTDevice_readInputBuffer(); //Parse the rxITBuffer to recognize commands
+				HAL_UART_Receive_IT(&huart6,&husart6RxBuffer,1); //Enable receiving ot the new character
+			}
 		}
-	}
+	```
 	
 - the following function are example to complete the two callbacks above. 
 	
-	/**
-	 * Example for handling incoming characters from uart input
-	 */
-	void storeNewValueIntoInputBuffer(void) {
-		rxITBuffer[rxITIndex] = husart6RxBuffer;
-		rxITIndex++;
-	}
-	
-			
-	/**
-	 * Example to reset the inputBuffer.
-	 */
-	void resetInputBuffer(void) {
-		memset(rxITBuffer, 0, sizeof(rxITBuffer));
-		rxITIndex = 0;
-	}
-	
-	 /**
-	  * Example to get the data and send it as argument for the BTDevice_sendData(..) function
-	  */
-	uint8_t *getSensorData(void){
-		//This buffer will contain our data.
-		//The free is done once the data is sent to the BTDevice
-		uint8_t *dataBuffer = malloc(sizeof(uint8_t)*SENSOR_DATA_MAX_LENGTH);
-		memset(dataBuffer,0,SENSOR_DATA_MAX_LENGTH);
-	
-		//Get your sensor data !
-		uint32_t sensorValue = getSensorValue();
-	
-		//Now write that uint32_t into our data buffer.
-		sprintf((char *)dataBuffer,"%lu",sensorValue);
-	
-		return dataBuffer;
-	}
-
+	```
+		/**
+		 * Example for handling incoming characters from uart input
+		 */
+		void storeNewValueIntoInputBuffer(void) {
+			rxITBuffer[rxITIndex] = husart6RxBuffer;
+			rxITIndex++;
+		}
+		
+				
+		/**
+		 * Example to reset the inputBuffer.
+		 */
+		void resetInputBuffer(void) {
+			memset(rxITBuffer, 0, sizeof(rxITBuffer));
+			rxITIndex = 0;
+		}
+		
+		 /**
+		  * Example to get the data and send it as argument for the BTDevice_sendData(..) function
+		  */
+		uint8_t *getSensorData(void){
+			//This buffer will contain our data.
+			//The free is done once the data is sent to the BTDevice
+			uint8_t *dataBuffer = malloc(sizeof(uint8_t)*SENSOR_DATA_MAX_LENGTH);
+			memset(dataBuffer,0,SENSOR_DATA_MAX_LENGTH);
+		
+			//Get your sensor data !
+			uint32_t sensorValue = getSensorValue();
+		
+			//Now write that uint32_t into our data buffer.
+			sprintf((char *)dataBuffer,"%lu",sensorValue);
+		
+			return dataBuffer;
+		}
+	```
 
 
 # In your stm32fxxx_it.c : 
@@ -199,6 +215,7 @@ Details for each function can be found in the example files (main.c, stm32fxxx_i
 
 Write the uart IRQHandle for your peripherals
 
+	```
       void USART6_IRQHandler(void){
     	  	HAL_UART_IRQHandler(&huart6);
       }
@@ -207,13 +224,9 @@ Write the uart IRQHandle for your peripherals
       void TIM3_IRQHandler(void){
       		HAL_TIM_IRQHandler(&htim1);
       	}
-
+	```
 
 # Once it's all complete, load the program, plug your user uart and start the board. You should see this menu ! 
-=======
-
-Once it's all complete, load the program, plug your user uart and start the board. You should see this menu ! 
->>>>>>> b805e4a3e52a9abadf9e1f73d9f35fe2b4ae99ec
 
 
       "******* Application Menu *********\r\n",
