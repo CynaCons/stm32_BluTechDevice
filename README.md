@@ -3,8 +3,8 @@ Drivers to command the BluTech devices using an STM32 device
 
                                                                         The user !
                                                                           XXXXX
-                                          +display commands menu          XXXXX
-                                          +display values which are sent  XXXXX
+                                        => display commands menu          XXXXX
+                                        => display values which are sent  XXXXX
     +-------+ sensor data+------------+                                     X       You can plug to the device to input
     |       |          |              | ---------------------------->       X       some settings or check if it's working
     | sensor+---------->              |                                 XXXXXXXXXX
@@ -14,16 +14,16 @@ Drivers to command the BluTech devices using an STM32 device
                        |              |                                    XXX
                        |              | ----------------------------+    XXX XXX
                        +--------------+                                XXX     XXX
-                                              +perform commands (like
-                                      ^        network join)
-                       +              |       +input settings (timer period) 
-                       |              |        +send sample data & other
+                                            <== perform commands (like
+                                      ^     <== network join)
+                       +              |     <== input settings (timer period) 
+                       |              |     <== send sample data & other
                        |              |
                        |              |
                        |    device    |
-                       |    uart      | +Response following a command
-       UART Commands   |              |
-       (like networkjoi|              | +Commands from REST API
+                       |    uart      | ^^^ Response following a command
+    vvv UART Commands  |              |
+       (like networkjoi|              | ^^^ Commands from REST API
        or datatransfer)|              |
                        |              +
                        v
@@ -40,9 +40,12 @@ Drivers to command the BluTech devices using an STM32 device
 
 How to use ? 
 
+I highly recommend to use the STM32CubeMX project generator. This driver uses the HAL library.
+STM32CubeMX will generate the project architecture and initialize all the required peripherals.
 
-I highly recommend to use an STM32CubeMX generated project with the HAL library.
+To understand how to use, read the example files (main.c, stm32fxxx_it.c)
 
+<<<<<<< HEAD
 Details for each function can be found in the example files (main.c, stm32fxxx_it.c)
 
 # In main.c
@@ -207,6 +210,10 @@ Write the uart IRQHandle for your peripherals
 
 
 # Once it's all complete, load the program, plug your user uart and start the board. You should see this menu ! 
+=======
+
+Once it's all complete, load the program, plug your user uart and start the board. You should see this menu ! 
+>>>>>>> b805e4a3e52a9abadf9e1f73d9f35fe2b4ae99ec
 
 
       "******* Application Menu *********\r\n",
