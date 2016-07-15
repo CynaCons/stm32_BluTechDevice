@@ -83,35 +83,35 @@ Details for each function can be found in the example files (main.c, stm32fxxx_i
 	- one uart to send and receive commands to the BTDevice
 	- one timer to be able to send sensor data periodically
 
-		```
+	```
 		MX_USART2_UART_Init(); //This will be used to communicate with BTDevice
 		MX_USART6_UART_Init(); //This will be used to communicate with user
 		MX_TIM1_Init(); //This will time the timer between each data sending
-		```
+	```
 		
 - make sure the input buffer is clean :
 	
-		```
+	```
 		memset(rxITBuffer,0,sizeof(rxITBuffer); //fill the input buffer with \0
-		```
+	```
 		
 - enable character receive in non blocking mode (using interupts)
 	
-		```
+	```
 		//One character will be received in IT mode then the RxCompleteCallback will be called.
 		HAL_UART_Receive_IT(&huart6, &husart6RxBuffer, 1);
-		```
+	```
 		
 - start the timer. Timer should be configured to call the PeriodEllapsedCallback every second. It is then possible to set a custom period (like 60 seconds or other) between two data transfer using the uart commands
 	
-		```
+	```
 		//Start timer for periodical data transfer
 		HAL_TIM_Base_Start_IT(&htim1);
-		```
+	```
 		
 - initialize the drivers using the appropriate function. To do this, simply fill the BTDevice_InitTypeDef structure and call BTDevice_init(BTDev_struct);
 	
-		```
+	```
 		//Before main loop, initialize the drivers
 		initBTDevice();
 
@@ -126,7 +126,7 @@ Details for each function can be found in the example files (main.c, stm32fxxx_i
 			
 			BTDevice_init(&BTDevice_InitStruct); 
 		}
-		```
+	```
 		
 - now that it's all initialized, display the uart commands menu ! 
 
@@ -214,16 +214,16 @@ Details for each function can be found in the example files (main.c, stm32fxxx_i
 
 
 Write the uart IRQHandle for your peripherals
-
+		
 	```
-      void USART6_IRQHandler(void){
-    	  	HAL_UART_IRQHandler(&huart6);
-      }
-      
-      
-      void TIM3_IRQHandler(void){
-      		HAL_TIM_IRQHandler(&htim1);
-      	}
+		void USART6_IRQHandler(void){
+		      	HAL_UART_IRQHandler(&huart6);
+		}
+		
+		
+		void TIM3_IRQHandler(void){
+		      	HAL_TIM_IRQHandler(&htim1);
+		}
 	```
 
 # Once it's all complete, load the program, plug your user uart and start the board. You should see this menu ! 
