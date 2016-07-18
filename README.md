@@ -226,7 +226,7 @@ Details for each function can be found in the example files (main.c, stm32fxxx_i
 			if(huart->Instance == USART2){
 				//deviceUart received something. Check the head of the message first.
 				//Once the first byte of the message is analysed, the body will be analyzed inside the driver.
-				//The result of this analysis (confirmation, failure, data received) will be display with userUart
+				//The result of this analysis (confirmation, failure, data received) will be displayed with userUart
 				BTDevice_deviceUartCallback(&husart2RxBuffer);
 			}
 			if(huart->Instance == USART6){
