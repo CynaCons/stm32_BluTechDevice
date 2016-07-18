@@ -14,41 +14,40 @@ Follow the guide below to write the appropriate code to have a functionnal devic
 
 => set the period in seconds between two data transfers : 
 
-	```
+	
 		set timer period
 		[...]
 		XX end (where XX is a value in seconds, like 180)
-	```
+	
 => join the LoRa network :
  
-	```
+	
 		network join
 		[...]
 		Network join confirmation was received
-	```
+	
 => enable periodic data transfer according to the period you have set :
 	
-	```
+	
 		set automode on
 		[...]
 		AutoMode Started !
 		[...]
 		AutoMode ON
 		The following data was just sent : YYY (where YYY is the sensor data)
-	```
+	
 => you can still input commands while automode is ongoing. You can stop automode using :
 	
-	```
+	
 		set automode off
 		[...]
-	```
+	
 		
 	
 	
 
 
-Drivers to command the BluTech devices using an STM32 device
-
+# This is a visual description 
                                                                         The user !
                                                                           XXXXX
                                         => display commands menu          XXXXX
@@ -86,12 +85,12 @@ Drivers to command the BluTech devices using an STM32 device
                       +---------------+
 
 
-How to use ? 
+# How to make it functionnal ? We have to write some stm32 code.
 
 I highly recommend to use the STM32CubeMX project generator. This driver uses the HAL library.
 STM32CubeMX will generate the project architecture and initialize all the required peripherals.
 
-To understand how to use, read the example files (main.c, stm32fxxx_it.c) and this readme
+To understand how to use, read the example files (main.c, stm32fxxx_it.c) and this readme.
 
 Details for each function can be found in the example files (main.c, stm32fxxx_it.c)
 

@@ -23,6 +23,11 @@ uint8_t *rxITBuffer[256];
 //This is the input buffer index. When a command is recognized, the buffer is cleaned and index is reset
 uint16_t rxITIndex = 0
 
+//Single byte buffer used to store temporarily the data received from the interupt
+uint8_t husart6RxBuffer = 0
+
+//Single byte buffer used to store temporarily the data received from the interup
+uint8_t husart2RxBuffer = 0;
 
 int main(void)
 {
@@ -40,8 +45,11 @@ int main(void)
     //Clean input buffer
 	memset(rxITBuffer,0,sizeof(rxITBuffer));
 
-	//Enable the receiving of the next character using interupts
+	//Enable the receiving of the next character using interupts for the userHuart
 	HAL_UART_Receive_IT(&huart6, &husart6RxBuffer,1);
+
+	//Enable the receiving of the head of the message emitted by the BluTech device with the deviceHuart
+	HAL_UART_Receive_IT(&huart2, &husart2RxBuffer,1);
 
     //Start TIMER used for periodical sending
 	HAL_TIM_Base_Start_IT(&htim1);
@@ -76,6 +84,9 @@ static void initBTDevice(void){
 
 /**
  * TIMER Callback function. Periodically, data will be sent.
+ * Once we have waited enough time (set this wait time to 1 second), this function is called.
+ * If we have set a period of 10 seconds between two data transfer using the interface, then
+ * this function will be called 10 times and at the 10th occurence, data will be sent.
  * Period value can be set through uart interface (userHuart)
  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
@@ -91,10 +102,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
 
 /**
- * Example of UART reception complete callback
+ * Example of UART reception complete callback. This function will be called each the user input a character
+ * When the BluTech device is sending a message, this function is called to read the head of the message.
+ * The body of the message is then read and analyzed within the driver using this same function.
  */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	//Make sur it's the right uart
+	if(huart->Instance == USART2){
+		//deviceUart received something. Check the head of the message first.
+		//Once the first byte of the message is analysed, the body will be analyzed inside the driver.
+		//The result of this analysis (confirmation, failure, data received) will be display with userUart
+		BTDevice_deviceUartCallback(&husart2RxBuffer);
+	}
 	if(huart->Instance == USART6){
 		storeNewValueIntoInputBuffer(); //Store newly received character into the rxITBuffer
 		BTDevice_readInputBuffer(); //Parse the rxITBuffer to recognize commands
@@ -120,7 +139,9 @@ void resetInputBuffer(void) {
 	rxITIndex = 0;
 }
 
-
+/**
+ * Example to show how to retrieve the sensor's data
+ */
 uint8_t *getSensorData(void){
 	//This buffer will contain our data.
 	//The free is done once the data is sent to the BTDevice
