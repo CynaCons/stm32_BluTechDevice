@@ -1,57 +1,14 @@
 /*
- * stm32fxxx_hal_BTDevice.h
+ * @brief Driver to use and control a BluTech LoRa device
+ * @file stm32fxxx_hal_BTDevice.h
+ * @author constantin.chabirand@gmail.com
  *
- *  Created on: Jul 6, 2016
- *      Author: cynako
+ * Please refer to the tutorial and example available on github :
+ * https://github.com/CynaCons/stm32_BluTechDevice
  */
 
 #ifndef STM32FXXX_HAL_BTDEVICE_H_
 #define STM32FXXX_HAL_BTDEVICE_H_
-
-
-typedef enum {
-	AUTOMODE_OFF,
-	AUTOMODE_ON
-}AutoModeStatus;
-
-//REFACTOR, We repeat ourselves
-typedef enum{
-	COMMAND_MODE,
-	TIMER_SETTINGS,
-	USER_INPUT_FINISHED,
-	DATA_INPUT
-}UserUartMode;
-
-typedef enum{
-	NO_RESET,
-	RESET_BUFFER
-}InputBufferStatus;
-
-typedef struct {
-	UART_HandleTypeDef *userHuart;
-	UART_HandleTypeDef *deviceHuart;
-	uint8_t *userInputBuffer;
-	void (*resetInputBufferHandler)(void);
-} BTDevice_InitTypeDef;
-
-
-/****************************
- * User interface functions
- ****************************/
-
-
-/**
- * Display the UI menu through the user uart.
- * @pre user uart must have been set before
- */
-void BTDevice_displayMenu(void);
-
-/**
- * This function should be called by the user uart rxCompleteCallback to read the input buffer and look for known commands
- * @pre user uart must have been set before
- * @pre the user rxBuffer must have been set before
- */
-void BTDevice_readInputBuffer(void);
 
 
 /**
@@ -63,78 +20,36 @@ void BTDevice_readInputBuffer(void);
  */
 void BTDevice_deviceUartCallback(uint8_t *deviceUartRxBuffer);
 
-uint8_t BTDevice_timerCallback(void);
-
-/**********************
- * AutoMode functions
- **********************/
-
 
 /**
- * Enable the AutoMode (periodic transfer of data)
+ * Display the UI menu via the user uart.
+ * @pre user uart must have been set before
  */
-//void BTDevice_startAutoMode(void);
+void BTDevice_displayMenu(void);
 
 
 /**
- * Disable the AutoMode (periodic transfer of data)
- */
-//void BTDevice_stopAutoMode(void);
-
-
-/**
- * Return whether or not the auto mode is enable
- * @return 1 = AutoMode enabled ; 0 = AutoMode disabled
- */
-uint8_t BTDevice_getAutoModeStatus(void);
-
-
-/***************************
- * Timer control functions
- ***************************/
-
-
-/**
- * Set the Timer period for the AutoMode.
- * The user will be asked to type the value followed by 'end'
- * @pre the timer must have been set before
- */
-//void BTDevice_setTimerPeriod();
-
-
-/**
- * Returns the current timer period
- */
-//uint32_t BTDevice_getTimerPeriod();
-
-
-/**
- * Returns the current number of period that occured since last data sending (one period = one PeriodElapsedCallback = one TIMx UP IT)
- */
-//uint32_t BTDevice_getPeriodCounter();
-
-
-/**
- * Add +1 to the period count value
- */
-//void BTDevice_incrementPeriodCounter();
-
-
-/**
- * Initialize the BTDevice drivers
+ * Initialize the BTDevice drivers using an init structure.
  */
 void BTDevice_init(BTDevice_InitTypeDef *BTDevice_InitStruct);
 
 
 /**
- * Set period counter to 0
+ * This function should be called by the user uart rxCompleteCallback to read the input buffer and look for known commands
+ * @pre user uart must have been set before
+ * @pre the user rxBuffer must have been set before
  */
-//void BTDevice_resetPeriodCounter();
+void BTDevice_readInputBuffer(void);
 
 
-/*****************************
- * Sensor specific functions
- *****************************/
+/**
+ * This function must be called from the 'timer period up callback'.
+ * It will increment the number of seconds waited since last data transfer.
+ * This number of seconds is then compared to the timer period value (set with userUart).
+ * If enough time has been waited, it returns 1 otherwise returns 0
+ */
+uint8_t BTDevice_timerCallback(void);
+
 
 /**
  * Send the specified data to the device through the device uart
@@ -145,15 +60,6 @@ void BTDevice_init(BTDevice_InitTypeDef *BTDevice_InitStruct);
 void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataMaxLength);
 
 
-
-/******************
- * UART Fonctions
- ******************/
-
-
-/* Unused function since using a Timer is more accurate than using Systick IRQs */
-//void BTDevice_getSystickValue(void);//TODO Incoherent that get returns void
-//void BTDevice_setSystickValue(void);
 
 #endif /* STM32FXXX_HAL_BTDEVICE_H_ */
 
