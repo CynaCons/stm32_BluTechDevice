@@ -3,8 +3,9 @@
 #What does this driver do ?
 
 This driver will use two UART :
-	=> One will send commands to the BluTech device and receive the command's answer or receive data sent from the REST API (?)
-	=> The other will print a menu of a list of commands that can be used to control the BluTech device. It also display the command's result and a lot of other useful things (such as sensor data).
+
+	=> One will send commands to the BluTech device and receive the command's answer or receive data sent from the REST 	API (?)
+	=> The other will print a menu of a list of commands that can be used to control the BluTech device. It also 			display the command's result and a lot of other useful things (such as sensor data).
 	
 
 The second UART is optionnal, only plug it to setup the device and then you can unplug it and move to something else.
