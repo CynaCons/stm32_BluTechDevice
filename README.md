@@ -1,4 +1,52 @@
 # stm32_BluTechDevice
+
+#What does this driver do ?
+
+This driver will use two UART :
+	=> One will send commands to the BluTech device and receive the command's answer or receive data sent from the REST API (?)
+	=> The other will print a menu of a list of commands that can be used to control the BluTech device. It also display the command's result and a lot of other useful things (such as sensor data).
+	
+
+The second UART is optionnal, only plug it to setup the device and then you can unplug it and move to something else.
+
+
+Follow the guide below to write the appropriate code to have a functionnal device. Once you can access the application menu : 
+
+=> set the period in seconds between two data transfers : 
+
+	```
+		set timer period
+		[...]
+		XX end (where XX is a value in seconds, like 180)
+	```
+=> join the LoRa network :
+ 
+	```
+		network join
+		[...]
+		Network join confirmation was received
+	```
+=> enable periodic data transfer according to the period you have set :
+	
+	```
+		set automode on
+		[...]
+		AutoMode Started !
+		[...]
+		AutoMode ON
+		The following data was just sent : YYY (where YYY is the sensor data)
+	```
+=> you can still input commands while automode is ongoing. You can stop automode using :
+	
+	```
+		set automode off
+		[...]
+	```
+		
+	
+	
+
+
 Drivers to command the BluTech devices using an STM32 device
 
                                                                         The user !
