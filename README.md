@@ -3,8 +3,8 @@
 #What does this driver do ?
 
 This driver will use two UART :
-	=> One will send commands to the BluTech device and receive the command's answer or receive data sent from the REST API (?)
-	=> The other will print a menu of a list of commands that can be used to control the BluTech device. It also display the command's result and a lot of other useful things (such as sensor data).
+	=> One, called "deviceUart" will send commands to the BluTech device and receive the command's answer or receive data sent from the REST API (?)
+	=> The other, called "userUart", will print a menu of a list of commands that can be used to control the BluTech device. It also display the command's result and a lot of other useful things (such as sensor data).
 	
 
 The second UART is optionnal, only plug it to setup the device and then you can unplug it and move to something else.
@@ -121,8 +121,11 @@ Details for each function can be found in the example files (main.c, stm32fxxx_i
 		//Input buffer index. 
 		uint16_t rxITIndex = 0;
 		
-		//Single byte buffer to store characters temporarily
+		//Single byte buffer to store characters temporarily from the userHuart
 		uint8_t husart6RxBuffer = 0;
+		
+		//Single byte buffer to store characters temporarily from the deviceUart
+		uint8_t husart2RxBuffer = 0;
 	```
 
 - in main.c, make sure all peripherals are intialized. To use this driver, the following peripherals must be initialized :
@@ -146,7 +149,11 @@ Details for each function can be found in the example files (main.c, stm32fxxx_i
 	
 	```
 		//One character will be received in IT mode then the RxCompleteCallback will be called.
+		//This is to receive characters from user input
 		HAL_UART_Receive_IT(&huart6, &husart6RxBuffer, 1);
+		
+		//This is to receive data from the BluTech device
+		HAL_UART_Receive_IT(&huart2,&husart2RxBuffer,1);
 	```
 		
 - start the timer. Timer should be configured to call the PeriodEllapsedCallback every second. It is then possible to set a custom period (like 60 seconds or other) between two data transfer using the uart commands
@@ -209,6 +216,12 @@ Details for each function can be found in the example files (main.c, stm32fxxx_i
 		 */
 		void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 			//Make sur it's the right uart
+			if(huart->Instance == USART2){
+				//deviceUart received something. Check the head of the message first.
+				//Once the first byte of the message is analysed, the body will be analyzed inside the driver.
+				//The result of this analysis (confirmation, failure, data received) will be display with userUart
+				BTDevice_deviceUartCallback(&husart2RxBuffer);
+			}
 			if(huart->Instance == USART6){
 				storeNewValueIntoInputBuffer(); //Store newly received character into the rxITBuffer
 				BTDevice_readInputBuffer(); //Parse the rxITBuffer to recognize commands
