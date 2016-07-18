@@ -2,17 +2,19 @@
 
 #What does this driver do ?
 
+This .c and .h files must be included to a stm32 project to use and control a BluTech  LoRa device via UART.
+
+Currently, three boards are functionnal : stm32f4-disco ; stm32f103 ; stm32l152.
+
+This driver is built to be generic and easily reused across projects, only the data sensing part has to change.
+
+## Tell me more ! 
+
 This driver will use two UART :
-<<<<<<< HEAD
-	=> One, called "deviceUart" will send commands to the BluTech device and receive the command's answer or receive data sent from the REST API (?)
-	=> The other, called "userUart", will print a menu of a list of commands that can be used to control the BluTech device. It also display the command's result and a lot of other useful things (such as sensor data).
-=======
 
-One will send commands to the BluTech device and receive the command's answer or receive data sent from the REST API (?).
+One, called "deviceUart" will send commands to the BluTech device and receive the command's answer or receive data sent from the REST API (?)
 
-The other will print a menu of a list of commands that can be used to control the BluTech device. It also displays the command's result and a lot of other useful things (such as sensor data).
->>>>>>> branch 'master' of https://github.com/CynaCons/stm32_BluTechDevice
-	
+The other, called "userUart", will print a menu of a list of commands that can be used to control the BluTech device. It also display the command's result and a lot of other useful things (such as sensor data).	
 
 The second UART is optionnal, only plug it to setup the device and then you can unplug it and move to something else.
 
