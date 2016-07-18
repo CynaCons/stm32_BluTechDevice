@@ -54,6 +54,14 @@ void BTDevice_displayMenu(void);
 void BTDevice_readInputBuffer(void);
 
 
+/**
+ * This function should be called from the HAL_UART_RxCompleteCallback function
+ * It will handle data and command answers from BTDevice to MCU
+ * @param [in] deviceUartRxBuffer Single byte buffer containing last received value from the BTDevice
+ * 				After reading this value, the rest of the BTDevice answer's will be received inside the drivers
+ * 				The result will then be prompted to uset through user uart
+ */
+void BTDevice_deviceUartCallback(uint8_t *deviceUartRxBuffer);
 
 uint8_t BTDevice_timerCallback(void);
 

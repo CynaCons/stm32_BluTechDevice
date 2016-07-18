@@ -32,6 +32,8 @@
 
 #define NB_MENU_LINES 21
 
+#define DEVICE_DATA_MAX_LENGTH 256
+
 
 static uint8_t checkForInputBufferReset(void);
 static void displayMenu();
@@ -50,6 +52,7 @@ static void resetPeriodCounter(void);
 static void incrementPeriodCounter(void);
 static uint32_t getPeriodCounter(void);
 static uint32_t getTimerPeriod(void);
+static void resetDeviceInputBuffer(void);
 
 
 
@@ -82,6 +85,16 @@ typedef enum {
 	GET_TIMER_PERIOD, /*!< Returns the current timer period*/
 	COMMAND_NB /*!< Total number of commands that the user can send */
 } commandID;
+
+
+typedef enum{
+	RCV_HEAD, /*!< Waiting for the first byte of the message */
+	RCV_RFSIGNALCHECK, /*!< Receiving the rfsignalcheck answer */
+	RCV_NETWORKJOIN, /*!< Receiving the network join answer */
+	RCV_TRANSFER_ACK, /*!< Receiving the confirmation for the data transfer */
+	RCV_DATA_LENGTH, /*!< Receive the length of the incoming data */
+	RCV_DATA /*!< Receiving an amout of data */
+} deviceUartReceiveMode;
 
 
 /**
@@ -127,8 +140,8 @@ static uint32_t periodCounter = 0; /*!< Number of seconds to wait between two da
 
 void (*resetInputBufferHandler)();
 
-static UART_HandleTypeDef userHuart; /*!< This uart is used to communicate with the user through serial cable */
-static UART_HandleTypeDef deviceHuart; /*!< This uart is used to send/receive commands from the BT device using BT's UART commands */
+static UART_HandleTypeDef *userHuart; /*!< This uart is used to communicate with the user through serial cable */
+static UART_HandleTypeDef *deviceHuart; /*!< This uart is used to send/receive commands from the BT device using BT's UART commands */
 
 
 
@@ -136,6 +149,11 @@ static UART_HandleTypeDef deviceHuart; /*!< This uart is used to send/receive co
 static uint8_t autoModeStatus = AUTOMODE_OFF; /*!< Definition in header file. When AutoMode is on data will be send every timer period */
 static uint8_t userUartMode = COMMAND_MODE;/*!< Definition in header file. Use getter/setter to modify the value  */
 
+
+
+static uint8_t rxDeviceBuffer[DEVICE_DATA_MAX_LENGTH];
+static uint8_t rxDeviceState = RCV_HEAD;
+static uint16_t rcvDataLength = 0;
 
 
 /**
@@ -183,7 +201,7 @@ static void displayMenu(void){
 	//Display the menu
 	uint8_t menuIterator = 0;
 	for(menuIterator = 0; menuIterator < NB_MENU_LINES; menuIterator++){
-		HAL_UART_Transmit(&userHuart,(uint8_t *)menuContent[menuIterator], strlen((const char *)menuContent[menuIterator]),10);
+		HAL_UART_Transmit(userHuart,(uint8_t *)menuContent[menuIterator], strlen((const char *)menuContent[menuIterator]),10);
 	}
 }
 
@@ -194,13 +212,13 @@ static void displayMenu(void){
 static void setUserUartInTimerSettingsMode(){
 	userUartMode = TIMER_SETTINGS;
 	uint8_t buffer[128] = "\r\nUser Uart now in timer settings mode. Commands won't be recognized\r\n";
-	HAL_UART_Transmit(&userHuart,buffer, sizeof(buffer),10);
+	HAL_UART_Transmit(userHuart,buffer, sizeof(buffer),10);
 	memset(buffer,0,sizeof(buffer));
 	sprintf((char *)buffer,"Pease type the new timer period value followed by end(max 65000)\r\n Like this : 25 end\r\n");
-	HAL_UART_Transmit(&userHuart,buffer,sizeof(buffer),10);
+	HAL_UART_Transmit(userHuart,buffer,sizeof(buffer),10);
 	memset(buffer, 0, sizeof(buffer));
 	sprintf((char *)buffer, "The previous command '25 end' means 25 seconds between two data transfer\r\n");
-	HAL_UART_Transmit(&userHuart,buffer,sizeof(buffer),10);
+	HAL_UART_Transmit(userHuart,buffer,sizeof(buffer),10);
 }
 
 /**
@@ -209,10 +227,10 @@ static void setUserUartInTimerSettingsMode(){
 static void setUserUartInDataInputMode(){
 	userUartMode = DATA_INPUT;
 	uint8_t buffer[128] = "\r\nUser Uart now in data input mode. Commands won't be recognized\r\n";
-	HAL_UART_Transmit(&userHuart,buffer, sizeof(buffer),10);
+	HAL_UART_Transmit(userHuart,buffer, sizeof(buffer),10);
 	memset(buffer,0,sizeof(buffer));
 	sprintf((char *)buffer,"Pease type the data to send followed by end(max 64 bytes)\r\n Like this : myData end\r\n");
-	HAL_UART_Transmit(&userHuart,buffer,sizeof(buffer),10);
+	HAL_UART_Transmit(userHuart,buffer,sizeof(buffer),10);
 }
 
 
@@ -222,7 +240,7 @@ static void setUserUartInDataInputMode(){
 static void setUserUartInCommandMode(){
 	userUartMode = COMMAND_MODE;
 	uint8_t buffer[] = "\r\nUser Uart now in command mode. Commands will be recognized\r\n";
-	HAL_UART_Transmit(&userHuart,buffer, sizeof(buffer),10);
+	HAL_UART_Transmit(userHuart,buffer, sizeof(buffer),10);
 	displayMenu();
 }
 
@@ -238,7 +256,7 @@ static void setResetInputBufferHandler(void (*fPtr)()){
  * @pre The uartx must have been initialized before in IT mode.
  */
 void setUserHuart(UART_HandleTypeDef *huartx){
-	userHuart = *huartx;
+	userHuart = huartx;
 }
 
 
@@ -248,7 +266,7 @@ void setUserHuart(UART_HandleTypeDef *huartx){
  * @pre The huartx must have bee initalized before.
  */
 void setDeviceHuart(UART_HandleTypeDef *huartx){
-	deviceHuart = *huartx;
+	deviceHuart = huartx;
 }
 
 
@@ -274,11 +292,11 @@ static uint8_t getDataFromUser(void){
 		sscanf((const char *)userInputBuffer,"%s %s", data, tmp);
 		if(strcmp((const char *)tmp,"end") == 0){
 			sprintf((char *)tmp,"The following data will be send : ");
-			HAL_UART_Transmit(&userHuart, tmp, sizeof(tmp),10);
-			HAL_UART_Transmit(&userHuart,data,sizeof(data),10);
+			HAL_UART_Transmit(userHuart, tmp, sizeof(tmp),10);
+			HAL_UART_Transmit(userHuart,data,sizeof(data),10);
 			memset(tmp,0,sizeof(tmp));
 			sprintf((char *)tmp, "\r\n");
-			HAL_UART_Transmit(&userHuart, tmp, sizeof(tmp),10);
+			HAL_UART_Transmit(userHuart, tmp, sizeof(tmp),10);
 			setUserUartInCommandMode();
 			return RESET_BUFFER;
 		}
@@ -306,14 +324,14 @@ static void sendDataToDevice(uint8_t * dataBuffer, uint16_t dataMaxLength){
 	for(i=0; i<strlen((const char *)dataBuffer); i++){
 		commandBuffer[i+2] = dataBuffer[i];
 	}
-	HAL_UART_Transmit(&deviceHuart,commandBuffer,sizeof(commandBuffer),10);
+	HAL_UART_Transmit(deviceHuart,commandBuffer,sizeof(commandBuffer)+2,10);
 	uint8_t txBuffer[128];
 	memset(txBuffer,0,sizeof(txBuffer));
 	sprintf((char *)txBuffer, "The following data was just sent : ");
 	strcat((char *)txBuffer,(const char *)dataBuffer);
 	strcat((char *)txBuffer,"\r\n");
-	HAL_UART_Transmit(&userHuart,txBuffer,strlen((const char *)txBuffer),10);
-	free(dataBuffer);
+	HAL_UART_Transmit(userHuart,txBuffer,strlen((const char *)txBuffer),10);
+	//free(dataBuffer);
 }
 
 
@@ -331,7 +349,7 @@ static uint8_t setTimerPeriod(void){
 			timerPeriod = tmpTimerPeriod;
 			memset(tmp,0,sizeof(tmp));
 			sprintf((char *)tmp,"New timerPeriod value : %lu\r\n",timerPeriod);
-			HAL_UART_Transmit(&userHuart, tmp, sizeof(tmp),10);
+			HAL_UART_Transmit(userHuart, tmp, sizeof(tmp),10);
 			setUserUartInCommandMode();
 			return RESET_BUFFER;
 		}
@@ -343,7 +361,7 @@ static uint8_t setTimerPeriod(void){
  * Start to send temperature periodically
  */
 static void startAutoMode(void){
-	HAL_UART_Transmit(&userHuart, (uint8_t *)"\r\nAutoMode Started !\r\n", sizeof("AutoMode Started !"),10);
+	HAL_UART_Transmit(userHuart, (uint8_t *)"\r\nAutoMode Started !\r\n", sizeof("AutoMode Started !"),10);
 	autoModeStatus = AUTOMODE_ON;
 }
 
@@ -352,7 +370,7 @@ static void startAutoMode(void){
  * Stop to send the temperature periodically
  */
 static void stopAutoMode(void){
-	HAL_UART_Transmit(&userHuart,(uint8_t *)"\r\nAutoMode Stopped !\r\n", sizeof("AutoMode Stopped !"),10);
+	HAL_UART_Transmit(userHuart,(uint8_t *)"\r\nAutoMode Stopped !\r\n", sizeof("AutoMode Stopped !"),10);
 	autoModeStatus = AUTOMODE_OFF;
 }
 
@@ -364,7 +382,7 @@ static void menuHandler(void){
 	displayMenu();
 }
 static void rsHandler(void){
-	HAL_UART_Transmit(&userHuart, (uint8_t *)"Input buffer reset\r\n",sizeof("Input buffer reset\r\n"),10);
+	HAL_UART_Transmit(userHuart, (uint8_t *)"Input buffer reset\r\n",sizeof("Input buffer reset\r\n"),10);
 }
 static void autoModeOnHandler(void){
 	startAutoMode();
@@ -389,16 +407,16 @@ static void rfSignalCheckHandler(void){
 	uint8_t command[3];
 	uint8_t buffer[] = "\r\nrfsignalcheck command was sent\r\n";
 	command[0] = 0x01; command[1] = 0x01; command[2] = 0x01;
-	HAL_UART_Transmit(&deviceHuart, command,sizeof(command),10);
-	HAL_UART_Transmit(&userHuart, buffer, sizeof(buffer),10);
+	HAL_UART_Transmit(deviceHuart, command,sizeof(command),10);
+	HAL_UART_Transmit(userHuart, buffer, sizeof(buffer),10);
 }
 
 static void networkJoinHandler(void){
 	uint8_t command[3];
 	uint8_t buffer[] = "\r\nnetworkjoin command was sent\r\n";
 	command[0] = 0x02; command[1] = 0x01; command[2] = 0x01;
-	HAL_UART_Transmit(&deviceHuart, command,sizeof(command),10);
-	HAL_UART_Transmit(&userHuart, buffer,sizeof(buffer),10);
+	HAL_UART_Transmit(deviceHuart, command,sizeof(command),10);
+	HAL_UART_Transmit(userHuart, buffer,sizeof(buffer),10);
 }
 
 
@@ -407,14 +425,14 @@ static void sendSampleDataHandler(void){
 	command[0] = 0x01; command[1] = 0x05; command[2] = 0x01;
 	command[3] = 0x02; command[4] = 0x03; command[5] = 0x04;
 	command[6] = 0x05;
-	HAL_UART_Transmit(&deviceHuart, command,sizeof(command),10);
-	HAL_UART_Transmit(&userHuart, (uint8_t *)"datatransfer\r\n",
+	HAL_UART_Transmit(deviceHuart, command,sizeof(command),10);
+	HAL_UART_Transmit(userHuart, (uint8_t *)"datatransfer\r\n",
 			sizeof("datatransfer\r\n"),10);
 	uint8_t txBuffer[64];
 	memset(txBuffer,0,sizeof(txBuffer));
 	sprintf((char *)txBuffer,"This data was sent : %d %d %d %d %d\r\n",command[2],command[3],
 			command[4],command[5],command[6]);
-	HAL_UART_Transmit(&userHuart,txBuffer, sizeof(txBuffer), 10);;
+	HAL_UART_Transmit(userHuart,txBuffer, sizeof(txBuffer), 10);;
 }
 
 static void getTimerPeriodHandler(void){
@@ -422,7 +440,7 @@ static void getTimerPeriodHandler(void){
 	uint8_t txBuffer[64];
 	memset(txBuffer,0,sizeof(txBuffer));
 	sprintf((char *)txBuffer,"Current timer period value : %lu\r\n",timerPeriodValue);
-	HAL_UART_Transmit(&userHuart,txBuffer,sizeof(txBuffer),10);
+	HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 }
 
 static void setTimerPeriodHandler(void){
@@ -455,7 +473,7 @@ void BTDevice_readInputBuffer(){
 	uint8_t commandIterator;
 	uint8_t commandRecognized = 0;
 	uint16_t len = strlen((const char *)userInputBuffer);
-	HAL_UART_Transmit(&userHuart, &userInputBuffer[len-1],sizeof(uint8_t),10);
+	HAL_UART_Transmit(userHuart, &userInputBuffer[len-1],sizeof(uint8_t),10);
 	switch(getUserUartMode()){
 	case  COMMAND_MODE:
 		if(checkForInputBufferReset() == 1){
@@ -493,7 +511,6 @@ void BTDevice_init(BTDevice_InitTypeDef *BTDevice_InitStruct){
 	setDeviceHuart(BTDevice_InitStruct->deviceHuart);
 	setUserInputBuffer(BTDevice_InitStruct->userInputBuffer);
 	setResetInputBufferHandler(BTDevice_InitStruct->resetInputBufferHandler);
-
 }
 
 void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataMaxLength){
@@ -502,12 +519,108 @@ void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataMaxLength){
 	memset(txBuffer,0, sizeof(txBuffer));
 	if(getAutoModeStatus() == AUTOMODE_ON){
 		sprintf((char *)txBuffer,"AutoMode is ON\r\n");
-		HAL_UART_Transmit(&userHuart, txBuffer,sizeof(txBuffer),10);
+		HAL_UART_Transmit(userHuart, txBuffer,sizeof(txBuffer),10);
 	}else{
 		sprintf((char *)txBuffer,"AutoMode is OFF\r\n");
-		HAL_UART_Transmit(&userHuart, txBuffer,sizeof(txBuffer),10);
+		HAL_UART_Transmit(userHuart, txBuffer,sizeof(txBuffer),10);
 	}
 	sendDataToDevice(dataBuffer,dataMaxLength);
+}
+
+
+/**
+ * This function handle the communication from the BTDevice to the MCU
+ * First, we receive the "head" (the first byte). Depending on the head value,
+ * we start IT reception process for the rest of the message.
+ * Once the message is completely received, we then display it to the user
+ * through the userUart.
+ */
+//TODO FINISH PLZ
+void BTDevice_deviceUartCallback(uint8_t *deviceUartRxBuffer){
+	uint8_t txBuffer[64];
+	memset(txBuffer,0,sizeof(txBuffer));
+	switch(rxDeviceState){
+	case RCV_HEAD :
+		switch( (*deviceUartRxBuffer) ){
+		case 0x01 : //rfsignalcheck
+			rxDeviceState = RCV_RFSIGNALCHECK;
+			HAL_UART_Receive_IT(deviceHuart,rxDeviceBuffer,4);
+			break;
+		case 0x02 :
+			rxDeviceState = RCV_NETWORKJOIN;
+			HAL_UART_Receive_IT(deviceHuart,rxDeviceBuffer,2);
+			break;
+		case 0x03 :
+			rxDeviceState = RCV_TRANSFER_ACK;
+			HAL_UART_Receive_IT(deviceHuart,rxDeviceBuffer,2);
+			break;
+		case 0x04 :
+			rxDeviceState = RCV_DATA_LENGTH;
+			HAL_UART_Receive_IT(deviceHuart,rxDeviceBuffer,1);
+			break;
+		}
+		break;
+		case RCV_RFSIGNALCHECK :
+
+			sprintf((char *)txBuffer,"RF signal check answer was received\r\n");
+			HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
+			memset(txBuffer,0,sizeof(txBuffer));
+			sprintf((char *)txBuffer,"Message content :\r\n RSSI : %x%x SNR : %x\r\n",rxDeviceBuffer[1],rxDeviceBuffer[2],rxDeviceBuffer[3]);
+			HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
+			rxDeviceState = RCV_HEAD;
+			HAL_UART_Receive_IT(deviceHuart,deviceUartRxBuffer,1);
+			break;
+		case RCV_NETWORKJOIN :
+
+			if(rxDeviceBuffer[0] == 0x01){
+				sprintf((char *)txBuffer,"Network Join confirmation was received\r\n");
+				HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
+			}else{
+				sprintf((char *)txBuffer,"Network Join failed\r\n");
+				HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
+			}
+			rxDeviceState = RCV_HEAD;
+			HAL_UART_Receive_IT(deviceHuart,deviceUartRxBuffer,1);
+			break;
+		case RCV_TRANSFER_ACK:
+
+			if(rxDeviceBuffer[1] == 0x01){
+				sprintf((char *)txBuffer,"Data Transfer successful\r\n");
+				HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
+			}else{
+				sprintf((char *)txBuffer,"Data Transfer failed\r\n");
+				HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
+			}
+
+			rxDeviceState = RCV_HEAD;
+			HAL_UART_Receive_IT(deviceHuart,rxDeviceBuffer,1);
+			break;
+		case RCV_DATA_LENGTH :
+
+			rcvDataLength = rxDeviceBuffer[0];
+			HAL_UART_Receive_IT(deviceHuart,rxDeviceBuffer,rcvDataLength);
+			rxDeviceState = RCV_DATA;
+			break;
+		case RCV_DATA :
+
+			sprintf((char *)txBuffer, "A data message was received !\r\n");
+			HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
+			memset(txBuffer,0,sizeof(txBuffer));
+			sprintf((char *)txBuffer,"Message content : \r\n%s\r\n",rxDeviceBuffer);//TODO Make sure it actually works
+			HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
+			rxDeviceState = RCV_HEAD;
+			HAL_UART_Receive_IT(deviceHuart,rxDeviceBuffer,1);
+			break;
+	}
+	resetDeviceInputBuffer();
+}
+
+//TODO COMMENT PLZ
+/**
+ *
+ */
+static void resetDeviceInputBuffer(void){
+	memset(rxDeviceBuffer,0,sizeof(rxDeviceBuffer));
 }
 
 
