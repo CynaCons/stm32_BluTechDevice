@@ -3,10 +3,11 @@
 #What does this driver do ?
 
 This .c and .h files must be included to a stm32 project to use and control a BluTech  LoRa device via UART.
+Examples are provided to build a functionnal program quickly and easily using public functions.
 
 Currently, three boards are functionnal : stm32f4-disco ; stm32f103 ; stm32l152.
 
-This driver is built to be generic and easily reused across projects, only the data sensing part has to change.
+This driver is built to be generic and easily reused across all stm32 projects, only the data sensing part has to change.
 
 ## Tell me more ! 
 
