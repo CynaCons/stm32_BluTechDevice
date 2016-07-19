@@ -11,6 +11,19 @@
 #define STM32FXXX_HAL_BTDEVICE_H_
 
 
+
+/**
+ * Init structure that contains references to the peripherals (UART), to the user input buffer.
+ * It also contains a reference to the user-defined function that must be called to reset input buffer
+ */
+typedef struct {
+	UART_HandleTypeDef *userHuart;
+	UART_HandleTypeDef *deviceHuart;
+	uint8_t *userInputBuffer;
+	void (*resetInputBufferHandler)(void);
+} BTDevice_InitTypeDef;
+
+
 /**
  * This function should be called from the HAL_UART_RxCompleteCallback function
  * It will handle data and command answers from BTDevice to MCU

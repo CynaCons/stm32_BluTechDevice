@@ -46,7 +46,6 @@
  ************/
 
 
-//TODO : This doesnt make sense anymore. Makes it too complicated to change the menu.
 #define NB_MENU_LINES 21 /*!< Number of lines to display in the menu */
 
 #define DEVICE_DATA_MAX_LENGTH 256 /*!< The maximum size of data that can be sent using a BTDevice */
@@ -172,16 +171,6 @@ typedef enum{
 }InputBufferStatus;
 
 
-/**
- * Init structure that contains references to the peripherals (UART), to the user input buffer.
- * It also contains a reference to the user-defined function that must be called to reset input buffer
- */
-typedef struct {
-	UART_HandleTypeDef *userHuart;
-	UART_HandleTypeDef *deviceHuart;
-	uint8_t *userInputBuffer;
-	void (*resetInputBufferHandler)(void);
-} BTDevice_InitTypeDef;
 
 
 /**
@@ -205,37 +194,34 @@ void (*commandFunctionArray[COMMAND_NB])(void) =  {
  * Private variables
  *********************/
 
-//TODO : Sort by alphabetical order
+static uint8_t autoModeStatus = AUTOMODE_OFF; /*!< Current state of AutoMode. See enum definition*/
 
-static uint8_t *userInputBuffer = NULL; /*!< Adress of the buffer that is read to analyse user's input */
-
-static uint32_t timerPeriod = 5; /*!<Default value for period between two transfer. Use menu to change. */
+static UART_HandleTypeDef *deviceHuart; /*!< This uart is used to send/receive commands from the BT device using BT's UART commands */
 
 static uint32_t periodCounter = 0; /*!< Number of seconds that have passed since last data transfer */
 
 void (*resetInputBufferHandler)();/*!< Function pointer to the function used to reset the user input buffer */
 
-static UART_HandleTypeDef *userHuart; /*!< This uart is used to communicate with the user through serial cable */
-
-static UART_HandleTypeDef *deviceHuart; /*!< This uart is used to send/receive commands from the BT device using BT's UART commands */
-
-static uint8_t autoModeStatus = AUTOMODE_OFF; /*!< Current state of AutoMode. See enum definition*/
-
-static uint8_t userUartMode = COMMAND_MODE;/*!< Current state for the userUart. See enum definition*/
-
 static uint8_t rxDeviceBuffer[DEVICE_DATA_MAX_LENGTH]; /*!< Device Input buffer */
 
 static uint8_t rxDeviceState = RCV_HEAD; /*!< Current state for the deviceUart. See enum definition */
 
-//TODO : This variable is not reset once reception is complete
 static uint16_t rcvDataLength = 0; /*!< Global container to store how much data will be received */
 
+static uint32_t timerPeriod = 5; /*!<Default value for period between two transfer. Use menu to change. */
+
+static uint8_t *userInputBuffer = NULL; /*!< Adress of the buffer that is read to analyse user's input */
+
+static UART_HandleTypeDef *userHuart; /*!< This uart is used to communicate with the user through serial cable */
+
+static uint8_t userUartMode = COMMAND_MODE;/*!< Current state for the userUart. See enum definition*/
+
+static uint8_t * savedDataBuffer;
 
 /*********************
  * Private functions
  *********************/
 
-//TODO : Sort private functions by alphabetical order
 
 
 /**
@@ -256,6 +242,8 @@ static uint8_t checkForInputBufferReset(void){
  * Display the application menu
  */
 static void displayMenu(void){
+
+	//uint8_t menuContent[numberOfLines][sizeOfEachLine]
 	uint8_t menuContent[NB_MENU_LINES][128] = {
 			"******* Application Menu *********\r\n",
 			"==================================\r\n",
@@ -365,7 +353,7 @@ void setUserInputBuffer(uint8_t *ptrBuffer){
  * The user is prompted to input some data to send through the BT device.
  * User message must be finished by " end" to signal the end-of-message.
  */
-//TODO : Currently, no data is send to device. It is only displayed..
+//TODO : This must be tested asap
 static uint8_t getDataFromUser(void){
 	uint8_t tmp[64];
 	memset(tmp,0,sizeof(tmp));
@@ -381,6 +369,7 @@ static uint8_t getDataFromUser(void){
 			memset(tmp,0,sizeof(tmp));
 			sprintf((char *)tmp, "\r\n");
 			HAL_UART_Transmit(userHuart, tmp, sizeof(tmp),10);
+			sendDataToDevice(data, 64);
 			setUserUartInCommandMode();
 			return RESET_BUFFER;
 		}
@@ -401,21 +390,34 @@ static uint8_t getUserUartMode(void){
  * @param in maxDataLength maximum size of the buffer
  */
 static void sendDataToDevice(uint8_t * dataBuffer, uint16_t dataMaxLength){
-	uint8_t *commandBuffer = malloc(strlen((const char *)dataBuffer)+2);
+	const uint16_t dataLength = strlen((const char *)dataBuffer)+2*sizeof(uint8_t);
+	uint8_t commandBuffer[dataLength];
+	//uint8_t *commandBuffer = malloc(strlen((const char *)dataBuffer)+2);
 	uint16_t i = 0;
 	commandBuffer[0] = 0x03;
-	commandBuffer[1] = strlen((const char *)dataBuffer);
-	for(i=0; i<strlen((const char *)dataBuffer); i++){
-		commandBuffer[i+2] = dataBuffer[i];
+	commandBuffer[1] = (uint8_t)strlen((const char *)dataBuffer)+2;
+	for(i=0; i<dataLength; i++){
+		if(i==0){
+			commandBuffer[i] = 0x03;
+		}
+		if(i == 1){
+			commandBuffer[i] = (uint8_t)(strlen((const char *)dataBuffer)+2);
+		}
+		commandBuffer[i] = dataBuffer[i-2];
 	}
-	HAL_UART_Transmit(deviceHuart,commandBuffer,sizeof(commandBuffer)+2,10);
-	uint8_t txBuffer[128];
+	HAL_UART_Transmit(deviceHuart,commandBuffer,sizeof(commandBuffer),10);
+	uint8_t txBuffer[dataMaxLength+sizeof("The following data was just sent : \r\n")];
 	memset(txBuffer,0,sizeof(txBuffer));
 	sprintf((char *)txBuffer, "The following data was just sent : ");
 	strcat((char *)txBuffer,(const char *)dataBuffer);
 	strcat((char *)txBuffer,"\r\n");
 	HAL_UART_Transmit(userHuart,txBuffer,strlen((const char *)txBuffer),10);
-	//free(dataBuffer);
+	if(savedDataBuffer != NULL){
+		free(savedDataBuffer);
+	}
+	savedDataBuffer = (uint8_t *)strdup((const char *)dataBuffer);
+	free(dataBuffer);
+	free(commandBuffer);
 }
 
 
@@ -487,9 +489,12 @@ static void sendDataHandler(void){
 
 }
 
+//TODO This must be tested asap
 static void getSensorValueHandler(void){
-	// I dont have a decent solution right now
-	//TODO : Please, get a brain and find a way to do this cleanly.
+	uint8_t txBuffer[128];
+	memset(txBuffer,0,sizeof(txBuffer));
+	sprintf((char *)txBuffer,"\r\nThis is the last sent data :\r\n %s\r\n",savedDataBuffer);
+	HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 }
 
 
@@ -611,6 +616,7 @@ static void resetDeviceInputBuffer(void){
  */
 //TODO : There is a bug with the length of the data when using the dht22.
 //Data is only send during second callback..
+//TODO : Have a quick check though I don't this the previous annotation is accurate.
 void BTDevice_deviceUartCallback(uint8_t *deviceUartRxBuffer){
 	uint8_t txBuffer[64];
 	memset(txBuffer,0,sizeof(txBuffer));
@@ -684,6 +690,7 @@ void BTDevice_deviceUartCallback(uint8_t *deviceUartRxBuffer){
 			sprintf((char *)txBuffer,"Message content : \r\n%s\r\n",rxDeviceBuffer);//TODO Make sure it actually works
 			HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 			rxDeviceState = RCV_HEAD;
+			rcvDataLength = 0;
 			HAL_UART_Receive_IT(deviceHuart,rxDeviceBuffer,1);
 			break;
 	}
