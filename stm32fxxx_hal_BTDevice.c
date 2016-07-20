@@ -390,17 +390,9 @@ static uint8_t getUserUartMode(void){
  * @param in maxDataLength maximum size of the buffer
  */
 static void sendDataToDevice(uint8_t * dataBuffer, uint16_t dataMaxLength){
-//	HAL_UART_Transmit(userHuart, "Inside sendDataToDevice\r\n",sizeof("Inside sendDataToDevice\r\n"),10);
-//	uint8_t temp[128];
-//	memset(temp,0,sizeof(temp));
-//	sprintf(temp,"This is dataBuffer :\r\n%s\r\nThis is strlen : %d\r\n",dataBuffer, strlen(dataBuffer));
-//	HAL_UART_Transmit(userHuart,temp,sizeof(temp),10);
 	const uint16_t dataLength = strlen((const char *)dataBuffer)+2*sizeof(uint8_t);
 	uint8_t commandBuffer[dataLength];
-	//uint8_t *commandBuffer = malloc(strlen((const char *)dataBuffer)+2);
 	uint16_t i = 0;
-	//	commandBuffer[0] = 0x03;
-	//	commandBuffer[1] = (uint8_t)strlen((const char *)dataBuffer)+2;
 	for(i=0; i<dataLength; i++){
 		if(i==0){
 			commandBuffer[i] = 0x03;
@@ -417,13 +409,9 @@ static void sendDataToDevice(uint8_t * dataBuffer, uint16_t dataMaxLength){
 	strcat((char *)txBuffer,(const char *)dataBuffer);
 	strcat((char *)txBuffer,"\r\n");
 	HAL_UART_Transmit(userHuart,txBuffer,strlen((const char *)txBuffer),10);
-	//	if(savedDataBuffer != NULL){
-	//		free(savedDataBuffer);
-	//	}
-	//	savedDataBuffer = (uint8_t *)strdup((const char *)dataBuffer);
-	//free(dataBuffer);
-	//TODO : Terror Attack  !!! Do not ever do that again thanks ! ~~
-	//free(commandBuffer);
+
+	//Make a copy of the last sent data
+	savedDataBuffer = (uint8_t *)(strdup((const char *)dataBuffer));
 }
 
 
@@ -453,7 +441,7 @@ static uint8_t setTimerPeriod(void){
  * Start to send temperature periodically
  */
 static void startAutoMode(void){
-	HAL_UART_Transmit(userHuart, (uint8_t *)"\r\nAutoMode Started !\r\n", sizeof("AutoMode Started !"),10);
+	HAL_UART_Transmit(userHuart, (uint8_t *)"\r\nAutoMode Started !\r\n", sizeof("\r\nAutoMode Started !\r\n"),10);
 	autoModeStatus = AUTOMODE_ON;
 }
 
@@ -462,7 +450,7 @@ static void startAutoMode(void){
  * Stop to send the temperature periodically
  */
 static void stopAutoMode(void){
-	HAL_UART_Transmit(userHuart,(uint8_t *)"\r\nAutoMode Stopped !\r\n", sizeof("AutoMode Stopped !"),10);
+	HAL_UART_Transmit(userHuart,(uint8_t *)"\r\nAutoMode Stopped !\r\n", sizeof("\r\nAutoMode Stopped !\r\n"),10);
 	autoModeStatus = AUTOMODE_OFF;
 }
 
@@ -487,10 +475,10 @@ static void autoModeOnHandler(void){
 }
 
 
-//TODO : Add \r\n at the end of the message
 static void autoModeOffHandler(void){
 	stopAutoMode();
 }
+
 
 static void sendDataHandler(void){
 	setUserUartInDataInputMode();
@@ -501,7 +489,8 @@ static void sendDataHandler(void){
 static void getSensorValueHandler(void){
 	uint8_t txBuffer[128];
 	memset(txBuffer,0,sizeof(txBuffer));
-	sprintf((char *)txBuffer,"\r\nThis is the last sent data :\r\n %s\r\n",savedDataBuffer);
+	HAL_UART_Transmit(userHuart,"INSIDE\r\n",sizeof("INSIDE\r\n"),10);
+	sprintf((char *)txBuffer,"\r\nThis is the last sent data :\r\n%s\r\n",savedDataBuffer);
 	HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 }
 
