@@ -15,7 +15,7 @@ This driver will use two UART :
 
 One, called "deviceUart" will send commands to the BluTech device and receive the command's answer or receive data sent from the REST API (?)
 
-The other, called "userUart", will print a menu of a list of commands that can be used to control the BluTech device. It also display the command's result and a lot of other useful things (such as sensor data).	
+The other, called "userUart", will print a list of commands that can be used to control the BluTech device. It also display the command's result and a lot of other useful things (such as sensor data).	
 
 The second UART is optionnal, only plug it to setup the device and then you can unplug it and move to something else.
 
@@ -99,6 +99,8 @@ Follow the guide below to write the appropriate code to have a functionnal devic
 
 I highly recommend to use the STM32CubeMX project generator. This driver uses the HAL library.
 STM32CubeMX will generate the project architecture and initialize all the required peripherals.
+
+STM32CubeMX can be found on ST's website and can generate projects for most IDEs.
 
 To understand how to use, read the example files (main.c, stm32fxxx_it.c) and this readme.
 
