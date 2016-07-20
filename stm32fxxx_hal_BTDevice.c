@@ -390,20 +390,25 @@ static uint8_t getUserUartMode(void){
  * @param in maxDataLength maximum size of the buffer
  */
 static void sendDataToDevice(uint8_t * dataBuffer, uint16_t dataMaxLength){
+//	HAL_UART_Transmit(userHuart, "Inside sendDataToDevice\r\n",sizeof("Inside sendDataToDevice\r\n"),10);
+//	uint8_t temp[128];
+//	memset(temp,0,sizeof(temp));
+//	sprintf(temp,"This is dataBuffer :\r\n%s\r\nThis is strlen : %d\r\n",dataBuffer, strlen(dataBuffer));
+//	HAL_UART_Transmit(userHuart,temp,sizeof(temp),10);
 	const uint16_t dataLength = strlen((const char *)dataBuffer)+2*sizeof(uint8_t);
 	uint8_t commandBuffer[dataLength];
 	//uint8_t *commandBuffer = malloc(strlen((const char *)dataBuffer)+2);
 	uint16_t i = 0;
-	commandBuffer[0] = 0x03;
-	commandBuffer[1] = (uint8_t)strlen((const char *)dataBuffer)+2;
+	//	commandBuffer[0] = 0x03;
+	//	commandBuffer[1] = (uint8_t)strlen((const char *)dataBuffer)+2;
 	for(i=0; i<dataLength; i++){
 		if(i==0){
 			commandBuffer[i] = 0x03;
+		}else if(i == 1){
+			commandBuffer[i] = (uint8_t)(strlen((const char *)dataBuffer));
+		}else{
+			commandBuffer[i] = dataBuffer[i-2];
 		}
-		if(i == 1){
-			commandBuffer[i] = (uint8_t)(strlen((const char *)dataBuffer)+2);
-		}
-		commandBuffer[i] = dataBuffer[i-2];
 	}
 	HAL_UART_Transmit(deviceHuart,commandBuffer,sizeof(commandBuffer),10);
 	uint8_t txBuffer[dataMaxLength+sizeof("The following data was just sent : \r\n")];
@@ -412,12 +417,13 @@ static void sendDataToDevice(uint8_t * dataBuffer, uint16_t dataMaxLength){
 	strcat((char *)txBuffer,(const char *)dataBuffer);
 	strcat((char *)txBuffer,"\r\n");
 	HAL_UART_Transmit(userHuart,txBuffer,strlen((const char *)txBuffer),10);
-	if(savedDataBuffer != NULL){
-		free(savedDataBuffer);
-	}
-	savedDataBuffer = (uint8_t *)strdup((const char *)dataBuffer);
-	free(dataBuffer);
-	free(commandBuffer);
+	//	if(savedDataBuffer != NULL){
+	//		free(savedDataBuffer);
+	//	}
+	//	savedDataBuffer = (uint8_t *)strdup((const char *)dataBuffer);
+	//free(dataBuffer);
+	//TODO : Terror Attack  !!! Do not ever do that again thanks ! ~~
+	//free(commandBuffer);
 }
 
 
@@ -480,6 +486,8 @@ static void autoModeOnHandler(void){
 	startAutoMode();
 }
 
+
+//TODO : Add \r\n at the end of the message
 static void autoModeOffHandler(void){
 	stopAutoMode();
 }
@@ -502,7 +510,7 @@ static void rfSignalCheckHandler(void){
 	uint8_t command[3];
 	uint8_t buffer[] = "\r\nrfsignalcheck command was sent\r\n";
 	command[0] = 0x01; command[1] = 0x01; command[2] = 0x01;
-	HAL_UART_Transmit(deviceHuart, command,sizeof(command),10);
+	HAL_UART_Transmit(deviceHuart,command,sizeof(command),10);
 	HAL_UART_Transmit(userHuart, buffer, sizeof(buffer),10);
 }
 
@@ -653,7 +661,7 @@ void BTDevice_deviceUartCallback(uint8_t *deviceUartRxBuffer){
 			break;
 		case RCV_NETWORKJOIN : //Receiving a confirmation following a network join command
 
-			if(rxDeviceBuffer[0] == 0x01){
+			if(rxDeviceBuffer[1] == 0x02){
 				sprintf((char *)txBuffer,"Network Join confirmation was received\r\n");
 				HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 			}else{
