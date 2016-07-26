@@ -281,13 +281,15 @@ static void displayMenu(void){
  */
 static void setUserUartInTimerSettingsMode(){
 	userUartMode = TIMER_SETTINGS;
-	uint8_t buffer[128] = "\r\nUser Uart now in timer settings mode.\r\nCommands won't be recognized\r\n";
+	uint8_t buffer[128];
+	memset(buffer,0,sizeof(buffer));
+	sprintf((char *)buffer,"\r\nUser Uart now in timer settings mode.\r\nCommands won't be recognized\r\n");
 	HAL_UART_Transmit(userHuart,buffer, sizeof(buffer),10);
 	memset(buffer,0,sizeof(buffer));
-	sprintf((char *)buffer,"Pease type the new timer period value followed by end\r\n Like this : 25 end\r\n");
+	sprintf((char *)buffer,"\r\nPease type the new timer period value followed by end\r\nLike this : 25 end\r\n");
 	HAL_UART_Transmit(userHuart,buffer,sizeof(buffer),10);
 	memset(buffer, 0, sizeof(buffer));
-	sprintf((char *)buffer, "The previous command '25 end' means 25 seconds between two data transfer\r\n");
+	sprintf((char *)buffer,"\r\nThe previous command '25 end' means 25 seconds between two data transfer\r\n");
 	HAL_UART_Transmit(userHuart,buffer,sizeof(buffer),10);
 }
 
@@ -428,7 +430,7 @@ static uint8_t setTimerPeriod(void){
 		if(strcmp((const char *)tmp,"end") == 0){
 			timerPeriod = tmpTimerPeriod;
 			memset(tmp,0,sizeof(tmp));
-			sprintf((char *)tmp,"\r\nNew timerPeriod value : %lu\r\n",timerPeriod);
+			sprintf((char *)tmp,"\r\nNew timer period value : %lu\r\n",timerPeriod);
 			HAL_UART_Transmit(userHuart, tmp, sizeof(tmp),10);
 			setUserUartInCommandMode();
 			return RESET_BUFFER;
@@ -529,7 +531,7 @@ static void getTimerPeriodHandler(void){
 	uint32_t timerPeriodValue = getTimerPeriod();
 	uint8_t txBuffer[64];
 	memset(txBuffer,0,sizeof(txBuffer));
-	sprintf((char *)txBuffer,"Current timer period value : %lu\r\n",timerPeriodValue);
+	sprintf((char *)txBuffer,"\r\nCurrent timer period value : %lu\r\n",timerPeriodValue);
 	HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 }
 
