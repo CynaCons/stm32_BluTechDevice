@@ -414,6 +414,7 @@ static void sendDataToDevice(uint8_t * dataBuffer, uint16_t dataMaxLength){
 
 	//Make a copy of the last sent data
 	savedDataBuffer = (uint8_t *)(strdup((const char *)dataBuffer));
+	//TODO Free dataBuffer;
 }
 
 

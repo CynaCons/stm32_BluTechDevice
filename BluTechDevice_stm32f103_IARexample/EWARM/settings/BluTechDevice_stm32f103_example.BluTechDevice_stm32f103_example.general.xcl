@@ -1,0 +1,15 @@
+"C:\Program Files\IAR Systems\Embedded Workbench 7.2\arm\bin\armproc.dll" 
+
+"C:\Program Files\IAR Systems\Embedded Workbench 7.2\arm\bin\armstlink2.dll" 
+
+"Z:\home\cynako\Workspaces\IAR\BluTechDevice_stm32f103_IARexample\EWARM\BluTechDevice_stm32f103_example\Exe\BluTechDevice_stm32f103_example.out" 
+
+--plugin "C:\Program Files\IAR Systems\Embedded Workbench 7.2\arm\bin\armbat.dll" 
+
+--device_macro "C:\Program Files\IAR Systems\Embedded Workbench 7.2\arm\config\debugger\ST\STM32F1xx_XL.dmac" 
+
+--flash_loader "C:\Program Files\IAR Systems\Embedded Workbench 7.2\arm\config\flashloader\ST\FlashSTM32F10xxC.board" 
+
+
+
+
