@@ -237,7 +237,7 @@ static uint8_t checkForInputBufferReset(void){
 	return 0;
 }
 
-
+//TODO Chanfge declaration to be compatible with IAR
 /**
  * Display the application menu
  */
@@ -580,7 +580,7 @@ static void resetPeriodCounter(){
 	periodCounter = 0;
 }
 
-
+//TODO This should not be here
 /**
  * Public wrapper around displayMenu to display the use menu via userUart
  */
