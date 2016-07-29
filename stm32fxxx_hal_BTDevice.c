@@ -237,33 +237,30 @@ static uint8_t checkForInputBufferReset(void){
 	return 0;
 }
 
-//TODO Chanfge declaration to be compatible with IAR
 /**
  * Display the application menu
  */
 static void displayMenu(void){
-
-	//uint8_t menuContent[numberOfLines][sizeOfEachLine]
-	uint8_t menuContent[NB_MENU_LINES][128] = {
+	uint8_t *menuContent[NB_MENU_LINES] = {
 			"			                APPLICATION MENU		                       	\r\n",
-			"	                                                                         \r\n",
+			"	                                                                        \r\n",
 			"\r\n",
 			"+++   GENERAL CONTROL\r\n",
-			"    -- menu             : display this menu\r\n",
-			"    -- rs               : reset the input buffer (for typing mistakes)\r\n",
-			"    -- get sensor value : display the last sensor value\r\n",
-			"    -- set automode on  : start sending data periodically\r\n",
-			"    -- set automode off : start sending data periodically\r\n",
-			"    -- send data        : send custom data to the gateway\r\n",
+			"    --> menu             : display this menu\r\n",
+			"    --> rs               : reset the input buffer (in case of typing mistake)\r\n",
+			"    --> get sensor value : display the last sensor value\r\n",
+			"    --> set automode on  : start sending data periodically\r\n",
+			"    --> set automode off : stop sending data periodically\r\n",
+			"    --> send data        : input some ascii data that will be sent to the gateway\r\n",
 			"\r\n",
 			"+++   BLUTECH DEVICE CONTROL\r\n",
-			"    -- rf signal check  : perform a signal check\r\n",
-			"    -- network join     : join the gateway network\r\n",
-			"    -- send sample data : send a sample of data for testing\r\n",
+			"    --> rf signal check  : perform a signal check\r\n",
+			"    --> network join     : join the gateway network\r\n",
+			"    --> send sample data : send a sample of data for testing\r\n",
 			"\r\n",
 			"+++   TIMER CONTROL\r\n",
-			"    -- set timer period : set the timer period\r\n",
-			"    -- get timer period : get the current timer period\r\n",
+			"    --> set timer period : set the timer period\r\n",
+			"    --> get timer period : get the current timer period\r\n",
 			"\r\n",
 			"WARNING : You have to join a network in order to send data through the LoRa module\r\n"
 	};
@@ -414,7 +411,6 @@ static void sendDataToDevice(uint8_t * dataBuffer, uint16_t dataMaxLength){
 
 	//Make a copy of the last sent data
 	savedDataBuffer = (uint8_t *)(strdup((const char *)dataBuffer));
-	//TODO Free dataBuffer;
 }
 
 
