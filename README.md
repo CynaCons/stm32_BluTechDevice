@@ -15,7 +15,7 @@ Check the provided example project (for IAR but the project structure is IDE ind
 
 Clone this repository. 
 Open the *BluTechDevice_stm32f103_IARexample/EWARM/Project.eww* workspace with IAR.
-(optionnal) Write the appropriate code to retrieve data from your sensor
+(optionnal) Write the appropriate code to retrieve data from your sensor.
 Compile,flash your board and wire the UARTs. 
 Reset the board and you should now see the commands menu.
 
