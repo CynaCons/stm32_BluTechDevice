@@ -66,7 +66,7 @@ uint8_t BTDevice_timerCallback(void);
 
 /**
  * Send the specified data to the device through the device uart
- * Please make sure to convert the data to a uint8_t buffer using sprint
+ * Please make sure to convert the data to a uint8_t buffer using sprintf
  * @param [in] txBuffer pointer to the data buffer to send
  * @param [in] txLength the length of the data buffer to send
  */

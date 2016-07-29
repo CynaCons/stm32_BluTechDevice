@@ -171,8 +171,6 @@ typedef enum{
 }InputBufferStatus;
 
 
-
-
 /**
  * Function pointers to each handler function which will do the action requested by the user
  */
@@ -193,7 +191,6 @@ void (*commandFunctionArray[COMMAND_NB])(void) =  {
 /*********************
  * Private variables
  *********************/
-
 static uint8_t autoModeStatus = AUTOMODE_OFF; /*!< Current state of AutoMode. See enum definition*/
 
 static UART_HandleTypeDef *deviceHuart; /*!< This uart is used to send/receive commands from the BT device using BT's UART commands */
@@ -216,12 +213,11 @@ static UART_HandleTypeDef *userHuart; /*!< This uart is used to communicate with
 
 static uint8_t userUartMode = COMMAND_MODE;/*!< Current state for the userUart. See enum definition*/
 
-static uint8_t * savedDataBuffer;
+static uint8_t * savedDataBuffer = NULL;
 
 /*********************
  * Private functions
  *********************/
-
 
 
 /**
@@ -236,6 +232,7 @@ static uint8_t checkForInputBufferReset(void){
 	}
 	return 0;
 }
+
 
 /**
  * Display the application menu
@@ -264,7 +261,6 @@ static void displayMenu(void){
 			"\r\n",
 			"WARNING : You have to join a network in order to send data through the LoRa module\r\n"
 	};
-
 	//Display the menu
 	uint8_t menuIterator = 0;
 	for(menuIterator = 0; menuIterator < NB_MENU_LINES; menuIterator++){
@@ -376,6 +372,7 @@ static uint8_t getDataFromUser(void){
 	return NO_RESET;
 }
 
+
 /**
  * Return the userUartMode (which is a value of the UserUartMode enum, see header file for values)
  */
@@ -410,7 +407,15 @@ static void sendDataToDevice(uint8_t * dataBuffer, uint16_t dataMaxLength){
 	HAL_UART_Transmit(userHuart,txBuffer,strlen((const char *)txBuffer),10);
 
 	//Make a copy of the last sent data
-	savedDataBuffer = (uint8_t *)(strdup((const char *)dataBuffer));
+        //If the pointer has been allocated before : Free, clean and allocate 
+        if(savedDataBuffer != NULL){
+            free(savedDataBuffer); 
+            savedDataBuffer = NULL;
+            savedDataBuffer = (uint8_t *)(strdup((const char *)dataBuffer));
+        }else{
+            //Otherwise we just allocate
+	    savedDataBuffer = (uint8_t *)(strdup((const char *)dataBuffer));
+        }
 }
 
 
@@ -484,12 +489,16 @@ static void sendDataHandler(void){
 
 }
 
-//TODO This must be tested asap
+
 static void getSensorValueHandler(void){
 	uint8_t txBuffer[128];
 	memset(txBuffer,0,sizeof(txBuffer));
-	sprintf((char *)txBuffer,"\r\nThis is the last sent data :\r\n%s\r\n",savedDataBuffer);
-	HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
+        if(savedDataBuffer != NULL){
+            sprintf((char *)txBuffer,"\r\nThis is the last sent data :\r\n%s\r\n",savedDataBuffer);
+        }else{
+            sprintf((char *)txBuffer,"\r\nNo data has been sent yet\r\n");
+        }
+        HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 }
 
 
@@ -577,15 +586,6 @@ static void resetPeriodCounter(){
 	periodCounter = 0;
 }
 
-//TODO This should not be here
-/**
- * Public wrapper around displayMenu to display the use menu via userUart
- */
-void BTDevice_displayMenu(void){
-	displayMenu();
-}
-
-
 /**
  * This function reset the buffer filled by messages received from the device via deviceUart
  */
@@ -599,7 +599,6 @@ static void resetDeviceInputBuffer(void){
  *****************************/
 
 
-
 /**
  * This function handle the communication from the BTDevice to the MCU
  * First, we receive the "head" (the first byte). Depending on the head value,
@@ -607,9 +606,6 @@ static void resetDeviceInputBuffer(void){
  * Once the message is completely received, we then display it to the user
  * through the userUart.
  */
-//TODO : There is a bug with the length of the data when using the dht22.
-//Data is only send during second callback..
-//TODO : Have a quick check though I don't this the previous annotation is accurate.
 void BTDevice_deviceUartCallback(uint8_t *deviceUartRxBuffer){
 	uint8_t txBuffer[64];
 	memset(txBuffer,0,sizeof(txBuffer));
@@ -687,6 +683,14 @@ void BTDevice_deviceUartCallback(uint8_t *deviceUartRxBuffer){
 			break;
 	}
 	resetDeviceInputBuffer();
+}
+
+
+/**
+ * Public wrapper around displayMenu to display the use menu via userUart
+ */
+void BTDevice_displayMenu(void){
+	displayMenu();
 }
 
 
