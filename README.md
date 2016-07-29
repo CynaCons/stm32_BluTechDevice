@@ -1,17 +1,28 @@
 # stm32_BluTechDevice
 
-#What does this driver do ?
+#What does this lirabry do ?
 
 This .c and .h files must be included to a stm32 project to use and control a BluTech  LoRa device via UART.
-Examples are provided to build a functionnal program quickly and easily using public functions.
+Examples are provided to build a functionnal program quickly and easily using public functions from the library.
 
-Currently, three boards are functionnal : stm32f4-disco ; stm32f103 ; stm32l152.
+Currently, three boards are supported : stm32f4-disco ; stm32f103 ; stm32l152.
 
-This driver is built to be generic and easily reused across all stm32 projects, only the data sensing part has to change.
+This library is built to be generic and easily reused across all stm32 projects, only the data sensing part has to change.
+
+Check the provided example project (for IAR but the project structure is IDE independent) for copyable code.
+
+# TL;DR (Too Long; Didnt Read)
+
+Clone this repository. 
+Open the *BluTechDevice_stm32f103_IARexample/EWARM/Project.eww* workspace with IAR.
+(optionnal) Write the appropriate code to retrieve data from your sensor
+Compile,flash your board and wire the UARTs. 
+Reset the board and you should now see the commands menu.
+
 
 ## Tell me more ! 
 
-This driver will use two UART :
+This lirabry will use two UART :
 
 One, called "deviceUart" will send commands to the BluTech device and receive the command's answer or receive data sent from the REST API (?)
 
@@ -97,7 +108,7 @@ Follow the guide below to write the appropriate code to have a functionnal devic
 
 # How to make it functionnal ? We have to write some stm32 code.
 
-I highly recommend to use the STM32CubeMX project generator. This driver uses the HAL library.
+I highly recommend to use the STM32CubeMX project generator. This lirabry uses the HAL library.
 STM32CubeMX will generate the project architecture and initialize all the required peripherals.
 
 STM32CubeMX can be found on ST's website and can generate projects for most IDEs.
@@ -106,181 +117,238 @@ To understand how to use, read the example files (main.c, stm32fxxx_it.c) and th
 
 Details for each function can be found in the example files (main.c, stm32fxxx_it.c)
 
-# In main.c
+# In main.c 
 
-- include necessary header files :
-	```
-		//Header file of the driver
-		#include "stm32fxxx_hal_BTDevice.h" 
-		
-		//Include the uart related functions. Replace first x !
-		#include "stm32fxxx_hal_uart.h"
-		
-		#include <string.h> //For string manipulation
-		#include <stdlib.h> //For malloc (freeing is done in the drivers)
-	```
-- define the sensor data maximum length. The amout of data retrieved from the sensor should not exceed this value. You can hardcode it if you don't want to #define it
-	
-	```	#define SENSOR_DATA_MAX_LENGTH 128```
-	
-- to receive characters input from the user lets use a buffer and it's index. I also like to use a one byte buffer (husart6RxBuffer) to store user input before filling the main input buffer (rxITBuffer)
-	```
-		//When a command is recognized, the input buffer is filles with \0 and the index is set to 0.
-		
-		//Use this buffer to store data received from user uart
-		uint8_t rxITBuffer[256];
-		
-		//Input buffer index. 
-		uint16_t rxITIndex = 0;
-		
-		//Single byte buffer to store characters temporarily from the userHuart
-		uint8_t husart6RxBuffer = 0;
-		
-		//Single byte buffer to store characters temporarily from the deviceUart
-		uint8_t husart2RxBuffer = 0;
-	```
+```
 
-- in main.c, make sure all peripherals are intialized. To use this driver, the following peripherals must be initialized :
-	- one uart to interact with the user
-	- one uart to send and receive commands to the BTDevice
-	- one timer to be able to send sensor data periodically
-
-	```
-		MX_USART2_UART_Init(); //This will be used to communicate with BTDevice
-		MX_USART6_UART_Init(); //This will be used to communicate with user
-		MX_TIM1_Init(); //This will time the timer between each data sending
-	```
-		
-- make sure the input buffer is clean :
+	/*********************
+	 * Includes & defines
+	 *********************/
+	#include "stm32f1xx_hal.h"
+	#include "stm32fxxx_hal_BTDevice.h" //BTDevice driver header file
+	#include "stm32f1xx_hal_uart.h" //HAL UART header file
 	
-	```
-		memset(rxITBuffer,0,sizeof(rxITBuffer); //fill the input buffer with \0
-	```
-		
-- enable character receive in non blocking mode (using interupts)
+	#include <string.h>
+	#include <stdlib.h>
 	
-	```
-		//One character will be received in IT mode then the RxCompleteCallback will be called.
-		//This is to receive characters from user input
-		HAL_UART_Receive_IT(&huart6, &husart6RxBuffer, 1);
-		
-		//This is to receive data from the BluTech device
-		HAL_UART_Receive_IT(&huart2,&husart2RxBuffer,1);
-	```
-		
-- start the timer. Timer should be configured to call the PeriodEllapsedCallback every second. It is then possible to set a custom period (like 60 seconds or other) between two data transfer using the uart commands
 	
-	```
-		//Start timer for periodical data transfer
-		HAL_TIM_Base_Start_IT(&htim1);
-	```
-		
-- initialize the drivers using the appropriate function. To do this, simply fill the BTDevice_InitTypeDef structure and call BTDevice_init(BTDev_struct);
+	#define SENSOR_DATA_MAX_LENGTH 128
 	
-	```
-		//Before main loop, initialize the drivers
-		initBTDevice();
-
-	//initBTDevice function definition
-		static void initBTDevice(){
-			BTDevice_InitTypeDef BTDevice_InitStruct; //Declare the structure to fill
-		
-			BTDevice_InitStruct.userHuart = &huart6; //userHuart
-			BTDevice_InitStruct.deviceHuart = &huart2; //deviceHuart
-			BTDevice_InitStruct.userInputBuffer = rxITBuffer; //input buffer
-			BTDevice_InitStruct.resetInputBufferHandler = &resetInputBuffer; //reset input buffer function
-			
-			BTDevice_init(&BTDevice_InitStruct); 
-		}
-	```
-		
-- now that it's all initialized, display the uart commands menu ! 
-
-	```
-		BTDevice_displayMenu();
-	```
+	/********************
+	 * Private variables
+	 ********************/
+	//Peripheral handlers
+	ADC_HandleTypeDef hadc1;
+	TIM_HandleTypeDef htim1;
+	TIM_HandleTypeDef htim3;
+	UART_HandleTypeDef huart4;
+	UART_HandleTypeDef huart1;
 	
-- outside main function, write the PeriodEllapsedCallback for the timer
+	//Use this buffer to store data received from user uart
+	uint8_t rxITBuffer[256];
 	
-	```
-		/**
-		 * TIMER Callback function. Periodically, data will be sent.
-		 * Period value can be set through uart interface (userHuart)
-		 */
-		void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-		    //Make sur it's the right timer 
-			if(htim->Instance == TIM1){ 
-				if(BTDevice_timerCallback()){ //Is it time to send the next data ?
-					//If yes, which mean we have waited the required amout of seconds
-					//Then send the data !
-					BTDevice_sendData(getSensorData(),SENSOR_DATA_MAX_LENGTH);
-				}
-			}
-		}	
-	```
+	//Input buffer index. 
+	uint16_t rxITIndex = 0;
 	
-- write the uart RxCompleteCallback (it's important that this function is called after each character we receive, that's why we always set data length to 1 in the HAL_UART_Receive_IT function )
-
+	//Single byte buffer to store characters temporarily from the userHuart
+	uint8_t huart4RxBuffer = 0;
 	
-	```
-		/**
-		 * Example of UART reception complete callback
-		 */
-		void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
-			//Make sur it's the right uart
-			if(huart->Instance == USART2){
-				//deviceUart received something. Check the head of the message first.
-				//Once the first byte of the message is analysed, the body will be analyzed inside the driver.
-				//The result of this analysis (confirmation, failure, data received) will be displayed with userUart
-				BTDevice_deviceUartCallback(&husart2RxBuffer);
-			}
-			if(huart->Instance == USART6){
-				storeNewValueIntoInputBuffer(); //Store newly received character into the rxITBuffer
-				BTDevice_readInputBuffer(); //Parse the rxITBuffer to recognize commands
-				HAL_UART_Receive_IT(&huart6,&husart6RxBuffer,1); //Enable receiving ot the new character
-			}
-		}
-	```
+	//Single byte buffer to store characters temporarily from the deviceUart
+	uint8_t huart1RxBuffer = 0;
 	
-- the following function are example to complete the two callbacks above. 
 	
-	```
-		/**
-		 * Example for handling incoming characters from uart input
-		 */
-		void storeNewValueIntoInputBuffer(void) {
-			rxITBuffer[rxITIndex] = husart6RxBuffer;
-			rxITIndex++;
-		}
-		
-				
-		/**
-		 * Example to reset the inputBuffer.
-		 */
-		void resetInputBuffer(void) {
-			memset(rxITBuffer, 0, sizeof(rxITBuffer));
-			rxITIndex = 0;
-		}
-		
-		 /**
-		  * Example to get the data and send it as argument for the BTDevice_sendData(..) function
-		  */
-		uint8_t *getSensorData(void){
-			//This buffer will contain our data.
-			//The free is done once the data is sent to the BTDevice
-			uint8_t *dataBuffer = malloc(sizeof(uint8_t)*SENSOR_DATA_MAX_LENGTH);
-			memset(dataBuffer,0,SENSOR_DATA_MAX_LENGTH);
-		
-			//Get your sensor data !
-			uint32_t sensorValue = getSensorValue();
-		
-			//Now write that uint32_t into our data buffer.
-			sprintf((char *)dataBuffer,"%lu",sensorValue);
-		
-			return dataBuffer;
-		}
-	```
-
+	#define NB_MENU_LINES 21 /*!< Number of lines to display in the menu */
+	
+	
+	/*******************************
+	 * Private functions prototypes
+	 *******************************/
+	//STM32CubeMX-generated functions
+	static void MX_GPIO_Init(void);
+	static void MX_ADC1_Init(void);
+	static void MX_TIM1_Init(void);
+	static void MX_TIM3_Init(void);
+	static void MX_UART4_Init(void);
+	static void MX_USART1_UART_Init(void);
+	
+	void SystemClock_Config(void);
+	void Error_Handler(void);
+	
+	static void initBTDevice();
+	
+	static void storeNewValueIntoInputBuffer(void);
+	static void resetInputBuffer(void);
+	
+	static float getCPUTemperature(void);
+	static uint8_t *getSensorData(void);
+	
+	
+	
+	int main(void)
+	{
+	
+	
+	
+	    /* MCU Configuration----------------------------------------------------------*/
+	
+	    /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+	    HAL_Init();
+	
+	    /* Configure the system clock */
+	    SystemClock_Config();
+	
+	    /* Initialize all configured peripherals */
+	    
+	    MX_GPIO_Init();
+	    MX_ADC1_Init();
+	    MX_TIM1_Init();
+	    MX_TIM3_Init();
+	    MX_UART4_Init();
+	    MX_USART1_UART_Init();
+	
+	    memset(rxITBuffer,0,sizeof(rxITBuffer)); //fill the input buffer with \0
+	
+	    HAL_UART_Receive_IT(&huart4, &huart4RxBuffer, 1);
+	
+	    //This is to receive data from the BluTech device
+	    HAL_UART_Receive_IT(&huart1,&huart1RxBuffer,1);
+	
+	    //Start timer for periodical data transfer
+	    HAL_TIM_Base_Start_IT(&htim3);
+	
+	    //Start the driver
+	    initBTDevice();
+	
+	    //Display the commands menu
+	    BTDevice_displayMenu();
+	
+	
+	    /* Infinite loop */
+	    while (1)
+	    {
+	
+	    }
+	
+	}
+	
+	/*****************************************************************************
+	 * The following section deals with peripherals interrupts callback functions
+	 ****************************************************************************/
+	
+	
+	/**
+	 * TIMER Callback function. 
+	 * Periodically, this function is called and data is sent.
+	 * Period value can be changed through uart interface (userHuart)
+	 */
+	void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	    //First, check which timer period has ellapsed
+	    if(htim->Instance == TIM3){ 
+	        if(BTDevice_timerCallback()){ //Is it time to send the next data ?
+	            //If yes, which mean we have waited the required amout of seconds
+	            //Then send the data !
+	            uint8_t *tmp = getSensorData();
+	            BTDevice_sendData(tmp,SENSOR_DATA_MAX_LENGTH);
+	            free(tmp);
+	        }
+	    }
+	}   
+	
+	
+	/**
+	 * UART Reception Callback (this is called once a reception interupt has been acknowledged
+	 */
+	void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+	    //Make sure it's the right uart
+	    if(huart->Instance == USART1){
+	        //When deviceHuart (wired to the BTDevice) receive a message, the first byte is analysed to determine the message's nature.
+	        //Once the first byte of the message is analysed, the body will be received and analysed inside the driver.
+	        //The result of this analysis (confirmation, failure, data received) will be displayed with userUart
+	        BTDevice_deviceUartCallback(&huart1RxBuffer);
+	    }
+	    if(huart->Instance == UART4){
+	        //When the userHuart (wired to the computre) receive a character, the following actions are perfomed 
+	        storeNewValueIntoInputBuffer(); //Store newly received character into the rxITBuffer
+	        BTDevice_readInputBuffer(); //Parse the rxITBuffer to recognize commands
+	        HAL_UART_Receive_IT(&huart4,&huart4RxBuffer,1); //Enable receiving ot the new character
+	    }
+	}
+	
+	
+	/********************
+	 * Private functions
+	 ********************/
+	
+	
+	/**
+	 * Call this function once to start the BTDevice driver
+	 */
+	static void initBTDevice(void){
+	    BTDevice_InitTypeDef BTDevice_InitStruct;
+	    BTDevice_InitStruct.userHuart = &huart4;
+	    BTDevice_InitStruct.deviceHuart = &huart1;
+	    BTDevice_InitStruct.userInputBuffer = rxITBuffer;
+	    BTDevice_InitStruct.resetInputBufferHandler = &resetInputBuffer;
+	    BTDevice_init(&BTDevice_InitStruct);
+	}
+	
+	
+	/**
+	 * Once a character is received from UART (userHuart), stores it into a larger reception buffer
+	 */
+	static void storeNewValueIntoInputBuffer(void) {
+	    rxITBuffer[rxITIndex] = huart4RxBuffer;
+	    rxITIndex++;
+	}
+	
+	
+	/**
+	 * Reset the inputBuffer
+	 */
+	static void resetInputBuffer(void) {
+	    memset(rxITBuffer, 0, sizeof(rxITBuffer));
+	    rxITIndex = 0;
+	}
+	
+	
+	/*********************************************************************************
+	 * The following section acquire the CPU Temperature (THE CONVERSION IS WRONG !)
+	 *
+	 * This section only should be modified and adapted to match the data sensor
+	 *********************************************************************************/
+	
+	/**
+	 * Returns a string (uint8_t array) formated to contain the CPU temperature in the JSON format
+	 **/
+	static uint8_t *getSensorData(){
+	    uint8_t *dataBuffer = malloc(sizeof(uint8_t)*SENSOR_DATA_MAX_LENGTH);
+	    memset(dataBuffer,0,sizeof(dataBuffer));
+	    float tempValue = getCPUTemperature();
+	    sprintf((char *)dataBuffer,"{\"CPU_temperature(conversion is wrong)\":\"%lu\"}",(uint32_t)tempValue);
+	    return dataBuffer;
+	}
+	
+	
+	/**
+	 * Return the CPU temperature converted in celsius degrees
+	 * @pre CPU temperature sensor must have been initialized before (ADC1 Channel 16)
+	 */
+	static float getCPUTemperature(void){
+	    uint32_t sensorValue;
+	    float convertedValue;
+	    HAL_ADC_Start(&hadc1);
+	    HAL_ADC_PollForConversion(&hadc1,1000);
+	    sensorValue=HAL_ADC_GetValue(&hadc1);
+	    convertedValue = sensorValue *3000.0f; //Vref is 3000mV
+	    convertedValue /= 0xfff; //12 bit resolution
+	    convertedValue /= 1000.0f; //mV to V
+	    convertedValue -= 0.7f;
+	    convertedValue /= .0034f;
+	    convertedValue += 25.0f; //Add 25°C
+	    HAL_ADC_Stop(&hadc1);
+	    return convertedValue;
+	}
+```
 
 # In your stm32fxxx_it.c : 
 
