@@ -359,7 +359,7 @@ static uint8_t getDataFromUser(void){
 	//Make sure enough characters have been typed
 	uint16_t bufferLength  = strlen((const char *)userInputBuffer);
 	if(bufferLength >= 3){
-		if(userInputBuffer[bufferLength] == 'd' && userInputBuffer[bufferLength-1] == 'n' && userInputBuffer[bufferLength-2] == 'e'){
+		if(userInputBuffer[bufferLength-1] == 'd' && userInputBuffer[bufferLength-2] == 'n' && userInputBuffer[bufferLength-3] == 'e'){
 			sscanf((const char *)userInputBuffer,"%s %s", data, tmp);
 			sprintf((char *)tmp,"The following data will be sent : ");
 			HAL_UART_Transmit(userHuart, tmp, sizeof(tmp),10);
