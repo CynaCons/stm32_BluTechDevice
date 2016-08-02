@@ -353,9 +353,6 @@ static uint8_t getDataFromUser(void){
 	memset(tmp,0,sizeof(tmp));
 	uint8_t data[64]; //buffer for the data to be sent. Must be followed by " end"
 	memset(data,0,sizeof(data));
-	//if(userInputBuffer[0] != 0 && userInputBuffer[1] != 0 &&
-	//		userInputBuffer[2] != 0){
-
 	//Make sure enough characters have been typed
 	uint16_t bufferLength  = strlen((const char *)userInputBuffer);
 	if(bufferLength >= 3){
@@ -408,7 +405,6 @@ static void sendDataToDevice(uint8_t * dataBuffer, uint16_t dataMaxLength){
 	strcat((char *)txBuffer,(const char *)dataBuffer);
 	strcat((char *)txBuffer,"\r\n");
 	HAL_UART_Transmit(userHuart,txBuffer,strlen((const char *)txBuffer),10);
-
 	//Make a copy of the last sent data
 	//If the pointer has been allocated before : Free, clean and allocate
 	if(savedDataBuffer != NULL){
@@ -622,12 +618,20 @@ static void resetDeviceInputBuffer(void){
  * Once the message is completely received, we then display it to the user
  * through the userUart.
  */
+//TODO Sometimes when trying to receive the body of a command we probably receive some other commands at the same time. 
+//TODO : SOme kind of message queue would be nice to make sure we handle responses in the right order
+//TODO : THe right solution  would probably be to store all the incoming bytes on IT and then read what we received in a queued manner
 void BTDevice_deviceUartCallback(uint8_t *deviceUartRxBuffer){
 	uint8_t txBuffer[64];
 	memset(txBuffer,0,sizeof(txBuffer));
 	switch(rxDeviceState){
 	case RCV_HEAD : //Receiving the head of the message
 		switch( (*deviceUartRxBuffer) ){
+		case 0xfc : //When BluTech board is starting. Ignore this byte and wait for another.
+		case 0x00 :
+			rxDeviceState = RCV_HEAD;
+			HAL_UART_Receive_IT(deviceHuart,deviceUartRxBuffer,1);
+			break;
 		case 0x01 : //rfsignalcheck
 			rxDeviceState = RCV_RFSIGNALCHECK;
 			HAL_UART_Receive_IT(deviceHuart,rxDeviceBuffer,4);
