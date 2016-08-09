@@ -20,11 +20,11 @@ Compile,flash your board and wire the UARTs.
 Reset the board and you should now see the commands menu.
 
 
-## Tell me more ! 
+## Complete Guide : 
 
 This lirabry will use two UART :
 
-One, called "deviceUart" will send commands to the BluTech device and receive the command's answer or receive data sent from the REST API (?)
+One, called "deviceUart" will send commands to the BluTech device and receive the command's answer or receive data sent from the REST API
 
 The other, called "userUart", will print a list of commands that can be used to control the BluTech device. It also display the command's result and a lot of other useful things (such as sensor data).	
 
@@ -178,6 +178,7 @@ Details for each function can be found in the example files (main.c, stm32fxxx_i
 	
 	static void storeNewValueIntoInputBuffer(void);
 	static void resetInputBuffer(void);
+	static void deviceCommandReceivedCallback(uint8_t *dataBuffer, uint16_t dataLength);
 	
 	static float getCPUTemperature(void);
 	static uint8_t *getSensorData(void);
@@ -289,6 +290,7 @@ Details for each function can be found in the example files (main.c, stm32fxxx_i
 	    BTDevice_InitStruct.deviceHuart = &huart1;
 	    BTDevice_InitStruct.userInputBuffer = rxITBuffer;
 	    BTDevice_InitStruct.resetInputBufferHandler = &resetInputBuffer;
+	    BTDevice_InitStruct.deviceCommandReceivedHandler = &deviceCommandReceivedCallback;
 	    BTDevice_init(&BTDevice_InitStruct);
 	}
 	
@@ -309,6 +311,19 @@ Details for each function can be found in the example files (main.c, stm32fxxx_i
 	    memset(rxITBuffer, 0, sizeof(rxITBuffer));
 	    rxITIndex = 0;
 	}
+	
+	
+	/**
+	 * This function is called when the BTDevice receives data from the Gateway
+	 */
+	 static void deviceCommandReceivedCallback(uint8_t *dataBuffer, uint16_t dataLength){
+	 	//Here we can simply display the data on the userHuart or do some special action
+	 	uint8_t txBuffer[128];
+	 	memset(txBuffer, 0 ,sizeof(txBuffer));
+	 	sprintf((char *)txBuffer,"The following data was received by the device :\r\n");
+	 	HAL_UART_Transmit(&userHuart, txBuffer, sizeof(txBuffer),10);
+	 	HAL_UART_Transmit(&userHuart, dataBuffer, dataLength,10);
+	 }
 	
 	
 	/*********************************************************************************

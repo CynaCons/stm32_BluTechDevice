@@ -21,6 +21,7 @@ typedef struct {
 	UART_HandleTypeDef *deviceHuart;
 	uint8_t *userInputBuffer;
 	void (*resetInputBufferHandler)(void);
+	void (*deviceCommandReceivedHandler)(uint8_t *dataBuffer, uint16_t dataLength);
 } BTDevice_InitTypeDef;
 
 
