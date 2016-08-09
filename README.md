@@ -2,20 +2,30 @@
 
 #What does this lirabry do ?
 
-This .c and .h files must be included to a stm32 project to use and control a BluTech  LoRa device via UART.
+This repository contains :      
+    - the core files of the library : stm32fxx_hal_BTDevice.c and stm32fxxx_hal_BTDevice.h
+    - example projects implementing the library for stm32f103 and stm32l152 (for IAR IDE) that can be used out of the box
+    - example files to implement the library on it's own (without using the example project)
+    - this README.md file
+
+The core .c and .h files must be included to a stm32 project to use and control a BluTec LoRa device via UART.
 Examples are provided to build a functionnal program quickly and easily using public functions from the library.
 
 Currently, three boards are supported : stm32f4-disco ; stm32f103 ; stm32l152.
 
 This library is built to be generic and easily reused across all stm32 projects, only the data sensing part has to change.
 
-Check the provided example project (for IAR but the project structure is IDE independent) for copyable code.
+Check the provided example project (for IAR but the project structure is IDE independent) for copyable code. Only the stm32f103 project is fully commented, check this one first.
 
-# TL;DR (Too Long; Didnt Read)
+# How to get started : 
 
 Clone this repository. 
-Open the *BluTechDevice_stm32f103_IARexample/EWARM/Project.eww* workspace with IAR.
+For STM32F103 : 
+    Open the *BluTechDevice_stm32f103_IARexample/EWARM/Project.eww* workspace with IAR.
+For STM32L152 :
+    Open the *BluTechDevice_stm32l215_IARExample/EWARM/Project.eww* workspace with IAR.
 (optionnal) Write the appropriate code to retrieve data from your sensor.
+Make sur VLA is enabled in the project settings, otherwise you won't compile. Then configure the target in the project options.
 Compile,flash your board and wire the UARTs. 
 Reset the board and you should now see the commands menu.
 
@@ -113,7 +123,7 @@ STM32CubeMX will generate the project architecture and initialize all the requir
 
 STM32CubeMX can be found on ST's website and can generate projects for most IDEs.
 
-To understand how to use, read the example files (main.c, stm32fxxx_it.c) and this readme.
+To understand how to use, read the example files (main.c, stm32fxxx_it.c) this readme and the example projects
 
 Details for each function can be found in the example files (main.c, stm32fxxx_it.c)
 
@@ -276,6 +286,27 @@ Details for each function can be found in the example files (main.c, stm32fxxx_i
 	}
 	
 	
+        
+        /**************************************************************************************
+         * The following section deals with command/data reception (from the gateway) callback
+         **************************************************************************************/
+       
+
+	/**
+	 * This function is called when the BTDevice receives data from the Gateway
+	 */
+         static void deviceCommandReceivedCallback(uint8_t *dataBuffer, uint16_t dataLength){
+            //Display the data or do some special action like turning on a LED or actionner
+            //In this case we simply print the received data over the userUart
+            uint8_t txBuffer[128];
+            memset(txBuffer, 0, sizeof(txBuffer));
+            sprintf((char *)txBuffer, "The following data was received from the gateway :\r\n");
+            HAL_UART_Transmit(&huart4, txBuffer, sizeof(txBuffer), 10);
+            HAL_UART_Transmit(&huart4, dataBuffer, dataLength, 10);
+            HAL_UART_Transmit(&huart4, "\r\n", sizeof("\r\n"),10°;            
+        }
+
+
 	/********************
 	 * Private functions
 	 ********************/
@@ -313,19 +344,7 @@ Details for each function can be found in the example files (main.c, stm32fxxx_i
 	}
 	
 	
-	/**
-	 * This function is called when the BTDevice receives data from the Gateway
-	 */
-	 static void deviceCommandReceivedCallback(uint8_t *dataBuffer, uint16_t dataLength){
-	 	//Here we can simply display the data on the userHuart or do some special action
-	 	uint8_t txBuffer[128];
-	 	memset(txBuffer, 0 ,sizeof(txBuffer));
-	 	sprintf((char *)txBuffer,"The following data was received by the device :\r\n");
-	 	HAL_UART_Transmit(&userHuart, txBuffer, sizeof(txBuffer),10);
-	 	HAL_UART_Transmit(&userHuart, dataBuffer, dataLength,10);
-	 }
-	
-	
+
 	/*********************************************************************************
 	 * The following section acquire the CPU Temperature (THE CONVERSION IS WRONG !)
 	 *

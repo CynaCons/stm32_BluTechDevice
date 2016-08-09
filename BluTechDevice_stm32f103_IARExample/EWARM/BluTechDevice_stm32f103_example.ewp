@@ -984,9 +984,6 @@
       <file>
         <name>$PROJ_DIR$\..\Src\stm32fxxx_hal_BTDevice.c</name>
       </file>
-      <file>
-        <name>$PROJ_DIR$\..\Src\stm32fxxx_hal_BTDevice.h</name>
-      </file>
     </group>
   </group>
   <group>

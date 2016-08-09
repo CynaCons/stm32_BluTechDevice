@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\BluTechDevice_stm32f103_IARexample\EWARM\settings\BluTechDevice_stm32f103_example.BluTechDevice_stm32f103_example.general.xcl" --backend -f "Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\BluTechDevice_stm32f103_IARexample\EWARM\settings\BluTechDevice_stm32f103_example.BluTechDevice_stm32f103_example.driver.xcl" 
+"C:\Program Files\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\BluTechDevice_stm32f103_IARExample\EWARM\settings\BluTechDevice_stm32f103_example.BluTechDevice_stm32f103_example.general.xcl" --backend -f "Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\BluTechDevice_stm32f103_IARExample\EWARM\settings\BluTechDevice_stm32f103_example.BluTechDevice_stm32f103_example.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\BluTechDevice_stm32f103_IARexample\EWARM\settings\BluTechDevice_stm32f103_example.BluTechDevice_stm32f103_example.general.xcl" "--debug_file=%~1" --backend -f "Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\BluTechDevice_stm32f103_IARexample\EWARM\settings\BluTechDevice_stm32f103_example.BluTechDevice_stm32f103_example.driver.xcl" 
+"C:\Program Files\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\BluTechDevice_stm32f103_IARExample\EWARM\settings\BluTechDevice_stm32f103_example.BluTechDevice_stm32f103_example.general.xcl" "--debug_file=%~1" --backend -f "Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\BluTechDevice_stm32f103_IARExample\EWARM\settings\BluTechDevice_stm32f103_example.BluTechDevice_stm32f103_example.driver.xcl" 
 
 @echo off 
 :end
