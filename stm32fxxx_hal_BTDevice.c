@@ -696,7 +696,7 @@ void BTDevice_deviceUartCallback(uint8_t *deviceUartRxBuffer){
 				HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 			}
 			rxDeviceState = RCV_HEAD;
-			HAL_UART_Receive_IT(deviceHuart,rxDeviceBuffer,1);
+			HAL_UART_Receive_IT(deviceHuart,deviceUartRxBuffer,1);
 			break;
 		case RCV_DATA_LENGTH : //Receiving the body length of the data message
 			rcvDataLength = *deviceUartRxBuffer;
