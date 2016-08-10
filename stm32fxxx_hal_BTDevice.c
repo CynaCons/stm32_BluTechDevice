@@ -63,7 +63,7 @@ static void setDeviceHuart(UART_HandleTypeDef *huartx);
 static void setDeviceCommandReceivedHandler(void (*fPtr)());
 static void setUserHuart(UART_HandleTypeDef *huartx);
 static void setUserInputBuffer(uint8_t *ptrBuffer);
-static void setResetInputBufferHandler(void (*fPtr)()); //TODO All the related functions.variables have not been commented yet
+static void setResetInputBufferHandler(void (*fPtr)(uint8_t *dataBuffer, uint16_t dataLength)); //TODO All the related functions.variables have not been commented yet
 static void sendDataToDevice(uint8_t *dataBuffer, uint16_t dataLength);
 static void startAutoMode();
 static void stopAutoMode();
@@ -341,7 +341,7 @@ void setDeviceHuart(UART_HandleTypeDef *huartx){
 
 
 
-static void setDeviceCommandReceivedHandler(void (*fPtr)()){
+static void setDeviceCommandReceivedHandler(void (*fPtr)(uint8_t *dataBuffer, uint16_t dataLength)){
 	deviceCommandReceivedHandler = fPtr;
 
 }
@@ -457,7 +457,7 @@ static uint8_t setTimerPeriod(void){
 static void startAutoMode(void){
 	uint8_t txBuffer[128];
 	memset(txBuffer,0,sizeof(txBuffer));
-	sprintf((char *)txBuffer,"AutoMode Started !\r\n");
+	sprintf((char *)txBuffer,"\r\nAutoMode Started !\r\n");
 	HAL_UART_Transmit(userHuart,txBuffer, sizeof(txBuffer),10);
 	memset(txBuffer,0,sizeof(txBuffer));
 	sprintf((char *)txBuffer,"Data will now be sent periodically\r\n");
