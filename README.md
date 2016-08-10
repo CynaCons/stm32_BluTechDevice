@@ -2,7 +2,8 @@
 
 #What does this lirabry do ?
 
-This repository contains :      
+This repository contains : 
+
     - the core files of the library : stm32fxx_hal_BTDevice.c and stm32fxxx_hal_BTDevice.h
     - example projects implementing the library for stm32f103 and stm32l152 (for IAR IDE) that can be used out of the box
     - example files to implement the library on it's own (without using the example project)
@@ -19,15 +20,15 @@ Check the provided example project (for IAR but the project structure is IDE ind
 
 # How to get started : 
 
-Clone this repository. 
-For STM32F103 : 
-    Open the *BluTechDevice_stm32f103_IARexample/EWARM/Project.eww* workspace with IAR.
-For STM32L152 :
-    Open the *BluTechDevice_stm32l215_IARExample/EWARM/Project.eww* workspace with IAR.
-(optionnal) Write the appropriate code to retrieve data from your sensor.
-Make sur VLA is enabled in the project settings, otherwise you won't compile. Then configure the target in the project options.
-Compile,flash your board and wire the UARTs. 
-Reset the board and you should now see the commands menu.
+	-Clone this repository. 
+	-For STM32F103 : 
+	    Open the *BluTechDevice_stm32f103_IARexample/EWARM/Project.eww* workspace with IAR.
+	-For STM32L152 :
+	    Open the *BluTechDevice_stm32l215_IARExample/EWARM/Project.eww* workspace with IAR.
+	(optionnal) Write the appropriate code to retrieve data from your sensor.
+	-Make sur VLA is enabled in the project settings, otherwise you won't compile. Then configure the target in the project options.
+	-Compile,flash your board and wire the UARTs. 
+	-Reset the board and you should now see the commands menu.
 
 
 ## Complete Guide : 
