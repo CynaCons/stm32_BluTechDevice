@@ -7,7 +7,7 @@
  * https://github.com/CynaCons/stm32_BluTechDevice
  */
 
-
+//HARD LINK TEST
 
 /************
  * Includes
@@ -60,10 +60,10 @@ static void setUserUartInTimerSettingsMode(void);
 static void setUserUartInDataInputMode(void);
 static void setUserUartInCommandMode(void);
 static void setDeviceHuart(UART_HandleTypeDef *huartx);
-static void setDeviceCommandReceivedHandler(void (*fPtr)());
+static void setDeviceCommandReceivedHandler(void (*fPtr)(uint8_t *dataBuffer, uint16_t dataLength));
 static void setUserHuart(UART_HandleTypeDef *huartx);
 static void setUserInputBuffer(uint8_t *ptrBuffer);
-static void setResetInputBufferHandler(void (*fPtr)(uint8_t *dataBuffer, uint16_t dataLength)); //TODO All the related functions.variables have not been commented yet
+static void setResetInputBufferHandler(void (*fPtr)()); //TODO All the related functions.variables have not been commented yet
 static void sendDataToDevice(uint8_t *dataBuffer, uint16_t dataLength);
 static void startAutoMode();
 static void stopAutoMode();

@@ -4,15 +4,9 @@
 
 "--fpu=None" 
 
-"-p" 
-
-"C:\Program Files\IAR Systems\Embedded Workbench 7.2\arm\CONFIG\debugger\ST\STM32F103xC.ddf" 
-
 "--drv_verify_download" 
 
 "--semihosting" 
-
-"--device=STM32F103xC" 
 
 "--drv_interface=SWD" 
 

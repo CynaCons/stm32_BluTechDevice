@@ -31,7 +31,7 @@
  ******************************************************************************
  */
 
-/*********************
+    /*********************
 	 * Includes & defines
 	 *********************/
 	#include "stm32f1xx_hal.h"
@@ -51,8 +51,8 @@
 	ADC_HandleTypeDef hadc1;
 	TIM_HandleTypeDef htim1;
 	TIM_HandleTypeDef htim3;
-	UART_HandleTypeDef huart4;
-	UART_HandleTypeDef huart1;
+	UART_HandleTypeDef huart4; //This will be the userHuart handler structure
+	UART_HandleTypeDef huart1; //This will be the deviceHuart handler structure
 	
 	//Use this buffer to store data received from user uart
 	uint8_t rxITBuffer[256];

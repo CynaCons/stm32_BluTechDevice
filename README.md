@@ -18,6 +18,29 @@ This library is built to be generic and easily reused across all stm32 projects,
 
 Check the provided example project (for IAR but the project structure is IDE independent) for copyable code. Only the stm32f103 project is fully commented, check this one first.
 
+       This is the repository tree : 
+        .
+        ├── BluTechDevice_stm32f103_IARExample //example project for stm32f103
+        │   ├── BluTechDevice_stm32f103_example.ioc
+        │   ├── Drivers
+        │   ├── EWARM
+        │   ├── Inc
+        │   └── Src
+        ├── BluTechDevice_stm32l152_IARExample //example project for stm32l152 !WARNING! IAR Options (like target board) may not be configured
+        │   ├── BluTechDevice_stm32l152.ioc
+        │   ├── Drivers
+        │   ├── EWARM
+        │   ├── Inc
+        │   ├── Src
+        │   └── SW4STM32
+        ├── main_example.c //Guide to build a main.c 
+        ├── README.md
+        ├── stm32fxxx_hal_BTDevice.c //Library's core .c file
+        ├── stm32fxxx_hal_BTDevice.h //Library's core .h file
+        └── stm32fxxx_it_example.c // Guide to build a stm32xxx_it.c
+        //The msp file included in the example projects deals with low-level initialization specific to each board/periph.
+
+
 # How to get started : 
 
 	-Clone this repository. 
@@ -31,18 +54,54 @@ Check the provided example project (for IAR but the project structure is IDE ind
 	-Reset the board and you should now see the commands menu.
 
 
-## Complete Guide : 
+## How does it work ? (visual description at the end of this file) : 
 
 This lirabry will use two UART :
 
-One, called "deviceUart" will send commands to the BluTech device and receive the command's answer or receive data sent from the REST API
+The first one, called "deviceUart" will send commands to the BluTech device and receive the command's answer or receive data sent from the REST API
 
 The other, called "userUart", will print a list of commands that can be used to control the BluTech device. It also display the command's result and a lot of other useful things (such as sensor data).	
 
 The second UART is optionnal, only plug it to setup the device and then you can unplug it and move to something else.
 
+Follow the guide below or read the source file in the example projects to write the appropriate code to have a functionnal device. 
 
-Follow the guide below to write the appropriate code to have a functionnal device. Once you can access the application menu : 
+## What can I do with this ? 
+
+Once it is functionnal this library allows you to use the following commands : 
+
+        menu			                APPLICATION MENU		                       	
+	                                                                                
+
+        +++   GENERAL CONTROL
+            --> menu             : display this menu
+            --> rs               : reset the input buffer (in case of typing mistake)
+            --> get sensor value : display the last sensor value
+            --> set automode on  : start sending data periodically
+            --> set automode off : stop sending data periodically
+            --> send data        : input some ascii data that will be sent to the gateway
+
+        +++   BLUTECH DEVICE CONTROL
+            --> rf signal check  : perform a signal check
+            --> network join     : join the gateway network
+            --> send sample data : send a sample of data for testing
+
+        +++   TIMER CONTROL
+            --> set timer period : set the timer period
+            --> get timer period : get the current timer period
+
+        WARNING : You have to join a network in order to send data through the LoRa module
+
+You can for example configure you device the send the sensor's data periodically, configure the period, perform a signal test or send any data that you input with yout keyboard. 
+
+#How do I make my device to send periodically the sensor data without me doing anythin ?
+
+First, program your MCU with the right code (example are given below or in the example projects). 
+Then wire your MCU to the sensor and to the BTDevice (thats deviceuart)
+Wire one UART/USB cable between your computer and the BTDevice (userUart)
+Then restart the MCU and you should now see the application menu !
+
+*Once you can access the application menu :*
 
 => set the period in seconds between two data transfers : 
 
@@ -68,56 +127,27 @@ Follow the guide below to write the appropriate code to have a functionnal devic
 		AutoMode ON
 		The following data was just sent : YYY (where YYY is the sensor data)
 	
+    Thats it ! Now every XX seconds, your sensor data will be sent
+
 => you can still input commands while automode is ongoing. You can stop automode using :
 	
 	
 		set automode off
 		[...]
 	
+=> if you want to reset the input (for example when you have done a typing mistake) :
+
+        set automodeo nn <<<<This is so wrong !! 
+        rs
+        Input buffer reset. Start typing a new command
+        set automode on <<<<<Much better ! 
+       
+    Whenever you type something wrong in the UART terminal, just do a quick rs!
 		
 	
-	
 
 
-# This is a visual description 
-                                                                        The user !
-                                                                          XXXXX
-                                        => display commands menu          XXXXX
-                                        => display values which are sent  XXXXX
-    +-------+ sensor data+------------+                                     X       You can plug to the device to input
-    |       |          |              | ---------------------------->       X       some settings or check if it's working
-    | sensor+---------->              |                                 XXXXXXXXXX
-    |       |          |              |                                     X       Once the settings are finished,the
-    +-------+          |   STM32Fxxx  |        user uart                    X       devicewill work on it's own.
-                       |              |                                     X
-                       |              |                                    XXX
-                       |              | ----------------------------+    XXX XXX
-                       +--------------+                                XXX     XXX
-                                            <== perform commands (like
-                                      ^     <== network join)
-                       +              |     <== input settings (timer period) 
-                       |              |     <== send sample data & other
-                       |              |
-                       |              |
-                       |    device    |
-                       |    uart      | ^^^ Response following a command
-    vvv UART Commands  |              |
-       (like networkjoi|              | ^^^ Commands from REST API
-       or datatransfer)|              |
-                       |              +
-                       v
-
-                      +---------------+
-                      |               |
-                      |               |
-                      |     BluTech   |
-                      |     device    |
-                      |               |
-                      |               |
-                      +---------------+
-
-
-# How to make it functionnal ? We have to write some stm32 code.
+# I want to access the menu and configure my device to send data on it's own, how to make it functionnal ?
 
 I highly recommend to use the STM32CubeMX project generator. This lirabry uses the HAL library.
 STM32CubeMX will generate the project architecture and initialize all the required peripherals.
@@ -388,7 +418,7 @@ Details for each function can be found in the example files (main.c, stm32fxxx_i
 # In your stm32fxxx_it.c : 
 
 
-Write the uart IRQHandle for your peripherals
+Write the IRQHandler for your peripherals. Don't do custom stuff here, just call the HAL Handlers ! 
 
         void USART6_IRQHandler(void){
             HAL_UART_IRQHandler(&huart6);
@@ -423,3 +453,44 @@ Write the uart IRQHandle for your peripherals
       			"    get timer period : to get the current value for periodical timer period\r\n",
       			"\r\n",
       			"WARNING : You have to join a network in order to send data though the RF module \r\n"
+
+
+
+
+# This is a visual description (follow the arrows between the blocks/actors. The content close to the arrow describe what's exchanged between blocks)
+                                                                        The user !
+                                                                          XXXXX
+                                        => display commands menu          XXXXX
+                                        => display values which are sent  XXXXX
+    +-------+ sensor data+------------+                                     X       You can plug to the device to input
+    |       |          |              | ---------------------------->       X       some settings or check if it's working
+    | sensor+---------->              |                                 XXXXXXXXXX
+    |       |          |              |                                     X       Once the settings are finished,the
+    +-------+          |   STM32Fxxx  |        user uart                    X       devicewill work on it's own.
+                       |              |                                     X
+                       |              |                                    XXX
+                       |              | ----------------------------+    XXX XXX
+                       +--------------+                                XXX     XXX
+                                            <== perform commands (like
+                                      ^     <== network join)
+                       +              |     <== input settings (timer period) 
+                       |              |     <== send sample data & other
+                       |              |
+                       |              |
+                       |    device    |
+                       |    uart      | ^^^ Response following a command
+    vvv UART Commands  |              |
+       (like networkjoi|              | ^^^ Commands from REST API
+       or datatransfer)|              |
+                       |              +
+                       v
+
+                      +---------------+
+                      |               |
+                      |               |
+                      |     BluTech   |
+                      |     device    |
+                      |               |
+                      |               |
+                      +---------------+
+
