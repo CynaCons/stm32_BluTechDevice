@@ -129,6 +129,7 @@ int main(void)
 	//Initialize the LEDs
 	BSP_LED_Init(LED_GREEN);
 	BSP_LED_Init(LED_BLUE);
+	BSP_LED_Toggle(LED_GREEN|LED_BLUE);
 
 	//Clear the buffer to remove trash
 	memset(rxITBuffer,0,sizeof(rxITBuffer));
@@ -159,6 +160,9 @@ int main(void)
 		if(BTDevice_autoInitWithDefaultValues(defaultValues) == BTDevice_OK){
 			doTheLEDPlay();
 			break; //Only break the loop once the device is connected
+		}else{
+			BSP_LED_Toggle(LED_BLUE);
+			BSP_LED_Toggle(LED_GREEN);
 		}
 	}
 	while (1)
@@ -265,9 +269,9 @@ void deviceCommandReceivedCallback(uint8_t *dataBuffer, uint16_t dataLength){
  * This handler will be called when data/command has been received from the gateway
  *
  */
+//TODO PREVENT SPAM IN THE LIBRARY
 void deviceCommandReceivedHandler(){
 	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_3); //Start the TIM4 on channel 3 (pin PB8) to generate PWM
-
 	//Display the received data on userUart
 	uint8_t txBuffer[128];
 	memset(txBuffer, 0 ,sizeof(txBuffer));
@@ -276,15 +280,20 @@ void deviceCommandReceivedHandler(){
 	HAL_UART_Transmit(&huart1, localDataBuffer, localDataLength,10);
 	HAL_UART_Transmit(&huart1, (uint8_t *)"\r\n",sizeof("\r\n"),10);
 
-	//Make some flashy moves with the LEDs to signal data/command was received
-	doTheLEDPlay();
+	if(strcmp((const char *)localDataBuffer,"Hello World!")){
+		//Make some flashy moves with the LEDs to signal data/command was received
+		doTheLEDPlay();
 
-	//Play the Imperial March melody
-	Buzzer_playImperialMarch();
+		//Play the Imperial March melody
+		Buzzer_playImperialMarch();
 
-	//Signal the end of the melody with flashy moves
-	doTheLEDPlay();
-
+		//Signal the end of the melody with flashy moves
+		doTheLEDPlay();
+	}else if(strcmp((const char *)localDataBuffer,"FireAlert")){
+		doTheLEDPlay();
+		Buzzer_playImperialMarch();
+		doTheLEDPlay();
+	}
 	//No more PWM to generate, stop the TIM4 Channel 3
 	HAL_TIM_PWM_Stop(&htim4,TIM_CHANNEL_3);
 }

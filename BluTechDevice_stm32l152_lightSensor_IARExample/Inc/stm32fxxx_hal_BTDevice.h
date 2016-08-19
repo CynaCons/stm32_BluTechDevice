@@ -35,6 +35,16 @@ typedef struct{
 }BTDevice_AutoInitTypeDef;
 
 
+typedef enum{
+	BT_HAL_UART_ERROR,
+	BT_DEVICE_ERROR,
+	BT_SENSOR_ERROR,
+
+
+
+
+}BTDevice_error;
+
 /**
  * State of the periodic data transfer mode
  */

@@ -47,7 +47,7 @@
  ************/
 
 
-#define NB_MENU_LINES 22 /*!< Number of lines to display in the menu */
+#define NB_MENU_LINES 25 /*!< Number of lines to display in the menu */
 
 #define DEVICE_DATA_MAX_LENGTH 256 /*!< The maximum size of data that can be sent using a BTDevice */
 
@@ -90,6 +90,7 @@ static void rsHandler(void);
 static void sendDataHandler(void);
 static void sendSampleDataHandler(void);
 static void setTimerPeriodHandler(void);
+static void flushSensorDataHandler(void);
 
 
 
@@ -112,6 +113,7 @@ typedef enum {
 	SET_TIMER_PERIOD, /*!< Set the timer period */
 	GET_TIMER_PERIOD, /*!< Returns the current timer period*/
 	GET_NETWORK_STATUS, /*<! Returns the current state of network (joined or not)*/
+	FLUSH_SENSOR_DATA, /*<! Force the sending of sensor data and reset the period counter */
 	COMMAND_NB/*!< Total number of commands that the user can send */
 } commandID;
 
@@ -143,9 +145,10 @@ uint8_t commandArray[COMMAND_NB][32] = {
 		"rf signal check",
 		"network join",
 		"send sample data",
-		"set timer period",
 		"get timer period",
-		"get network status"
+		"set timer period",
+		"get network status",
+		"flush sensor data"
 };
 
 
@@ -191,9 +194,10 @@ void (*commandFunctionArray[COMMAND_NB])(void) =  {
 		&rfSignalCheckHandler,
 		&networkJoinHandler,
 		&sendSampleDataHandler,
-		&setTimerPeriodHandler,
 		&getTimerPeriodHandler,
-		&getNetworkStatusHandler
+		&setTimerPeriodHandler,
+		&getNetworkStatusHandler,
+		&flushSensorDataHandler
 };
 //TODO Add flush
 /*********************
@@ -209,6 +213,8 @@ void (*resetInputBufferHandler)();/*!< Function pointer to the function used to 
 
 void (*deviceCommandReceivedHandler)(uint8_t *dataBuffer, uint16_t dataLength); /*!< Function pointer the function
 that will process the received data/command (received by the node from the gateway)*/
+
+static uint8_t flushSensorDataFlag = 0;
 
 static uint32_t lastCommandTick = 0; //SysTick value (HAL_GetTick) corresponding to the last command/data received processing. Anti-Spam.
 
@@ -257,6 +263,7 @@ static uint8_t checkForInputBufferReset(void){
  */
 static void displayMenu(void){
 	uint8_t *menuContent[NB_MENU_LINES] = {
+			(uint8_t *)"= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = \r\n",
 			(uint8_t *)"			                APPLICATION MENU		                       	\r\n",
 			(uint8_t *)"	                                                                        \r\n",
 			(uint8_t *)"\r\n",
@@ -267,6 +274,7 @@ static void displayMenu(void){
 			(uint8_t *)"    --> set automode on    : start sending data periodically\r\n",
 			(uint8_t *)"    --> set automode off   : stop sending data periodically\r\n",
 			(uint8_t *)"    --> send data          : input some ascii data that will be sent to the gateway\r\n",
+			(uint8_t *)"    --> flush sensor data  : instantly send sensor data and reset the timer period\r\n",
 			(uint8_t *)"\r\n",
 			(uint8_t *)"+++   BLUTECH DEVICE CONTROL\r\n",
 			(uint8_t *)"    --> rf signal check    : perform a signal check\r\n",
@@ -278,7 +286,9 @@ static void displayMenu(void){
 			(uint8_t *)"    --> set timer period   : set the timer period\r\n",
 			(uint8_t *)"    --> get timer period   : get the current timer period\r\n",
 			(uint8_t *)"\r\n",
-			(uint8_t *)"WARNING : You have to join a network in order to send data through the LoRa module\r\n"
+			(uint8_t *)"WARNING : You have to join a network in order to send data through the LoRa module\r\n",
+			(uint8_t *)"= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = \r\n",
+
 	};
 	//Display the menu
 	uint8_t menuIterator = 0;
@@ -333,7 +343,6 @@ static void setUserUartInCommandMode(){
 	userUartMode = COMMAND_MODE;
 	uint8_t buffer[] = "\r\nUser Uart now in command mode. Commands will be recognized\r\n";
 	HAL_UART_Transmit(userHuart,buffer, sizeof(buffer),10);
-	//displayMenu(); //TODO Was recently removed for visual tracing in the terminal
 }
 
 
@@ -549,10 +558,16 @@ static void autoModeOffHandler(void){
 	stopAutoMode();
 }
 
+static void flushSensorDataHandler(void){
+	uint8_t txBuffer[128];
+	memset(txBuffer,0, sizeof(txBuffer));
+	flushSensorDataFlag = 1;
+	sprintf((char *)txBuffer,"\r\nFlushing the sensor data...\r\n");
+	HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
+}
 
 static void sendDataHandler(void){
 	setUserUartInDataInputMode();
-
 }
 
 static void getSensorValueHandler(void){
@@ -685,7 +700,6 @@ static void resetDeviceInputBuffer(void){
  * through the userUart.
  */
 //TODO : Sometimes when trying to receive the body of a command we probably receive some other commands at the same time.
-//TODO : Some kind of message queue would be nice to make sure we handle responses in the right order
 //TODO : The right solution  would probably be to store all the incoming bytes on IT and then read what we received in a queued manner
 void BTDevice_deviceUartCallback(uint8_t *deviceUartRxBuffer){
 	uint8_t txBuffer[64];
@@ -871,7 +885,11 @@ void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataMaxLength){
  * If enough time has been waited since last data transfer, reset the counter and return 1.
  */
 uint8_t BTDevice_timerCallback(){
-	if(getAutoModeStatus() == AUTOMODE_ON){
+	if(flushSensorDataFlag == 1){
+		flushSensorDataFlag = 0;
+		resetPeriodCounter();//Reset the number of seconds waited since last data transfer
+		return 1;
+	}else if(getAutoModeStatus() == AUTOMODE_ON){
 		incrementPeriodCounter();
 		if(getPeriodCounter() >= getTimerPeriod()){
 			resetPeriodCounter();
