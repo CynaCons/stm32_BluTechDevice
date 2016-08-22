@@ -3602,7 +3602,7 @@ LOAD /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.
                 0x08000000                g_pfnVectors
                 0x0800013c                . = ALIGN (0x4)
 
-.text           0x0800013c     0x7154
+.text           0x0800013c     0x7554
                 0x0800013c                . = ALIGN (0x4)
  *(.text)
  .text          0x0800013c       0xa4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
@@ -3679,689 +3679,715 @@ LOAD /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.
  .text.Buzzer_playImperialMarch
                 0x08000580      0x154 Application/User/buzzer.o
                 0x08000580                Buzzer_playImperialMarch
- .text.main     0x080006d4       0xf4 Application/User/main.o
+ .text.main     0x080006d4       0xd8 Application/User/main.o
                 0x080006d4                main
  .text.HAL_TIM_PWM_PulseFinishedCallback
-                0x080007c8       0x14 Application/User/main.o
-                0x080007c8                HAL_TIM_PWM_PulseFinishedCallback
+                0x080007ac       0x14 Application/User/main.o
+                0x080007ac                HAL_TIM_PWM_PulseFinishedCallback
  .text.HAL_TIM_OC_DelayElapsedCallback
-                0x080007dc       0x14 Application/User/main.o
-                0x080007dc                HAL_TIM_OC_DelayElapsedCallback
+                0x080007c0       0x14 Application/User/main.o
+                0x080007c0                HAL_TIM_OC_DelayElapsedCallback
  .text.getSensorData
-                0x080007f0       0x38 Application/User/main.o
+                0x080007d4       0x38 Application/User/main.o
  .text.getSensorValue
-                0x08000828       0x34 Application/User/main.o
+                0x0800080c       0x34 Application/User/main.o
  .text.deviceCommandReceivedCallback
-                0x0800085c       0x34 Application/User/main.o
+                0x08000840       0x34 Application/User/main.o
  .text.deviceCommandReceivedHandler
-                0x08000890       0xc0 Application/User/main.o
+                0x08000874       0xc0 Application/User/main.o
  .text.doTheLEDPlay
-                0x08000950       0x80 Application/User/main.o
+                0x08000934       0x80 Application/User/main.o
  .text.initBTDevice
-                0x080009d0       0x40 Application/User/main.o
+                0x080009b4       0x54 Application/User/main.o
  .text.storeNewValueIntoInputBuffer
-                0x08000a10       0x34 Application/User/main.o
+                0x08000a08       0x34 Application/User/main.o
  .text.resetInputBuffer
-                0x08000a44       0x20 Application/User/main.o
+                0x08000a3c       0x20 Application/User/main.o
  .text.HAL_TIM_PeriodElapsedCallback
-                0x08000a64       0x44 Application/User/main.o
-                0x08000a64                HAL_TIM_PeriodElapsedCallback
+                0x08000a5c       0x20 Application/User/main.o
+                0x08000a5c                HAL_TIM_PeriodElapsedCallback
  .text.HAL_UART_RxCpltCallback
-                0x08000aa8       0x50 Application/User/main.o
-                0x08000aa8                HAL_UART_RxCpltCallback
+                0x08000a7c       0x44 Application/User/main.o
+                0x08000a7c                HAL_UART_RxCpltCallback
  .text.SystemClock_Config
-                0x08000af8       0xc8 Application/User/main.o
-                0x08000af8                SystemClock_Config
+                0x08000ac0       0xc8 Application/User/main.o
+                0x08000ac0                SystemClock_Config
  .text.MX_ADC_Init
-                0x08000bc0       0xa0 Application/User/main.o
+                0x08000b88       0xa0 Application/User/main.o
  .text.MX_TIM2_Init
-                0x08000c60       0x80 Application/User/main.o
+                0x08000c28       0x80 Application/User/main.o
  .text.MX_TIM4_Init
-                0x08000ce0      0x110 Application/User/main.o
+                0x08000ca8      0x110 Application/User/main.o
  .text.MX_USART1_UART_Init
-                0x08000df0       0x54 Application/User/main.o
+                0x08000db8       0x54 Application/User/main.o
  .text.MX_USART2_UART_Init
-                0x08000e44       0x54 Application/User/main.o
+                0x08000e0c       0x54 Application/User/main.o
  .text.MX_GPIO_Init
-                0x08000e98       0x44 Application/User/main.o
+                0x08000e60       0x44 Application/User/main.o
  .text.Error_Handler
-                0x08000edc        0x8 Application/User/main.o
-                0x08000edc                Error_Handler
+                0x08000ea4        0x8 Application/User/main.o
+                0x08000ea4                Error_Handler
  .text.checkForInputBufferReset
-                0x08000ee4       0x5c Application/User/stm32fxxx_hal_BTDevice.o
+                0x08000eac       0x5c Application/User/stm32fxxx_hal_BTDevice.o
  .text.displayMenu
-                0x08000f40       0x7c Application/User/stm32fxxx_hal_BTDevice.o
+                0x08000f08       0x7c Application/User/stm32fxxx_hal_BTDevice.o
  .text.getNetworkJoinStatus
-                0x08000fbc       0x14 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08000f84       0x14 Application/User/stm32fxxx_hal_BTDevice.o
  .text.setUserUartInTimerSettingsMode
-                0x08000fd0       0xa8 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08000f98       0xa8 Application/User/stm32fxxx_hal_BTDevice.o
  .text.setUserUartInDataInputMode
-                0x08001078       0x78 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001040       0x78 Application/User/stm32fxxx_hal_BTDevice.o
  .text.setUserUartInCommandMode
-                0x080010f0       0x50 Application/User/stm32fxxx_hal_BTDevice.o
+                0x080010b8       0x50 Application/User/stm32fxxx_hal_BTDevice.o
  .text.setResetInputBufferHandler
-                0x08001140       0x1c Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001108       0x1c Application/User/stm32fxxx_hal_BTDevice.o
  .text.setUserHuart
-                0x0800115c       0x1c Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001124       0x1c Application/User/stm32fxxx_hal_BTDevice.o
  .text.setDeviceHuart
-                0x08001178       0x1c Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001140       0x1c Application/User/stm32fxxx_hal_BTDevice.o
  .text.setDeviceCommandReceivedHandler
-                0x08001194       0x1c Application/User/stm32fxxx_hal_BTDevice.o
+                0x0800115c       0x1c Application/User/stm32fxxx_hal_BTDevice.o
+ .text.setSensorDataFunction
+                0x08001178       0x1c Application/User/stm32fxxx_hal_BTDevice.o
+ .text.setSensorDataMaxLength
+                0x08001194       0x20 Application/User/stm32fxxx_hal_BTDevice.o
+ .text.setDataSentCallback
+                0x080011b4       0x1c Application/User/stm32fxxx_hal_BTDevice.o
  .text.setUserInputBuffer
-                0x080011b0       0x1c Application/User/stm32fxxx_hal_BTDevice.o
+                0x080011d0       0x1c Application/User/stm32fxxx_hal_BTDevice.o
  .text.getDataFromUser
-                0x080011cc      0x11c Application/User/stm32fxxx_hal_BTDevice.o
+                0x080011ec      0x11c Application/User/stm32fxxx_hal_BTDevice.o
  .text.getUserUartMode
-                0x080012e8       0x14 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001308       0x14 Application/User/stm32fxxx_hal_BTDevice.o
  .text.sendDataToDevice
-                0x080012fc      0x1cc Application/User/stm32fxxx_hal_BTDevice.o
+                0x0800131c      0x1cc Application/User/stm32fxxx_hal_BTDevice.o
  .text.setTimerPeriod
-                0x080014c8       0xbc Application/User/stm32fxxx_hal_BTDevice.o
+                0x080014e8       0xbc Application/User/stm32fxxx_hal_BTDevice.o
  .text.startAutoMode
-                0x08001584       0xc4 Application/User/stm32fxxx_hal_BTDevice.o
+                0x080015a4       0xc4 Application/User/stm32fxxx_hal_BTDevice.o
  .text.stopAutoMode
-                0x08001648       0x5c Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001668       0x5c Application/User/stm32fxxx_hal_BTDevice.o
  .text.menuHandler
-                0x080016a4        0xc Application/User/stm32fxxx_hal_BTDevice.o
+                0x080016c4        0xc Application/User/stm32fxxx_hal_BTDevice.o
  .text.rsHandler
-                0x080016b0       0x50 Application/User/stm32fxxx_hal_BTDevice.o
+                0x080016d0       0x50 Application/User/stm32fxxx_hal_BTDevice.o
  .text.autoModeOnHandler
-                0x08001700        0xc Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001720        0xc Application/User/stm32fxxx_hal_BTDevice.o
  .text.autoModeOffHandler
-                0x0800170c        0xc Application/User/stm32fxxx_hal_BTDevice.o
+                0x0800172c        0xc Application/User/stm32fxxx_hal_BTDevice.o
  .text.flushSensorDataHandler
-                0x08001718       0x50 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001738       0x50 Application/User/stm32fxxx_hal_BTDevice.o
+ .text.getAutoModeStatusHandler
+                0x08001788       0x78 Application/User/stm32fxxx_hal_BTDevice.o
+ .text.deviceStatusHandler
+                0x08001800       0xd8 Application/User/stm32fxxx_hal_BTDevice.o
  .text.sendDataHandler
-                0x08001768        0xc Application/User/stm32fxxx_hal_BTDevice.o
+                0x080018d8        0xc Application/User/stm32fxxx_hal_BTDevice.o
  .text.getSensorValueHandler
-                0x08001774       0x64 Application/User/stm32fxxx_hal_BTDevice.o
+                0x080018e4       0x64 Application/User/stm32fxxx_hal_BTDevice.o
  .text.rfSignalCheckHandler
-                0x080017d8       0x64 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001948       0x64 Application/User/stm32fxxx_hal_BTDevice.o
  .text.networkJoinHandler
-                0x0800183c       0x5c Application/User/stm32fxxx_hal_BTDevice.o
+                0x080019ac       0x5c Application/User/stm32fxxx_hal_BTDevice.o
  .text.sendSampleDataHandler
-                0x08001898       0x98 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001a08       0x98 Application/User/stm32fxxx_hal_BTDevice.o
  .text.getNetworkStatusHandler
-                0x08001930       0x80 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001aa0       0x80 Application/User/stm32fxxx_hal_BTDevice.o
  .text.getTimerPeriodHandler
-                0x080019b0       0x44 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001b20       0x44 Application/User/stm32fxxx_hal_BTDevice.o
  .text.setTimerPeriodHandler
-                0x080019f4        0xc Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001b64        0xc Application/User/stm32fxxx_hal_BTDevice.o
  .text.getTimerPeriod
-                0x08001a00       0x14 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001b70       0x14 Application/User/stm32fxxx_hal_BTDevice.o
  .text.getPeriodCounter
-                0x08001a14       0x14 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001b84       0x14 Application/User/stm32fxxx_hal_BTDevice.o
  .text.getAutoModeStatus
-                0x08001a28       0x14 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001b98       0x14 Application/User/stm32fxxx_hal_BTDevice.o
  .text.incrementPeriodCounter
-                0x08001a3c       0x1c Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001bac       0x1c Application/User/stm32fxxx_hal_BTDevice.o
  .text.resetPeriodCounter
-                0x08001a58       0x18 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001bc8       0x18 Application/User/stm32fxxx_hal_BTDevice.o
  .text.resetDeviceInputBuffer
-                0x08001a70       0x18 Application/User/stm32fxxx_hal_BTDevice.o
- .text.BTDevice_deviceUartCallback
-                0x08001a88      0x310 Application/User/stm32fxxx_hal_BTDevice.o
-                0x08001a88                BTDevice_deviceUartCallback
- .text.BTDevice_displayMenu
-                0x08001d98        0xc Application/User/stm32fxxx_hal_BTDevice.o
-                0x08001d98                BTDevice_displayMenu
- .text.BTDevice_init
-                0x08001da4       0x44 Application/User/stm32fxxx_hal_BTDevice.o
-                0x08001da4                BTDevice_init
- .text.BTDevice_readInputBuffer
-                0x08001de8       0xec Application/User/stm32fxxx_hal_BTDevice.o
-                0x08001de8                BTDevice_readInputBuffer
- .text.BTDevice_sendData
-                0x08001ed4       0x88 Application/User/stm32fxxx_hal_BTDevice.o
-                0x08001ed4                BTDevice_sendData
- .text.BTDevice_timerCallback
-                0x08001f5c       0x4c Application/User/stm32fxxx_hal_BTDevice.o
-                0x08001f5c                BTDevice_timerCallback
+                0x08001be0       0x18 Application/User/stm32fxxx_hal_BTDevice.o
  .text.BTDevice_autoInitWithDefaultValues
-                0x08001fa8       0x5c Application/User/stm32fxxx_hal_BTDevice.o
-                0x08001fa8                BTDevice_autoInitWithDefaultValues
+                0x08001bf8       0xe4 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001bf8                BTDevice_autoInitWithDefaultValues
+ .text.deviceUartCallback
+                0x08001cdc      0x33c Application/User/stm32fxxx_hal_BTDevice.o
+                0x08001cdc                deviceUartCallback
+ .text.BTDevice_displayMenu
+                0x08002018        0xc Application/User/stm32fxxx_hal_BTDevice.o
+                0x08002018                BTDevice_displayMenu
+ .text.BTDevice_init
+                0x08002024       0x60 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08002024                BTDevice_init
+ .text.readInputBuffer
+                0x08002084       0xec Application/User/stm32fxxx_hal_BTDevice.o
+                0x08002084                readInputBuffer
+ .text.BTDevice_sendData
+                0x08002170       0x88 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08002170                BTDevice_sendData
+ .text.timerReadyToSend
+                0x080021f8       0x4c Application/User/stm32fxxx_hal_BTDevice.o
+                0x080021f8                timerReadyToSend
+ .text.BTDevice_userUartCallback
+                0x08002244       0x3c Application/User/stm32fxxx_hal_BTDevice.o
+                0x08002244                BTDevice_userUartCallback
+ .text.BTDevice_deviceUartCallback
+                0x08002280       0x28 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08002280                BTDevice_deviceUartCallback
+ .text.BTDevice_timerCallback
+                0x080022a8       0x18 Application/User/stm32fxxx_hal_BTDevice.o
+                0x080022a8                BTDevice_timerCallback
+ .text.BTDevice_initLoop
+                0x080022c0       0xa4 Application/User/stm32fxxx_hal_BTDevice.o
+                0x080022c0                BTDevice_initLoop
+ .text.BTDevice_mainLoop
+                0x08002364       0xa0 Application/User/stm32fxxx_hal_BTDevice.o
+                0x08002364                BTDevice_mainLoop
  .text.BSP_LED_Init
-                0x08002004       0xa8 Application/User/stm32l152c_discovery.o
-                0x08002004                BSP_LED_Init
+                0x08002404       0xa8 Application/User/stm32l152c_discovery.o
+                0x08002404                BSP_LED_Init
  .text.BSP_LED_On
-                0x080020ac       0x34 Application/User/stm32l152c_discovery.o
-                0x080020ac                BSP_LED_On
+                0x080024ac       0x34 Application/User/stm32l152c_discovery.o
+                0x080024ac                BSP_LED_On
  .text.BSP_LED_Off
-                0x080020e0       0x34 Application/User/stm32l152c_discovery.o
-                0x080020e0                BSP_LED_Off
+                0x080024e0       0x34 Application/User/stm32l152c_discovery.o
+                0x080024e0                BSP_LED_Off
  .text.BSP_LED_Toggle
-                0x08002114       0x30 Application/User/stm32l152c_discovery.o
-                0x08002114                BSP_LED_Toggle
+                0x08002514       0x30 Application/User/stm32l152c_discovery.o
+                0x08002514                BSP_LED_Toggle
  .text.HAL_MspInit
-                0x08002144       0x9c Application/User/stm32l1xx_hal_msp.o
-                0x08002144                HAL_MspInit
+                0x08002544       0x9c Application/User/stm32l1xx_hal_msp.o
+                0x08002544                HAL_MspInit
  .text.HAL_ADC_MspInit
-                0x080021e0       0x58 Application/User/stm32l1xx_hal_msp.o
-                0x080021e0                HAL_ADC_MspInit
+                0x080025e0       0x58 Application/User/stm32l1xx_hal_msp.o
+                0x080025e0                HAL_ADC_MspInit
  .text.HAL_TIM_Base_MspInit
-                0x08002238       0x70 Application/User/stm32l1xx_hal_msp.o
-                0x08002238                HAL_TIM_Base_MspInit
+                0x08002638       0x70 Application/User/stm32l1xx_hal_msp.o
+                0x08002638                HAL_TIM_Base_MspInit
  .text.HAL_TIM_MspPostInit
-                0x080022a8       0x44 Application/User/stm32l1xx_hal_msp.o
-                0x080022a8                HAL_TIM_MspPostInit
+                0x080026a8       0x44 Application/User/stm32l1xx_hal_msp.o
+                0x080026a8                HAL_TIM_MspPostInit
  .text.HAL_UART_MspInit
-                0x080022ec       0xc8 Application/User/stm32l1xx_hal_msp.o
-                0x080022ec                HAL_UART_MspInit
+                0x080026ec       0xc8 Application/User/stm32l1xx_hal_msp.o
+                0x080026ec                HAL_UART_MspInit
  .text.NMI_Handler
-                0x080023b4        0xc Application/User/stm32l1xx_it.o
-                0x080023b4                NMI_Handler
+                0x080027b4        0xc Application/User/stm32l1xx_it.o
+                0x080027b4                NMI_Handler
  .text.HardFault_Handler
-                0x080023c0        0x8 Application/User/stm32l1xx_it.o
-                0x080023c0                HardFault_Handler
+                0x080027c0        0x8 Application/User/stm32l1xx_it.o
+                0x080027c0                HardFault_Handler
  .text.MemManage_Handler
-                0x080023c8        0x8 Application/User/stm32l1xx_it.o
-                0x080023c8                MemManage_Handler
+                0x080027c8        0x8 Application/User/stm32l1xx_it.o
+                0x080027c8                MemManage_Handler
  .text.BusFault_Handler
-                0x080023d0        0x8 Application/User/stm32l1xx_it.o
-                0x080023d0                BusFault_Handler
+                0x080027d0        0x8 Application/User/stm32l1xx_it.o
+                0x080027d0                BusFault_Handler
  .text.UsageFault_Handler
-                0x080023d8        0x8 Application/User/stm32l1xx_it.o
-                0x080023d8                UsageFault_Handler
+                0x080027d8        0x8 Application/User/stm32l1xx_it.o
+                0x080027d8                UsageFault_Handler
  .text.SVC_Handler
-                0x080023e0        0xc Application/User/stm32l1xx_it.o
-                0x080023e0                SVC_Handler
+                0x080027e0        0xc Application/User/stm32l1xx_it.o
+                0x080027e0                SVC_Handler
  .text.DebugMon_Handler
-                0x080023ec        0xc Application/User/stm32l1xx_it.o
-                0x080023ec                DebugMon_Handler
+                0x080027ec        0xc Application/User/stm32l1xx_it.o
+                0x080027ec                DebugMon_Handler
  .text.PendSV_Handler
-                0x080023f8        0xc Application/User/stm32l1xx_it.o
-                0x080023f8                PendSV_Handler
+                0x080027f8        0xc Application/User/stm32l1xx_it.o
+                0x080027f8                PendSV_Handler
  .text.SysTick_Handler
-                0x08002404       0x10 Application/User/stm32l1xx_it.o
-                0x08002404                SysTick_Handler
+                0x08002804       0x10 Application/User/stm32l1xx_it.o
+                0x08002804                SysTick_Handler
  .text.TIM2_IRQHandler
-                0x08002414       0x14 Application/User/stm32l1xx_it.o
-                0x08002414                TIM2_IRQHandler
+                0x08002814       0x14 Application/User/stm32l1xx_it.o
+                0x08002814                TIM2_IRQHandler
  .text.USART1_IRQHandler
-                0x08002428       0x14 Application/User/stm32l1xx_it.o
-                0x08002428                USART1_IRQHandler
+                0x08002828       0x14 Application/User/stm32l1xx_it.o
+                0x08002828                USART1_IRQHandler
  .text.USART2_IRQHandler
-                0x0800243c       0x14 Application/User/stm32l1xx_it.o
-                0x0800243c                USART2_IRQHandler
+                0x0800283c       0x14 Application/User/stm32l1xx_it.o
+                0x0800283c                USART2_IRQHandler
  .text.TIM4_IRQHandler
-                0x08002450       0x14 Application/User/stm32l1xx_it.o
-                0x08002450                TIM4_IRQHandler
+                0x08002850       0x14 Application/User/stm32l1xx_it.o
+                0x08002850                TIM4_IRQHandler
  .text.SystemInit
-                0x08002464       0x68 Drivers/CMSIS/system_stm32l1xx.o
-                0x08002464                SystemInit
+                0x08002864       0x68 Drivers/CMSIS/system_stm32l1xx.o
+                0x08002864                SystemInit
  .text.HAL_Init
-                0x080024cc       0x1c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
-                0x080024cc                HAL_Init
+                0x080028cc       0x1c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
+                0x080028cc                HAL_Init
  .text.HAL_InitTick
-                0x080024e8       0x38 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
-                0x080024e8                HAL_InitTick
+                0x080028e8       0x38 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
+                0x080028e8                HAL_InitTick
  .text.HAL_IncTick
-                0x08002520       0x1c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
-                0x08002520                HAL_IncTick
+                0x08002920       0x1c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
+                0x08002920                HAL_IncTick
  .text.HAL_GetTick
-                0x0800253c       0x14 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
-                0x0800253c                HAL_GetTick
+                0x0800293c       0x14 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
+                0x0800293c                HAL_GetTick
  .text.HAL_Delay
-                0x08002550       0x2c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
-                0x08002550                HAL_Delay
+                0x08002950       0x2c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
+                0x08002950                HAL_Delay
  .text.HAL_ADC_Init
-                0x0800257c      0x27c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
-                0x0800257c                HAL_ADC_Init
+                0x0800297c      0x27c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
+                0x0800297c                HAL_ADC_Init
  .text.HAL_ADC_Start
-                0x080027f8       0xc0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
-                0x080027f8                HAL_ADC_Start
+                0x08002bf8       0xc0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
+                0x08002bf8                HAL_ADC_Start
  .text.HAL_ADC_Stop
-                0x080028b8       0x58 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
-                0x080028b8                HAL_ADC_Stop
+                0x08002cb8       0x58 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
+                0x08002cb8                HAL_ADC_Stop
  .text.HAL_ADC_PollForConversion
-                0x08002910      0x10c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
-                0x08002910                HAL_ADC_PollForConversion
+                0x08002d10      0x10c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
+                0x08002d10                HAL_ADC_PollForConversion
  .text.HAL_ADC_GetValue
-                0x08002a1c       0x18 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
-                0x08002a1c                HAL_ADC_GetValue
+                0x08002e1c       0x18 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
+                0x08002e1c                HAL_ADC_GetValue
  .text.HAL_ADC_ConfigChannel
-                0x08002a34      0x2a0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
-                0x08002a34                HAL_ADC_ConfigChannel
+                0x08002e34      0x2a0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
+                0x08002e34                HAL_ADC_ConfigChannel
  .text.ADC_Enable
-                0x08002cd4       0xac Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
-                0x08002cd4                ADC_Enable
+                0x080030d4       0xac Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
+                0x080030d4                ADC_Enable
  .text.ADC_ConversionStop_Disable
-                0x08002d80       0x74 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
-                0x08002d80                ADC_ConversionStop_Disable
+                0x08003180       0x74 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
+                0x08003180                ADC_ConversionStop_Disable
  .text.NVIC_SetPriorityGrouping
-                0x08002df4       0x48 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+                0x080031f4       0x48 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
  .text.NVIC_GetPriorityGrouping
-                0x08002e3c       0x1c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+                0x0800323c       0x1c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
  .text.NVIC_EnableIRQ
-                0x08002e58       0x30 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+                0x08003258       0x30 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
  .text.NVIC_SetPriority
-                0x08002e88       0x54 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+                0x08003288       0x54 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
  .text.NVIC_EncodePriority
-                0x08002edc       0x60 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+                0x080032dc       0x60 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
  .text.SysTick_Config
-                0x08002f3c       0x44 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+                0x0800333c       0x44 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
  .text.HAL_NVIC_SetPriorityGrouping
-                0x08002f80       0x18 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
-                0x08002f80                HAL_NVIC_SetPriorityGrouping
+                0x08003380       0x18 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+                0x08003380                HAL_NVIC_SetPriorityGrouping
  .text.HAL_NVIC_SetPriority
-                0x08002f98       0x38 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
-                0x08002f98                HAL_NVIC_SetPriority
+                0x08003398       0x38 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+                0x08003398                HAL_NVIC_SetPriority
  .text.HAL_NVIC_EnableIRQ
-                0x08002fd0       0x1c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
-                0x08002fd0                HAL_NVIC_EnableIRQ
+                0x080033d0       0x1c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+                0x080033d0                HAL_NVIC_EnableIRQ
  .text.HAL_SYSTICK_Config
-                0x08002fec       0x18 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
-                0x08002fec                HAL_SYSTICK_Config
+                0x080033ec       0x18 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+                0x080033ec                HAL_SYSTICK_Config
  .text.HAL_SYSTICK_CLKSourceConfig
-                0x08003004       0x38 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
-                0x08003004                HAL_SYSTICK_CLKSourceConfig
+                0x08003404       0x38 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+                0x08003404                HAL_SYSTICK_CLKSourceConfig
  .text.HAL_SYSTICK_IRQHandler
-                0x0800303c        0xc Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
-                0x0800303c                HAL_SYSTICK_IRQHandler
+                0x0800343c        0xc Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+                0x0800343c                HAL_SYSTICK_IRQHandler
  .text.HAL_SYSTICK_Callback
-                0x08003048        0xc Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
-                0x08003048                HAL_SYSTICK_Callback
+                0x08003448        0xc Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+                0x08003448                HAL_SYSTICK_Callback
  .text.HAL_GPIO_Init
-                0x08003054      0x2fc Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
-                0x08003054                HAL_GPIO_Init
+                0x08003454      0x2fc Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
+                0x08003454                HAL_GPIO_Init
  .text.HAL_GPIO_WritePin
-                0x08003350       0x30 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
-                0x08003350                HAL_GPIO_WritePin
+                0x08003750       0x30 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
+                0x08003750                HAL_GPIO_WritePin
  .text.HAL_GPIO_TogglePin
-                0x08003380       0x24 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
-                0x08003380                HAL_GPIO_TogglePin
+                0x08003780       0x24 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
+                0x08003780                HAL_GPIO_TogglePin
  .text.HAL_PWREx_GetVoltageRange
-                0x080033a4       0x18 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
-                0x080033a4                HAL_PWREx_GetVoltageRange
+                0x080037a4       0x18 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
+                0x080037a4                HAL_PWREx_GetVoltageRange
  .text.HAL_RCC_OscConfig
-                0x080033bc      0xeb8 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
-                0x080033bc                HAL_RCC_OscConfig
+                0x080037bc      0xeb8 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
+                0x080037bc                HAL_RCC_OscConfig
  .text.HAL_RCC_ClockConfig
-                0x08004274      0x3b0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
-                0x08004274                HAL_RCC_ClockConfig
+                0x08004674      0x3b0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
+                0x08004674                HAL_RCC_ClockConfig
  .text.HAL_RCC_GetSysClockFreq
-                0x08004624      0x110 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
-                0x08004624                HAL_RCC_GetSysClockFreq
+                0x08004a24      0x110 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
+                0x08004a24                HAL_RCC_GetSysClockFreq
  .text.HAL_RCC_GetHCLKFreq
-                0x08004734       0x14 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
-                0x08004734                HAL_RCC_GetHCLKFreq
+                0x08004b34       0x14 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
+                0x08004b34                HAL_RCC_GetHCLKFreq
  .text.HAL_RCC_GetPCLK1Freq
-                0x08004748       0x44 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
-                0x08004748                HAL_RCC_GetPCLK1Freq
+                0x08004b48       0x44 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
+                0x08004b48                HAL_RCC_GetPCLK1Freq
  .text.HAL_RCC_GetPCLK2Freq
-                0x0800478c       0x44 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
-                0x0800478c                HAL_RCC_GetPCLK2Freq
+                0x08004b8c       0x44 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
+                0x08004b8c                HAL_RCC_GetPCLK2Freq
  .text.RCC_SetFlashLatencyFromMSIRange
-                0x080047d0       0xb4 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
+                0x08004bd0       0xb4 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
  .text.HAL_TIM_Base_Init
-                0x08004884       0x58 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
-                0x08004884                HAL_TIM_Base_Init
+                0x08004c84       0x58 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x08004c84                HAL_TIM_Base_Init
  .text.HAL_TIM_Base_Start_IT
-                0x080048dc       0x34 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
-                0x080048dc                HAL_TIM_Base_Start_IT
+                0x08004cdc       0x34 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x08004cdc                HAL_TIM_Base_Start_IT
  .text.HAL_TIM_PWM_Init
-                0x08004910       0x58 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
-                0x08004910                HAL_TIM_PWM_Init
+                0x08004d10       0x58 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x08004d10                HAL_TIM_PWM_Init
  .text.HAL_TIM_PWM_MspInit
-                0x08004968       0x14 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
-                0x08004968                HAL_TIM_PWM_MspInit
+                0x08004d68       0x14 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x08004d68                HAL_TIM_PWM_MspInit
  .text.HAL_TIM_PWM_Start
-                0x0800497c       0x34 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
-                0x0800497c                HAL_TIM_PWM_Start
+                0x08004d7c       0x34 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x08004d7c                HAL_TIM_PWM_Start
  .text.HAL_TIM_PWM_Stop
-                0x080049b0       0x4c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
-                0x080049b0                HAL_TIM_PWM_Stop
+                0x08004db0       0x4c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x08004db0                HAL_TIM_PWM_Stop
  .text.HAL_TIM_IRQHandler
-                0x080049fc      0x1b8 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
-                0x080049fc                HAL_TIM_IRQHandler
+                0x08004dfc      0x1b8 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x08004dfc                HAL_TIM_IRQHandler
  .text.HAL_TIM_PWM_ConfigChannel
-                0x08004bb4      0x18c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
-                0x08004bb4                HAL_TIM_PWM_ConfigChannel
+                0x08004fb4      0x18c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x08004fb4                HAL_TIM_PWM_ConfigChannel
  .text.HAL_TIM_ConfigClockSource
-                0x08004d40      0x1b8 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
-                0x08004d40                HAL_TIM_ConfigClockSource
+                0x08005140      0x1b8 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x08005140                HAL_TIM_ConfigClockSource
  .text.HAL_TIM_IC_CaptureCallback
-                0x08004ef8       0x14 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
-                0x08004ef8                HAL_TIM_IC_CaptureCallback
+                0x080052f8       0x14 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x080052f8                HAL_TIM_IC_CaptureCallback
  .text.HAL_TIM_TriggerCallback
-                0x08004f0c       0x14 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
-                0x08004f0c                HAL_TIM_TriggerCallback
+                0x0800530c       0x14 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x0800530c                HAL_TIM_TriggerCallback
  .text.TIM_Base_SetConfig
-                0x08004f20       0xd8 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x08005320       0xd8 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
  .text.TIM_OC1_SetConfig
-                0x08004ff8       0x84 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x080053f8       0x84 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
  .text.TIM_OC2_SetConfig
-                0x0800507c       0x88 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x0800547c       0x88 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
  .text.TIM_OC3_SetConfig
-                0x08005104       0x88 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x08005504       0x88 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
  .text.TIM_OC4_SetConfig
-                0x0800518c       0x88 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x0800558c       0x88 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
  .text.TIM_TI1_ConfigInputStage
-                0x08005214       0x64 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x08005614       0x64 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
  .text.TIM_TI2_ConfigInputStage
-                0x08005278       0x68 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x08005678       0x68 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
  .text.TIM_ITRx_SetConfig
-                0x080052e0       0x40 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x080056e0       0x40 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
  .text.TIM_ETR_SetConfig
-                0x08005320       0x44 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x08005720       0x44 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
  .text.TIM_CCxChannelCmd
-                0x08005364       0x44 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x08005764       0x44 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
  .text.HAL_TIMEx_MasterConfigSynchronization
-                0x080053a8       0x88 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
-                0x080053a8                HAL_TIMEx_MasterConfigSynchronization
+                0x080057a8       0x88 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
+                0x080057a8                HAL_TIMEx_MasterConfigSynchronization
  .text.HAL_UART_Init
-                0x08005430       0x94 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
-                0x08005430                HAL_UART_Init
+                0x08005830       0x94 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+                0x08005830                HAL_UART_Init
  .text.HAL_UART_Transmit
-                0x080054c4      0x150 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
-                0x080054c4                HAL_UART_Transmit
+                0x080058c4      0x150 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+                0x080058c4                HAL_UART_Transmit
  .text.HAL_UART_Receive_IT
-                0x08005614       0xcc Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
-                0x08005614                HAL_UART_Receive_IT
+                0x08005a14       0xcc Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+                0x08005a14                HAL_UART_Receive_IT
  .text.HAL_UART_IRQHandler
-                0x080056e0      0x1ac Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
-                0x080056e0                HAL_UART_IRQHandler
+                0x08005ae0      0x1ac Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+                0x08005ae0                HAL_UART_IRQHandler
  .text.HAL_UART_TxCpltCallback
-                0x0800588c       0x14 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
-                0x0800588c                HAL_UART_TxCpltCallback
+                0x08005c8c       0x14 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+                0x08005c8c                HAL_UART_TxCpltCallback
  .text.HAL_UART_ErrorCallback
-                0x080058a0       0x14 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
-                0x080058a0                HAL_UART_ErrorCallback
+                0x08005ca0       0x14 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+                0x08005ca0                HAL_UART_ErrorCallback
  .text.UART_WaitOnFlagUntilTimeout
-                0x080058b4      0x134 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+                0x08005cb4      0x134 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
  .text.UART_Transmit_IT
-                0x080059e8       0xb8 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+                0x08005de8       0xb8 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
  .text.UART_EndTransmit_IT
-                0x08005aa0       0x48 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+                0x08005ea0       0x48 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
  .text.UART_Receive_IT
-                0x08005ae8      0x128 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+                0x08005ee8      0x128 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
  .text.UART_SetConfig
-                0x08005c10      0x400 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+                0x08006010      0x400 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
  .text.__libc_init_array
-                0x08006010       0x4c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-init.o)
-                0x08006010                __libc_init_array
- .text.malloc   0x0800605c       0x10 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-malloc.o)
-                0x0800605c                malloc
- .text.free     0x0800606c       0x10 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-malloc.o)
-                0x0800606c                free
- .text.memcpy   0x0800607c       0x16 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memcpy-stub.o)
-                0x0800607c                memcpy
- .text.memset   0x08006092       0x10 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memset.o)
-                0x08006092                memset
- *fill*         0x080060a2        0x2 
- .text._free_r  0x080060a4       0x88 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-freer.o)
-                0x080060a4                _free_r
+                0x08006410       0x4c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-init.o)
+                0x08006410                __libc_init_array
+ .text.malloc   0x0800645c       0x10 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-malloc.o)
+                0x0800645c                malloc
+ .text.free     0x0800646c       0x10 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-malloc.o)
+                0x0800646c                free
+ .text.memcpy   0x0800647c       0x16 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memcpy-stub.o)
+                0x0800647c                memcpy
+ .text.memset   0x08006492       0x10 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memset.o)
+                0x08006492                memset
+ *fill*         0x080064a2        0x2 
+ .text._free_r  0x080064a4       0x88 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-freer.o)
+                0x080064a4                _free_r
  .text._malloc_r
-                0x0800612c       0xa8 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-mallocr.o)
-                0x0800612c                _malloc_r
- .text._sbrk_r  0x080061d4       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sbrkr.o)
-                0x080061d4                _sbrk_r
- .text.sprintf  0x080061f4       0x48 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sprintf.o)
-                0x080061f4                sprintf
-                0x080061f4                siprintf
- .text.sscanf   0x0800623c       0x54 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sscanf.o)
-                0x0800623c                sscanf
-                0x0800623c                siscanf
+                0x0800652c       0xa8 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-mallocr.o)
+                0x0800652c                _malloc_r
+ .text._sbrk_r  0x080065d4       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sbrkr.o)
+                0x080065d4                _sbrk_r
+ .text.sprintf  0x080065f4       0x48 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sprintf.o)
+                0x080065f4                sprintf
+                0x080065f4                siprintf
+ .text.sscanf   0x0800663c       0x54 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sscanf.o)
+                0x0800663c                sscanf
+                0x0800663c                siscanf
  .text.__seofread
-                0x08006290        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-stdio.o)
-                0x08006290                __seofread
- .text.strcat   0x08006294       0x1e /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strcat.o)
-                0x08006294                strcat
- .text.strcpy   0x080062b2       0x10 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strcpy.o)
-                0x080062b2                strcpy
- *fill*         0x080062c2        0x2 
- .text.strdup   0x080062c4       0x10 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strdup.o)
-                0x080062c4                strdup
+                0x08006690        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-stdio.o)
+                0x08006690                __seofread
+ .text.strcat   0x08006694       0x1e /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strcat.o)
+                0x08006694                strcat
+ .text.strcpy   0x080066b2       0x10 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strcpy.o)
+                0x080066b2                strcpy
+ *fill*         0x080066c2        0x2 
+ .text.strdup   0x080066c4       0x10 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strdup.o)
+                0x080066c4                strdup
  .text._strdup_r
-                0x080062d4       0x26 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strdup_r.o)
-                0x080062d4                _strdup_r
+                0x080066d4       0x26 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strdup_r.o)
+                0x080066d4                _strdup_r
  .text.__ssputs_r
-                0x080062fa       0xb2 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfprintf.o)
-                0x080062fa                __ssputs_r
+                0x080066fa       0xb2 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfprintf.o)
+                0x080066fa                __ssputs_r
  .text._svfprintf_r
-                0x080063ac      0x1e8 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfprintf.o)
-                0x080063ac                _svfprintf_r
-                0x080063ac                _svfiprintf_r
+                0x080067ac      0x1e8 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfprintf.o)
+                0x080067ac                _svfprintf_r
+                0x080067ac                _svfiprintf_r
  .text._sungetc_r
-                0x08006594       0x7c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfscanf.o)
-                0x08006594                _sungetc_r
+                0x08006994       0x7c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfscanf.o)
+                0x08006994                _sungetc_r
  .text.__ssrefill_r
-                0x08006610       0x3a /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfscanf.o)
-                0x08006610                __ssrefill_r
- *fill*         0x0800664a        0x2 
+                0x08006a10       0x3a /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfscanf.o)
+                0x08006a10                __ssrefill_r
+ *fill*         0x08006a4a        0x2 
  .text.__ssvfscanf_r
-                0x0800664c      0x29c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfscanf.o)
-                0x0800664c                __ssvfscanf_r
-                0x0800664c                __ssvfiscanf_r
+                0x08006a4c      0x29c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfscanf.o)
+                0x08006a4c                __ssvfscanf_r
+                0x08006a4c                __ssvfiscanf_r
  .text._printf_common
-                0x080068e8       0xec /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfprintf_i.o)
-                0x080068e8                _printf_common
+                0x08006ce8       0xec /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfprintf_i.o)
+                0x08006ce8                _printf_common
  .text._printf_i
-                0x080069d4      0x24c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfprintf_i.o)
-                0x080069d4                _printf_i
+                0x08006dd4      0x24c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfprintf_i.o)
+                0x08006dd4                _printf_i
  .text._scanf_chars
-                0x08006c20       0xcc /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfscanf_i.o)
-                0x08006c20                _scanf_chars
+                0x08007020       0xcc /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfscanf_i.o)
+                0x08007020                _scanf_chars
  .text._scanf_i
-                0x08006cec      0x1e4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfscanf_i.o)
-                0x08006cec                _scanf_i
- .text.__sccl   0x08006ed0       0x60 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sccl.o)
-                0x08006ed0                __sccl
+                0x080070ec      0x1e4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfscanf_i.o)
+                0x080070ec                _scanf_i
+ .text.__sccl   0x080072d0       0x60 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sccl.o)
+                0x080072d0                __sccl
  .text._strtol_r
-                0x08006f30      0x10c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strtol.o)
-                0x08006f30                _strtol_r
+                0x08007330      0x10c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strtol.o)
+                0x08007330                _strtol_r
  .text._strtoul_r
-                0x0800703c       0xfc /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strtoul.o)
-                0x0800703c                _strtoul_r
+                0x0800743c       0xfc /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strtoul.o)
+                0x0800743c                _strtoul_r
  .text.__submore
-                0x08007138       0x72 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-ungetc.o)
-                0x08007138                __submore
- .text.memchr   0x080071aa       0x1c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memchr-stub.o)
-                0x080071aa                memchr
- .text.memmove  0x080071c6       0x36 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memmove.o)
-                0x080071c6                memmove
+                0x08007538       0x72 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-ungetc.o)
+                0x08007538                __submore
+ .text.memchr   0x080075aa       0x1c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memchr-stub.o)
+                0x080075aa                memchr
+ .text.memmove  0x080075c6       0x36 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memmove.o)
+                0x080075c6                memmove
  .text._realloc_r
-                0x080071fc       0x4c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-reallocr.o)
-                0x080071fc                _realloc_r
+                0x080075fc       0x4c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-reallocr.o)
+                0x080075fc                _realloc_r
  .text._malloc_usable_size_r
-                0x08007248       0x14 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-msizer.o)
-                0x08007248                _malloc_usable_size_r
- .text._sbrk    0x0800725c       0x1c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libnosys.a(sbrk.o)
-                0x0800725c                _sbrk
+                0x08007648       0x14 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-msizer.o)
+                0x08007648                _malloc_usable_size_r
+ .text._sbrk    0x0800765c       0x1c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libnosys.a(sbrk.o)
+                0x0800765c                _sbrk
  *(.glue_7)
- .glue_7        0x08007278        0x0 linker stubs
+ .glue_7        0x08007678        0x0 linker stubs
  *(.glue_7t)
- .glue_7t       0x08007278        0x0 linker stubs
+ .glue_7t       0x08007678        0x0 linker stubs
  *(.eh_frame)
- .eh_frame      0x08007278        0x0 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
+ .eh_frame      0x08007678        0x0 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
  *(.init)
- .init          0x08007278        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crti.o
-                0x08007278                _init
- .init          0x0800727c        0x8 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtn.o
+ .init          0x08007678        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crti.o
+                0x08007678                _init
+ .init          0x0800767c        0x8 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtn.o
  *(.fini)
- .fini          0x08007284        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crti.o
-                0x08007284                _fini
- .fini          0x08007288        0x8 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtn.o
-                0x08007290                . = ALIGN (0x4)
-                0x08007290                _etext = .
+ .fini          0x08007684        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crti.o
+                0x08007684                _fini
+ .fini          0x08007688        0x8 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtn.o
+                0x08007690                . = ALIGN (0x4)
+                0x08007690                _etext = .
 
-.vfp11_veneer   0x08007290        0x0
- .vfp11_veneer  0x08007290        0x0 linker stubs
+.vfp11_veneer   0x08007690        0x0
+ .vfp11_veneer  0x08007690        0x0 linker stubs
 
-.v4_bx          0x08007290        0x0
- .v4_bx         0x08007290        0x0 linker stubs
+.v4_bx          0x08007690        0x0
+ .v4_bx         0x08007690        0x0 linker stubs
 
-.iplt           0x08007290        0x0
- .iplt          0x08007290        0x0 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
+.iplt           0x08007690        0x0
+ .iplt          0x08007690        0x0 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
 
-.rodata         0x08007290      0xd00
-                0x08007290                . = ALIGN (0x4)
+.rodata         0x08007690      0xfb8
+                0x08007690                . = ALIGN (0x4)
  *(.rodata)
- .rodata        0x08007290       0x6a Application/User/main.o
- *fill*         0x080072fa        0x2 
- .rodata        0x080072fc      0xa92 Application/User/stm32fxxx_hal_BTDevice.o
- *fill*         0x08007d8e        0x2 
- .rodata        0x08007d90        0x9 Application/User/stm32l152c_discovery.o
-                0x08007d90                GPIO_PIN
-                0x08007d94                BUTTON_PIN
-                0x08007d98                BUTTON_IRQn
- *fill*         0x08007d99        0x3 
- .rodata        0x08007d9c       0x24 Drivers/CMSIS/system_stm32l1xx.o
-                0x08007d9c                PLLMulTable
-                0x08007da8                AHBPrescTable
-                0x08007db8                APBPrescTable
- .rodata        0x08007dc0        0xd Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
-                0x08007dc0                aPLLDivisionFactorTable
-                0x08007dc4                aPLLMULFactorTable
- *fill*         0x08007dcd        0x3 
- .rodata        0x08007dd0        0xc /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfscanf_i.o)
+ .rodata        0x08007690       0x6a Application/User/main.o
+ *fill*         0x080076fa        0x2 
+ .rodata        0x080076fc      0xd49 Application/User/stm32fxxx_hal_BTDevice.o
+ *fill*         0x08008445        0x3 
+ .rodata        0x08008448        0x9 Application/User/stm32l152c_discovery.o
+                0x08008448                GPIO_PIN
+                0x0800844c                BUTTON_PIN
+                0x08008450                BUTTON_IRQn
+ *fill*         0x08008451        0x3 
+ .rodata        0x08008454       0x24 Drivers/CMSIS/system_stm32l1xx.o
+                0x08008454                PLLMulTable
+                0x08008460                AHBPrescTable
+                0x08008470                APBPrescTable
+ .rodata        0x08008478        0xd Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
+                0x08008478                aPLLDivisionFactorTable
+                0x0800847c                aPLLMULFactorTable
+ *fill*         0x08008485        0x3 
+ .rodata        0x08008488        0xc /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfscanf_i.o)
  *(.rodata*)
  .rodata.str1.1
-                0x08007ddc        0x2 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-impure.o)
+                0x08008494        0x2 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-impure.o)
  .rodata.str1.1
-                0x08007dde       0x11 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfprintf.o)
+                0x08008496       0x11 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfprintf.o)
  .rodata.str1.1
-                0x08007def        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfscanf.o)
+                0x080084a7        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfscanf.o)
  .rodata.str1.1
-                0x08007def       0x22 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfprintf_i.o)
+                0x080084a7       0x22 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfprintf_i.o)
  .rodata.str1.1
-                0x08007e11       0x1b /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfscanf_i.o)
+                0x080084c9       0x1b /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfscanf_i.o)
  .rodata._ctype_
-                0x08007e2c      0x101 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-ctype_.o)
-                0x08007e2c                _ctype_
- *fill*         0x08007f2d        0x3 
+                0x080084e4      0x101 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-ctype_.o)
+                0x080084e4                _ctype_
+ *fill*         0x080085e5        0x3 
  .rodata.__sf_fake_stdin
-                0x08007f30       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-findfp.o)
-                0x08007f30                __sf_fake_stdin
+                0x080085e8       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-findfp.o)
+                0x080085e8                __sf_fake_stdin
  .rodata.__sf_fake_stdout
-                0x08007f50       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-findfp.o)
-                0x08007f50                __sf_fake_stdout
+                0x08008608       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-findfp.o)
+                0x08008608                __sf_fake_stdout
  .rodata.__sf_fake_stderr
-                0x08007f70       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-findfp.o)
-                0x08007f70                __sf_fake_stderr
-                0x08007f90                . = ALIGN (0x4)
+                0x08008628       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-findfp.o)
+                0x08008628                __sf_fake_stderr
+                0x08008648                . = ALIGN (0x4)
 
-.rel.dyn        0x08007f90        0x0
- .rel.iplt      0x08007f90        0x0 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
+.rel.dyn        0x08008648        0x0
+ .rel.iplt      0x08008648        0x0 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
 
-.ARM            0x08007f90        0x0
-                0x08007f90                __exidx_start = .
+.ARM            0x08008648        0x0
+                0x08008648                __exidx_start = .
  *(.ARM.exidx*)
-                0x08007f90                __exidx_end = .
+                0x08008648                __exidx_end = .
 
-.preinit_array  0x08007f90        0x0
-                0x08007f90                PROVIDE (__preinit_array_start, .)
+.preinit_array  0x08008648        0x0
+                0x08008648                PROVIDE (__preinit_array_start, .)
  *(.preinit_array*)
-                0x08007f90                PROVIDE (__preinit_array_end, .)
+                0x08008648                PROVIDE (__preinit_array_end, .)
 
-.init_array     0x08007f90        0x4
-                0x08007f90                PROVIDE (__init_array_start, .)
+.init_array     0x08008648        0x4
+                0x08008648                PROVIDE (__init_array_start, .)
  *(SORT(.init_array.*))
  *(.init_array*)
- .init_array    0x08007f90        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
-                0x08007f94                PROVIDE (__init_array_end, .)
+ .init_array    0x08008648        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
+                0x0800864c                PROVIDE (__init_array_end, .)
 
-.fini_array     0x08007f94        0x4
+.fini_array     0x0800864c        0x4
                 [!provide]                PROVIDE (__fini_array_start, .)
  *(SORT(.fini_array.*))
  *(.fini_array*)
- .fini_array    0x08007f94        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
+ .fini_array    0x0800864c        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
                 [!provide]                PROVIDE (__fini_array_end, .)
-                0x08007f98                _sidata = LOADADDR (.data)
+                0x08008650                _sidata = LOADADDR (.data)
 
-.data           0x20000000      0x22c load address 0x08007f98
+.data           0x20000000      0x274 load address 0x08008650
                 0x20000000                . = ALIGN (0x4)
                 0x20000000                _sdata = .
  *(.data)
- .data          0x20000000      0x1b4 Application/User/stm32fxxx_hal_BTDevice.o
+ .data          0x20000000      0x1fc Application/User/stm32fxxx_hal_BTDevice.o
                 0x20000000                commandArray
-                0x20000180                commandFunctionArray
- .data          0x200001b4        0xc Application/User/stm32l152c_discovery.o
-                0x200001b4                GPIO_PORT
-                0x200001bc                BUTTON_PORT
- .data          0x200001c0        0x4 Drivers/CMSIS/system_stm32l1xx.o
-                0x200001c0                SystemCoreClock
+                0x200001c0                commandFunctionArray
+ .data          0x200001fc        0xc Application/User/stm32l152c_discovery.o
+                0x200001fc                GPIO_PORT
+                0x20000204                BUTTON_PORT
+ .data          0x20000208        0x4 Drivers/CMSIS/system_stm32l1xx.o
+                0x20000208                SystemCoreClock
  *(.data*)
  .data.impure_data
-                0x200001c4       0x60 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-impure.o)
+                0x2000020c       0x60 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-impure.o)
  .data._impure_ptr
-                0x20000224        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-impure.o)
-                0x20000224                _impure_ptr
+                0x2000026c        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-impure.o)
+                0x2000026c                _impure_ptr
  .data.__ctype_ptr__
-                0x20000228        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-ctype_.o)
-                0x20000228                __ctype_ptr__
-                0x2000022c                . = ALIGN (0x4)
-                0x2000022c                _edata = .
+                0x20000270        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-ctype_.o)
+                0x20000270                __ctype_ptr__
+                0x20000274                . = ALIGN (0x4)
+                0x20000274                _edata = .
 
-.jcr            0x2000022c        0x0 load address 0x080081c4
- .jcr           0x2000022c        0x0 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
+.jcr            0x20000274        0x0 load address 0x080088c4
+ .jcr           0x20000274        0x0 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
 
 .tm_clone_table
-                0x2000022c        0x0 load address 0x080081c4
+                0x20000274        0x0 load address 0x080088c4
  .tm_clone_table
-                0x2000022c        0x0 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
+                0x20000274        0x0 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
  .tm_clone_table
-                0x2000022c        0x0 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtend.o
+                0x20000274        0x0 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtend.o
 
-.igot.plt       0x2000022c        0x0 load address 0x080081c4
- .igot.plt      0x2000022c        0x0 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
-                0x2000022c                . = ALIGN (0x4)
+.igot.plt       0x20000274        0x0 load address 0x080088c4
+ .igot.plt      0x20000274        0x0 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
+                0x20000274                . = ALIGN (0x4)
 
-.bss            0x2000022c      0x478 load address 0x080081c4
-                0x2000022c                _sbss = .
-                0x2000022c                __bss_start__ = _sbss
+.bss            0x20000274      0x518 load address 0x080088c4
+                0x20000274                _sbss = .
+                0x20000274                __bss_start__ = _sbss
  *(.bss)
- .bss           0x2000022c       0x1c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
- .bss           0x20000248      0x110 Application/User/main.o
-                0x20000248                rxDMAIndex
-                0x20000249                rxITIndex
-                0x2000024c                systickCounter
-                0x20000250                tim1CounterS
- .bss           0x20000358      0x12c Application/User/stm32fxxx_hal_BTDevice.o
- .bss           0x20000484        0x4 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
+ .bss           0x20000274       0x1c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtbegin.o
+ .bss           0x20000290      0x10f Application/User/main.o
+                0x20000290                rxDMAIndex
+                0x20000291                rxITIndex
+                0x20000294                systickCounter
+                0x20000298                tim1CounterS
+ *fill*         0x2000039f        0x1 
+ .bss           0x200003a0      0x1cc Application/User/stm32fxxx_hal_BTDevice.o
+ .bss           0x2000056c        0x4 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
  *(.bss*)
  .bss.__malloc_sbrk_start
-                0x20000488        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-mallocr.o)
-                0x20000488                __malloc_sbrk_start
+                0x20000570        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-mallocr.o)
+                0x20000570                __malloc_sbrk_start
  .bss.__malloc_free_list
-                0x2000048c        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-mallocr.o)
-                0x2000048c                __malloc_free_list
+                0x20000574        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-mallocr.o)
+                0x20000574                __malloc_free_list
  .bss.heap_end.4167
-                0x20000490        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libnosys.a(sbrk.o)
+                0x20000578        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libnosys.a(sbrk.o)
  *(COMMON)
- COMMON         0x20000494      0x204 Application/User/main.o
-                0x20000494                husart2RxBuffer
-                0x20000498                htim4
-                0x200004d0                husart1RxBuffer
-                0x200004d4                htim3
-                0x2000050c                huart1
-                0x2000054c                rxITBuffer
-                0x200005cc                htim2
-                0x20000604                huart2
-                0x20000644                hadc
- COMMON         0x20000698        0x8 Application/User/stm32fxxx_hal_BTDevice.o
-                0x20000698                deviceCommandReceivedHandler
-                0x2000069c                resetInputBufferHandler
- COMMON         0x200006a0        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-reent.o)
-                0x200006a0                errno
-                0x200006a4                . = ALIGN (0x4)
-                0x200006a4                _ebss = .
-                0x200006a4                __bss_end__ = _ebss
+ COMMON         0x2000057c      0x204 Application/User/main.o
+                0x2000057c                husart2RxBuffer
+                0x20000580                htim4
+                0x200005b8                husart1RxBuffer
+                0x200005bc                htim3
+                0x200005f4                huart1
+                0x20000634                rxITBuffer
+                0x200006b4                htim2
+                0x200006ec                huart2
+                0x2000072c                hadc
+ COMMON         0x20000780        0x8 Application/User/stm32fxxx_hal_BTDevice.o
+                0x20000780                deviceCommandReceivedHandler
+                0x20000784                resetInputBufferHandler
+ COMMON         0x20000788        0x4 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-reent.o)
+                0x20000788                errno
+                0x2000078c                . = ALIGN (0x4)
+                0x2000078c                _ebss = .
+                0x2000078c                __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x200006a4      0x604 load address 0x080081c4
-                0x200006a8                . = ALIGN (0x8)
- *fill*         0x200006a4        0x4 
-                0x200006a8                PROVIDE (end, .)
+                0x2000078c      0x604 load address 0x080088c4
+                0x20000790                . = ALIGN (0x8)
+ *fill*         0x2000078c        0x4 
+                0x20000790                PROVIDE (end, .)
                 [!provide]                PROVIDE (_end, .)
-                0x200008a8                . = (. + _Min_Heap_Size)
- *fill*         0x200006a8      0x200 
-                0x20000ca8                . = (. + _Min_Stack_Size)
- *fill*         0x200008a8      0x400 
-                0x20000ca8                . = ALIGN (0x8)
+                0x20000990                . = (. + _Min_Heap_Size)
+ *fill*         0x20000790      0x200 
+                0x20000d90                . = (. + _Min_Stack_Size)
+ *fill*         0x20000990      0x400 
+                0x20000d90                . = ALIGN (0x8)
 
 /DISCARD/
  libc.a(*)
@@ -4485,64 +4511,64 @@ LOAD /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.
                 0x000009a7       0x1d /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/armv7-m/crtn.o
 OUTPUT(BluTechDevice_stm32l152.elf elf32-littlearm)
 
-.debug_line     0x00000000     0xb93f
+.debug_line     0x00000000     0xba30
  .debug_line    0x00000000       0xe3 Application/SW4STM32/startup_stm32l152xc.o
  .debug_line    0x000000e3      0x886 Application/User/buzzer.o
- .debug_line    0x00000969      0xaee Application/User/main.o
- .debug_line    0x00001457      0xce9 Application/User/stm32fxxx_hal_BTDevice.o
- .debug_line    0x00002140      0x8f6 Application/User/stm32l152c_discovery.o
- .debug_line    0x00002a36      0x914 Application/User/stm32l1xx_hal_msp.o
- .debug_line    0x0000334a      0x938 Application/User/stm32l1xx_it.o
- .debug_line    0x00003c82      0x8ac Drivers/CMSIS/system_stm32l1xx.o
- .debug_line    0x0000452e      0x9bb Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
- .debug_line    0x00004ee9      0xd01 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
- .debug_line    0x00005bea      0xb31 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
- .debug_line    0x0000671b      0x9ea Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
- .debug_line    0x00007105      0x949 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
- .debug_line    0x00007a4e     0x1092 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
- .debug_line    0x00008ae0     0x16c9 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
- .debug_line    0x0000a1a9      0x8d1 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
- .debug_line    0x0000aa7a      0xec5 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+ .debug_line    0x00000969      0xaeb Application/User/main.o
+ .debug_line    0x00001454      0xddd Application/User/stm32fxxx_hal_BTDevice.o
+ .debug_line    0x00002231      0x8f6 Application/User/stm32l152c_discovery.o
+ .debug_line    0x00002b27      0x914 Application/User/stm32l1xx_hal_msp.o
+ .debug_line    0x0000343b      0x938 Application/User/stm32l1xx_it.o
+ .debug_line    0x00003d73      0x8ac Drivers/CMSIS/system_stm32l1xx.o
+ .debug_line    0x0000461f      0x9bb Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
+ .debug_line    0x00004fda      0xd01 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
+ .debug_line    0x00005cdb      0xb31 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+ .debug_line    0x0000680c      0x9ea Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
+ .debug_line    0x000071f6      0x949 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
+ .debug_line    0x00007b3f     0x1092 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
+ .debug_line    0x00008bd1     0x16c9 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+ .debug_line    0x0000a29a      0x8d1 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
+ .debug_line    0x0000ab6b      0xec5 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
 
-.debug_info     0x00000000     0xbaf6
+.debug_info     0x00000000     0xbd7b
  .debug_info    0x00000000      0x10d Application/SW4STM32/startup_stm32l152xc.o
  .debug_info    0x0000010d      0x236 Application/User/buzzer.o
- .debug_info    0x00000343     0x1400 Application/User/main.o
- .debug_info    0x00001743      0xf30 Application/User/stm32fxxx_hal_BTDevice.o
- .debug_info    0x00002673      0x6f3 Application/User/stm32l152c_discovery.o
- .debug_info    0x00002d66      0xe98 Application/User/stm32l1xx_hal_msp.o
- .debug_info    0x00003bfe      0x7eb Application/User/stm32l1xx_it.o
- .debug_info    0x000043e9      0x427 Drivers/CMSIS/system_stm32l1xx.o
- .debug_info    0x00004810      0x599 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
- .debug_info    0x00004da9      0xe13 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
- .debug_info    0x00005bbc      0xc6c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
- .debug_info    0x00006828      0x5ff Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
- .debug_info    0x00006e27      0x32a Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
- .debug_info    0x00007151     0x154d Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
- .debug_info    0x0000869e     0x20ba Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
- .debug_info    0x0000a758      0x5aa Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
- .debug_info    0x0000ad02      0xdf4 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+ .debug_info    0x00000343     0x1405 Application/User/main.o
+ .debug_info    0x00001748     0x11b0 Application/User/stm32fxxx_hal_BTDevice.o
+ .debug_info    0x000028f8      0x6f3 Application/User/stm32l152c_discovery.o
+ .debug_info    0x00002feb      0xe98 Application/User/stm32l1xx_hal_msp.o
+ .debug_info    0x00003e83      0x7eb Application/User/stm32l1xx_it.o
+ .debug_info    0x0000466e      0x427 Drivers/CMSIS/system_stm32l1xx.o
+ .debug_info    0x00004a95      0x599 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
+ .debug_info    0x0000502e      0xe13 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
+ .debug_info    0x00005e41      0xc6c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+ .debug_info    0x00006aad      0x5ff Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
+ .debug_info    0x000070ac      0x32a Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
+ .debug_info    0x000073d6     0x154d Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
+ .debug_info    0x00008923     0x20ba Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+ .debug_info    0x0000a9dd      0x5aa Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
+ .debug_info    0x0000af87      0xdf4 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
 
-.debug_abbrev   0x00000000     0x1cc6
+.debug_abbrev   0x00000000     0x1ce8
  .debug_abbrev  0x00000000       0x12 Application/SW4STM32/startup_stm32l152xc.o
  .debug_abbrev  0x00000012       0xc7 Application/User/buzzer.o
- .debug_abbrev  0x000000d9      0x294 Application/User/main.o
- .debug_abbrev  0x0000036d      0x297 Application/User/stm32fxxx_hal_BTDevice.o
- .debug_abbrev  0x00000604      0x19a Application/User/stm32l152c_discovery.o
- .debug_abbrev  0x0000079e      0x19b Application/User/stm32l1xx_hal_msp.o
- .debug_abbrev  0x00000939      0x140 Application/User/stm32l1xx_it.o
- .debug_abbrev  0x00000a79      0x104 Drivers/CMSIS/system_stm32l1xx.o
- .debug_abbrev  0x00000b7d      0x1a6 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
- .debug_abbrev  0x00000d23      0x249 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
- .debug_abbrev  0x00000f6c      0x298 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
- .debug_abbrev  0x00001204      0x1af Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
- .debug_abbrev  0x000013b3      0x12f Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
- .debug_abbrev  0x000014e2      0x2a4 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
- .debug_abbrev  0x00001786      0x1fc Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
- .debug_abbrev  0x00001982      0x12a Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
- .debug_abbrev  0x00001aac      0x21a Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+ .debug_abbrev  0x000000d9      0x28e Application/User/main.o
+ .debug_abbrev  0x00000367      0x2bf Application/User/stm32fxxx_hal_BTDevice.o
+ .debug_abbrev  0x00000626      0x19a Application/User/stm32l152c_discovery.o
+ .debug_abbrev  0x000007c0      0x19b Application/User/stm32l1xx_hal_msp.o
+ .debug_abbrev  0x0000095b      0x140 Application/User/stm32l1xx_it.o
+ .debug_abbrev  0x00000a9b      0x104 Drivers/CMSIS/system_stm32l1xx.o
+ .debug_abbrev  0x00000b9f      0x1a6 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
+ .debug_abbrev  0x00000d45      0x249 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
+ .debug_abbrev  0x00000f8e      0x298 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+ .debug_abbrev  0x00001226      0x1af Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
+ .debug_abbrev  0x000013d5      0x12f Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
+ .debug_abbrev  0x00001504      0x2a4 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
+ .debug_abbrev  0x000017a8      0x1fc Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+ .debug_abbrev  0x000019a4      0x12a Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
+ .debug_abbrev  0x00001ace      0x21a Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
 
-.debug_aranges  0x00000000      0xc90
+.debug_aranges  0x00000000      0xce0
  .debug_aranges
                 0x00000000       0x28 Application/SW4STM32/startup_stm32l152xc.o
  .debug_aranges
@@ -4550,52 +4576,52 @@ OUTPUT(BluTechDevice_stm32l152.elf elf32-littlearm)
  .debug_aranges
                 0x00000050       0xc0 Application/User/main.o
  .debug_aranges
-                0x00000110      0x170 Application/User/stm32fxxx_hal_BTDevice.o
+                0x00000110      0x1c0 Application/User/stm32fxxx_hal_BTDevice.o
  .debug_aranges
-                0x00000280       0x50 Application/User/stm32l152c_discovery.o
+                0x000002d0       0x50 Application/User/stm32l152c_discovery.o
  .debug_aranges
-                0x000002d0       0x58 Application/User/stm32l1xx_hal_msp.o
+                0x00000320       0x58 Application/User/stm32l1xx_hal_msp.o
  .debug_aranges
-                0x00000328       0x80 Application/User/stm32l1xx_it.o
+                0x00000378       0x80 Application/User/stm32l1xx_it.o
  .debug_aranges
-                0x000003a8       0x28 Drivers/CMSIS/system_stm32l1xx.o
+                0x000003f8       0x28 Drivers/CMSIS/system_stm32l1xx.o
  .debug_aranges
-                0x000003d0       0xb0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
+                0x00000420       0xb0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
  .debug_aranges
-                0x00000480       0xf0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
+                0x000004d0       0xf0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
  .debug_aranges
-                0x00000570      0x108 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+                0x000005c0      0x108 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
  .debug_aranges
-                0x00000678       0x58 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
+                0x000006c8       0x58 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
  .debug_aranges
-                0x000006d0       0x50 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
+                0x00000720       0x50 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
  .debug_aranges
-                0x00000720       0x90 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
+                0x00000770       0x90 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
  .debug_aranges
-                0x000007b0      0x368 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+                0x00000800      0x368 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
  .debug_aranges
-                0x00000b18       0x28 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
+                0x00000b68       0x28 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
  .debug_aranges
-                0x00000b40      0x150 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+                0x00000b90      0x150 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
 
-.debug_ranges   0x00000000      0xb88
+.debug_ranges   0x00000000      0xbd8
  .debug_ranges  0x00000000       0x20 Application/SW4STM32/startup_stm32l152xc.o
  .debug_ranges  0x00000020       0x18 Application/User/buzzer.o
  .debug_ranges  0x00000038       0xb0 Application/User/main.o
- .debug_ranges  0x000000e8      0x160 Application/User/stm32fxxx_hal_BTDevice.o
- .debug_ranges  0x00000248       0x40 Application/User/stm32l152c_discovery.o
- .debug_ranges  0x00000288       0x48 Application/User/stm32l1xx_hal_msp.o
- .debug_ranges  0x000002d0       0x70 Application/User/stm32l1xx_it.o
- .debug_ranges  0x00000340       0x18 Drivers/CMSIS/system_stm32l1xx.o
- .debug_ranges  0x00000358       0xa0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
- .debug_ranges  0x000003f8       0xe0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
- .debug_ranges  0x000004d8       0xf8 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
- .debug_ranges  0x000005d0       0x48 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
- .debug_ranges  0x00000618       0x40 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
- .debug_ranges  0x00000658       0x80 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
- .debug_ranges  0x000006d8      0x358 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
- .debug_ranges  0x00000a30       0x18 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
- .debug_ranges  0x00000a48      0x140 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+ .debug_ranges  0x000000e8      0x1b0 Application/User/stm32fxxx_hal_BTDevice.o
+ .debug_ranges  0x00000298       0x40 Application/User/stm32l152c_discovery.o
+ .debug_ranges  0x000002d8       0x48 Application/User/stm32l1xx_hal_msp.o
+ .debug_ranges  0x00000320       0x70 Application/User/stm32l1xx_it.o
+ .debug_ranges  0x00000390       0x18 Drivers/CMSIS/system_stm32l1xx.o
+ .debug_ranges  0x000003a8       0xa0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
+ .debug_ranges  0x00000448       0xe0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
+ .debug_ranges  0x00000528       0xf8 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+ .debug_ranges  0x00000620       0x48 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
+ .debug_ranges  0x00000668       0x40 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
+ .debug_ranges  0x000006a8       0x80 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
+ .debug_ranges  0x00000728      0x358 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+ .debug_ranges  0x00000a80       0x18 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
+ .debug_ranges  0x00000a98      0x140 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
 
 .debug_macro    0x00000000    0x126f2
  .debug_macro   0x00000000      0x55d Application/User/buzzer.o
@@ -4677,38 +4703,38 @@ OUTPUT(BluTechDevice_stm32l152.elf elf32-littlearm)
  .debug_macro   0x00012149      0x2d4 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
  .debug_macro   0x0001241d      0x2d5 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
 
-.debug_str      0x00000000    0x72150
+.debug_str      0x00000000    0x722e1
  .debug_str     0x00000000    0x6ddee Application/User/buzzer.o
                               0x6e0b2 (size before relaxing)
- .debug_str     0x0006ddee     0x1515 Application/User/main.o
-                              0x6f1c3 (size before relaxing)
- .debug_str     0x0006f303      0x6aa Application/User/stm32fxxx_hal_BTDevice.o
-                              0x6e802 (size before relaxing)
- .debug_str     0x0006f9ad      0x34f Application/User/stm32l152c_discovery.o
+ .debug_str     0x0006ddee     0x153b Application/User/main.o
+                              0x6f1e9 (size before relaxing)
+ .debug_str     0x0006f329      0x815 Application/User/stm32fxxx_hal_BTDevice.o
+                              0x6e9c9 (size before relaxing)
+ .debug_str     0x0006fb3e      0x34f Application/User/stm32l152c_discovery.o
                               0x6e680 (size before relaxing)
- .debug_str     0x0006fcfc       0xfe Application/User/stm32l1xx_hal_msp.o
+ .debug_str     0x0006fe8d       0xfe Application/User/stm32l1xx_hal_msp.o
                               0x6e789 (size before relaxing)
- .debug_str     0x0006fdfa      0x133 Application/User/stm32l1xx_it.o
+ .debug_str     0x0006ff8b      0x133 Application/User/stm32l1xx_it.o
                               0x6e211 (size before relaxing)
- .debug_str     0x0006ff2d      0x16c Drivers/CMSIS/system_stm32l1xx.o
+ .debug_str     0x000700be      0x16c Drivers/CMSIS/system_stm32l1xx.o
                               0x6dd68 (size before relaxing)
- .debug_str     0x00070099      0x2d3 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
+ .debug_str     0x0007022a      0x2d3 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
                               0x6e30a (size before relaxing)
- .debug_str     0x0007036c      0x39c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
+ .debug_str     0x000704fd      0x39c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
                               0x6e401 (size before relaxing)
- .debug_str     0x00070708      0x3b0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+ .debug_str     0x00070899      0x3b0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
                               0x6e45c (size before relaxing)
- .debug_str     0x00070ab8      0x293 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
+ .debug_str     0x00070c49      0x293 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
                               0x6df62 (size before relaxing)
- .debug_str     0x00070d4b      0x141 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
+ .debug_str     0x00070edc      0x141 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
                               0x6dcf5 (size before relaxing)
- .debug_str     0x00070e8c      0x2b7 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
+ .debug_str     0x0007101d      0x2b7 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
                               0x6e130 (size before relaxing)
- .debug_str     0x00071143      0xbcd Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+ .debug_str     0x000712d4      0xbcd Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
                               0x6ecdf (size before relaxing)
- .debug_str     0x00071d10       0xb4 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
+ .debug_str     0x00071ea1       0xb4 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
                               0x6e04d (size before relaxing)
- .debug_str     0x00071dc4      0x38c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+ .debug_str     0x00071f55      0x38c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
                               0x6e366 (size before relaxing)
 
 .comment        0x00000000       0x6e
@@ -4730,53 +4756,53 @@ OUTPUT(BluTechDevice_stm32l152.elf elf32-littlearm)
  .comment       0x0000006e       0x6f Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
  .comment       0x0000006e       0x6f Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
 
-.debug_frame    0x00000000     0x3b58
+.debug_frame    0x00000000     0x3cdc
  .debug_frame   0x00000000       0x54 Application/User/buzzer.o
  .debug_frame   0x00000054      0x2ec Application/User/main.o
- .debug_frame   0x00000340      0x634 Application/User/stm32fxxx_hal_BTDevice.o
- .debug_frame   0x00000974      0x108 Application/User/stm32l152c_discovery.o
- .debug_frame   0x00000a7c      0x130 Application/User/stm32l1xx_hal_msp.o
- .debug_frame   0x00000bac      0x17c Application/User/stm32l1xx_it.o
- .debug_frame   0x00000d28       0x58 Drivers/CMSIS/system_stm32l1xx.o
- .debug_frame   0x00000d80      0x270 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
- .debug_frame   0x00000ff0      0x410 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
- .debug_frame   0x00001400      0x450 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
- .debug_frame   0x00001850      0x14c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
- .debug_frame   0x0000199c      0x120 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
- .debug_frame   0x00001abc      0x23c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
- .debug_frame   0x00001cf8      0xfb0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
- .debug_frame   0x00002ca8       0x60 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
- .debug_frame   0x00002d08      0x5e0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
- .debug_frame   0x000032e8       0x2c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-init.o)
- .debug_frame   0x00003314       0x30 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-malloc.o)
- .debug_frame   0x00003344       0x28 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memcpy-stub.o)
- .debug_frame   0x0000336c       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memset.o)
- .debug_frame   0x0000338c       0x2c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-freer.o)
- .debug_frame   0x000033b8       0x2c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-mallocr.o)
- .debug_frame   0x000033e4       0x2c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sbrkr.o)
- .debug_frame   0x00003410       0x70 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sprintf.o)
- .debug_frame   0x00003480       0x80 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sscanf.o)
- .debug_frame   0x00003500       0x88 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-stdio.o)
- .debug_frame   0x00003588       0x28 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strcat.o)
- .debug_frame   0x000035b0       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strcmp.o)
- .debug_frame   0x000035d0       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strcpy.o)
- .debug_frame   0x000035f0       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strdup.o)
- .debug_frame   0x00003610       0x2c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strdup_r.o)
- .debug_frame   0x0000363c       0x90 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfprintf.o)
- .debug_frame   0x000036cc       0x74 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfscanf.o)
- .debug_frame   0x00003740       0x60 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfprintf_i.o)
- .debug_frame   0x000037a0       0x60 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfscanf_i.o)
- .debug_frame   0x00003800       0x5c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-reent.o)
- .debug_frame   0x0000385c       0x2c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sccl.o)
- .debug_frame   0x00003888       0x44 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strtol.o)
- .debug_frame   0x000038cc       0x44 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strtoul.o)
- .debug_frame   0x00003910       0x60 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-ungetc.o)
- .debug_frame   0x00003970      0x11c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-findfp.o)
- .debug_frame   0x00003a8c       0x28 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memchr-stub.o)
- .debug_frame   0x00003ab4       0x28 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memmove.o)
- .debug_frame   0x00003adc       0x3c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-reallocr.o)
- .debug_frame   0x00003b18       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-msizer.o)
- .debug_frame   0x00003b38       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libnosys.a(sbrk.o)
+ .debug_frame   0x00000340      0x7b8 Application/User/stm32fxxx_hal_BTDevice.o
+ .debug_frame   0x00000af8      0x108 Application/User/stm32l152c_discovery.o
+ .debug_frame   0x00000c00      0x130 Application/User/stm32l1xx_hal_msp.o
+ .debug_frame   0x00000d30      0x17c Application/User/stm32l1xx_it.o
+ .debug_frame   0x00000eac       0x58 Drivers/CMSIS/system_stm32l1xx.o
+ .debug_frame   0x00000f04      0x270 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal.o
+ .debug_frame   0x00001174      0x410 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_adc.o
+ .debug_frame   0x00001584      0x450 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_cortex.o
+ .debug_frame   0x000019d4      0x14c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_gpio.o
+ .debug_frame   0x00001b20      0x120 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_pwr_ex.o
+ .debug_frame   0x00001c40      0x23c Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_rcc.o
+ .debug_frame   0x00001e7c      0xfb0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim.o
+ .debug_frame   0x00002e2c       0x60 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_tim_ex.o
+ .debug_frame   0x00002e8c      0x5e0 Drivers/STM32L1xx_HAL_Driver/stm32l1xx_hal_uart.o
+ .debug_frame   0x0000346c       0x2c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-init.o)
+ .debug_frame   0x00003498       0x30 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-malloc.o)
+ .debug_frame   0x000034c8       0x28 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memcpy-stub.o)
+ .debug_frame   0x000034f0       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memset.o)
+ .debug_frame   0x00003510       0x2c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-freer.o)
+ .debug_frame   0x0000353c       0x2c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-mallocr.o)
+ .debug_frame   0x00003568       0x2c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sbrkr.o)
+ .debug_frame   0x00003594       0x70 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sprintf.o)
+ .debug_frame   0x00003604       0x80 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sscanf.o)
+ .debug_frame   0x00003684       0x88 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-stdio.o)
+ .debug_frame   0x0000370c       0x28 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strcat.o)
+ .debug_frame   0x00003734       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strcmp.o)
+ .debug_frame   0x00003754       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strcpy.o)
+ .debug_frame   0x00003774       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strdup.o)
+ .debug_frame   0x00003794       0x2c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strdup_r.o)
+ .debug_frame   0x000037c0       0x90 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfprintf.o)
+ .debug_frame   0x00003850       0x74 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-svfscanf.o)
+ .debug_frame   0x000038c4       0x60 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfprintf_i.o)
+ .debug_frame   0x00003924       0x60 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-vfscanf_i.o)
+ .debug_frame   0x00003984       0x5c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-reent.o)
+ .debug_frame   0x000039e0       0x2c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-sccl.o)
+ .debug_frame   0x00003a0c       0x44 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strtol.o)
+ .debug_frame   0x00003a50       0x44 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-strtoul.o)
+ .debug_frame   0x00003a94       0x60 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-ungetc.o)
+ .debug_frame   0x00003af4      0x11c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-findfp.o)
+ .debug_frame   0x00003c10       0x28 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memchr-stub.o)
+ .debug_frame   0x00003c38       0x28 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-memmove.o)
+ .debug_frame   0x00003c60       0x3c /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-reallocr.o)
+ .debug_frame   0x00003c9c       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libc_nano.a(lib_a-nano-msizer.o)
+ .debug_frame   0x00003cbc       0x20 /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libnosys.a(sbrk.o)
 
 .stabstr        0x00000000       0xdf
  .stabstr       0x00000000       0xdf /home/cynako/Ac6/SystemWorkbench/plugins/fr.ac6.mcu.externaltools.arm-none.linux64_1.7.0.201602291252/tools/compiler/bin/../lib/gcc/arm-none-eabi/5.2.1/../../../../arm-none-eabi/lib/armv7-m/libnosys.a(close.o)

@@ -46,6 +46,11 @@
 			<location>/home/cynako/Workspaces/openstm32/BluTechDevice_stm32l152/Src/stm32fxxx_hal_BTDevice.c</location>
 		</link>
 		<link>
+			<name>Application/User/stm32fxxx_hal_BTDevice.h</name>
+			<type>1</type>
+			<location>/home/cynako/Workspaces/openstm32/BluTechDevice_stm32l152/Inc/stm32fxxx_hal_BTDevice.h</location>
+		</link>
+		<link>
 			<name>Application/User/stm32l152c_discovery.c</name>
 			<type>1</type>
 			<location>/home/cynako/Workspaces/openstm32/BluTechDevice_stm32l152/Src/stm32l152c_discovery.c</location>

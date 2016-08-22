@@ -105,7 +105,7 @@ static uint8_t localDataBuffer[256];
 static uint16_t localDataLength;
 
 static uint8_t deviceCommandReceivedFlag = 0;
-static uint8_t periodicDataSentFlag = 0;
+//static uint8_t periodicDataSentFlag = 0;
 
 int main(void)
 {
@@ -161,22 +161,24 @@ int main(void)
 			doTheLEDPlay();
 			break; //Only break the loop once the device is connected
 		}else{
-			BSP_LED_Toggle(LED_BLUE);
-			BSP_LED_Toggle(LED_GREEN);
+			BTDevice_initLoop();
 		}
 	}
 	while (1)
 	{
+		BTDevice_mainLoop();
+
 		//When data/command is received from the gateway, deviceCommandReceivedFlag is raised
 		if(deviceCommandReceivedFlag){
 			deviceCommandReceivedFlag = 0;
 			deviceCommandReceivedHandler();
 		}
 
-		if(periodicDataSentFlag == 1){
-			doTheLEDPlay();
-			periodicDataSentFlag = 0;
-		}
+//		if(periodicDataSentFlag == 1){
+//			doTheLEDPlay();
+//			periodicDataSentFlag = 0;
+//		}
+
 	}
 }
 
@@ -337,6 +339,9 @@ static void initBTDevice(void){
 	BTDevice_InitStruct.userInputBuffer = rxITBuffer;
 	BTDevice_InitStruct.resetInputBufferHandler = &resetInputBuffer;
 	BTDevice_InitStruct.deviceCommandReceivedHandler = &deviceCommandReceivedCallback;
+	BTDevice_InitStruct.getSensorDataFunction = &getSensorData;
+	BTDevice_InitStruct.dataSentCallback = &doTheLEDPlay;
+	BTDevice_InitStruct.sensorDataMaxLength = SENSOR_DATA_MAX_LENGTH;
 	BTDevice_init(&BTDevice_InitStruct);
 }
 
@@ -373,13 +378,14 @@ void resetInputBuffer() {
  **/
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if(htim->Instance == TIM2){
-		if(BTDevice_timerCallback()){
-
-			uint8_t *tmp = getSensorData();
-			BTDevice_sendData(tmp,SENSOR_DATA_MAX_LENGTH);
-			free(tmp);
-			periodicDataSentFlag = 1;
-		}
+		BTDevice_timerCallback();
+//		if(timerCallback()){
+//
+//			uint8_t *tmp = getSensorData();
+//			BTDevice_sendData(tmp,SENSOR_DATA_MAX_LENGTH);
+//			free(tmp);
+//			periodicDataSentFlag = 1;
+//		}
 	}
 }
 
@@ -402,9 +408,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	}
 	if(huart->Instance == USART1){
 		storeNewValueIntoInputBuffer();
-		BTDevice_readInputBuffer();
-		HAL_UART_Receive_IT(&huart1, &husart1RxBuffer,1);
-	}
+		//BTDevice_userUartCallback();
+		BTDevice_userUartCallback(&husart1RxBuffer);
+ 	}
 }
 
 /*******************************************************************************
@@ -413,7 +419,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
  * Some of these init functions will then call the appropriate MSP funtion.
  * See stm32l1xx_hal_msp.c
  *
- * THIS SHOULD BE MODIFIED UNLESS YOU KNOW WHAT YOU ARE DOING
+ * THIS SHOULD NOT BE MODIFIED UNLESS YOU KNOW WHAT YOU ARE DOING
  *******************************************************************************/
 
 
@@ -533,7 +539,10 @@ static void MX_TIM2_Init(void)
 	}
 
 }
-/* TIM4 init function */
+/* TIM4 init function
+ *
+ * So far i'm only using Channel3. Other channel are not fully configured
+ * */
 static void MX_TIM4_Init(void)
 {
 
