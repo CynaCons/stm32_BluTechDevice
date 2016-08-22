@@ -634,8 +634,8 @@ static void deviceStatusHandler(void)
 	getTimerPeriodHandler();
 	getNetworkStatusHandler();
 	memset(txBuffer,0,sizeof(txBuffer));
-	if(rfSignalCheckCopy[0] != '\0')
-		sprintf((char *)txBuffer,"Signal info : %s\r\n",rfSignalCheckCopy);
+	if(rfSignalCheckCopy[0] != '\0')//TODO FIX THIS PLZ
+		sprintf((char *)txBuffer,"Signal info : RSSI : %x%x ; SNR : %x\r\n",rfSignalCheckCopy[0],rfSignalCheckCopy[1],rfSignalCheckCopy[2]);
 	else
 		sprintf((char *)txBuffer,"Signal info : no signal info available. Do \"rf signal check \" first\r\n");
 	HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
@@ -803,7 +803,7 @@ BTDevice_Status BTDevice_autoInitWithDefaultValues(BTDevice_AutoInitTypeDef defa
 	}
 	if(getNetworkJoinStatus() == NETWORK_JOIN_OK){
 		memset(txBuffer,0,sizeof(txBuffer));
-		sprintf((char *)txBuffer,"\r\n . . . . . . . .AutoInit Procedure Succes:. . . . . . . .\r\n");
+		sprintf((char *)txBuffer,"\r\n . . . . . . . .AutoInit Procedure Succes. . . . . . . .\r\n");
 		HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 		return BTDevice_OK;
 	}
