@@ -13,15 +13,20 @@
 
 
 /**
- *  * Init structure that contains references to the peripherals (UART), to the user input buffer.
- *   * It also contains a reference to the user-defined function that must be called to reset input buffer
- *    */
+ * @typedef BTDevice_InitTypeDef
+ * @brief Structure to be filled with references in order to initialize the library
+ * 	Initialization is done by calling BTDevice_Init()
+ */
 typedef struct {
-        UART_HandleTypeDef *userHuart;
-            UART_HandleTypeDef *deviceHuart;
-                uint8_t *userInputBuffer;
-                    void (*resetInputBufferHandler)(void);
-                        void (*deviceCommandReceivedHandler)(uint8_t *dataBuffer, uint16_t dataLength);
+	UART_HandleTypeDef *userHuart; /* Pointer to the userUart handler structure */
+	UART_HandleTypeDef *deviceHuart; /* pointer to the deviceUart handler structure */
+	uint8_t *userInputBuffer; /* reference to the buffer filled by the user input */
+	void (*resetInputBufferHandler)(void); /* function pointer to routine that reset the userInputBuffer and make it ready to be filled again. */
+	void (*deviceCommandReceivedHandler)(uint8_t *dataBuffer, uint16_t dataLength); /* func pointer to routine that should handle the data/commands
+	received by the device from the gateway */
+	void (*dataSentCallback)(void);
+	uint8_t * (*getSensorDataFunction)(void);
+	uint16_t sensorDataMaxLength;
 } BTDevice_InitTypeDef;
 
 typedef enum{
@@ -36,13 +41,9 @@ typedef struct{
 
 
 typedef enum{
-	BT_HAL_UART_ERROR,
+	BT_HAL_UART_ERROR = 0,
 	BT_DEVICE_ERROR,
-	BT_SENSOR_ERROR,
-
-
-
-
+	BT_SENSOR_ERROR
 }BTDevice_error;
 
 /**
@@ -65,35 +66,39 @@ void BTDevice_deviceUartCallback(uint8_t *deviceUartRxBuffer);
 
 
 /**
- *  * Display the UI menu via the user uart.
- *   * @pre user uart must have been set before
- *    */
+ *   Display the UI menu via the user uart.
+ *    @pre user uart must have been set before
+ */
 void BTDevice_displayMenu(void);
 
 
-/**
- *  * Initialize the BTDevice drivers using an init structure.
- *   */
+/*
+ *   Initialize the BTDevice drivers using an init structure.
+ */
 void BTDevice_init(BTDevice_InitTypeDef *BTDevice_InitStruct);
 //TODO Add error handling
 
 /**
- *  * This function should be called by the user uart rxCompleteCallback to read the input buffer and look for known commands
- *   * @pre user uart must have been set before
- *    * @pre the user rxBuffer must have been set before
- *     */
-void BTDevice_readInputBuffer(void);
+ *   This function should be called by the user uart rxCompleteCallback to read the input buffer and look for known commands
+ *    @pre user uart must have been set before
+ *     @pre the user rxBuffer must have been set before
+ */
+void BTDevice_userUartCallback(uint8_t *userUartRxBuffer);
 
 
 /**
- *  * This function must be called from the 'timer period up callback'.
- *   * It will increment the number of seconds waited since last data transfer.
- *    * This number of seconds is then compared to the timer period value (set with userUart).
- *     * If enough time has been waited, it returns 1 otherwise returns 0
- *      */
-uint8_t BTDevice_timerCallback(void);
+ *   This function must be called from the 'timer period up callback'.
+ *    It will increment the number of seconds waited since last data transfer.
+ *     This number of seconds is then compared to the timer period value (set with userUart).
+ *      If enough time has been waited, it returns 1 otherwise returns 0
+ */
+void BTDevice_timerCallback(void);
 
 
+
+void BTDevice_mainLoop();
+
+void BTDevice_initLoop();
 /**
  *  * Send the specified data to the device through the device uart
  *   * Please make sure to convert the data to a uint8_t buffer using sprintf
