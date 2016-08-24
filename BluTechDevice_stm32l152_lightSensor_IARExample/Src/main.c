@@ -36,11 +36,12 @@
 /* USER CODE BEGIN Includes */
 #include <string.h>
 #include <stdlib.h>
+
 #include "stm32l1xx_hal_uart.h"
 #include "stm32fxxx_hal_BTDevice.h"
 #include "stm32l152c_discovery.h"
-
 #include "buzzer.h"
+
 
 #define RX_IT_BUFFER_LENGTH 128
 #define SENSOR_DATA_MAX_LENGTH 128
@@ -55,21 +56,18 @@ TIM_HandleTypeDef htim4;
 UART_HandleTypeDef huart1; //Handler structure for userUart
 UART_HandleTypeDef huart2; //Handler structure for deviceUart
 
+
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-uint8_t rxITBuffer[RX_IT_BUFFER_LENGTH];
-uint8_t rxDMAIndex = 0;
-uint8_t rxITIndex = 0;
 uint8_t husart1RxBuffer;
 uint8_t husart2RxBuffer;
-uint32_t systickCounter = 0;
-uint32_t systickLimit = 30000;
-uint32_t tim1CounterS = 0;
 
+static uint8_t localDataBuffer[256]; /*!< Buffer to store the data received by the node from the gateway */
 
+static uint16_t localDataLength; /*!< The length of the data that was received */
 
+static uint8_t deviceCommandReceivedFlag = 0; /*<! Flag to signal that data was received by the node (from the gateway). 0 = nothing, 1 = data received */
 
-TIM_HandleTypeDef htim3;
 
 /* USER CODE END PV */
 /* Private function prototypes -----------------------------------------------*/
@@ -86,30 +84,18 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-static void storeNewValueIntoInputBuffer();
 static void deviceCommandReceivedCallback(uint8_t *dataBuffer, uint16_t dataLength);
-static void deviceCommandReceivedHandler();
-static void resetInputBuffer();
+static void deviceCommandReceived();
 static void initBTDevice();
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 static uint32_t getSensorValue();
 static uint8_t *getSensorData(void);
-
 static void doTheLEDPlay();
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 
-
-//Used to receive the data from the device command
-//Init processed in main
-static uint8_t localDataBuffer[256];
-static uint16_t localDataLength;
-
-static uint8_t deviceCommandReceivedFlag = 0;
-//static uint8_t periodicDataSentFlag = 0;
 
 int main(void)
 {
-
 	/* MCU Configuration----------------------------------------------------------*/
 
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -122,17 +108,16 @@ int main(void)
 	MX_GPIO_Init();
 	MX_ADC_Init();
 	MX_TIM2_Init();
+	MX_TIM4_Init(); //Used to generate PWM frequency to stimulate the passive buzzer
 	MX_USART1_UART_Init(); //Init userHuart
 	MX_USART2_UART_Init(); //Init deviceHuart
-	MX_TIM4_Init(); //Used to generate PWM frequency to stimulate the passive buzzer
 
 	//Initialize the LEDs
 	BSP_LED_Init(LED_GREEN);
 	BSP_LED_Init(LED_BLUE);
-	BSP_LED_Toggle(LED_GREEN|LED_BLUE);
+	BSP_LED_Toggle(LED_BLUE);
 
 	//Clear the buffer to remove trash
-	memset(rxITBuffer,0,sizeof(rxITBuffer));
 	memset(localDataBuffer,0, sizeof(localDataBuffer));
 	localDataLength = 0;
 
@@ -143,7 +128,6 @@ int main(void)
 
 	//Enable IT for TIM2 (used for periodic data transfer)
 	HAL_TIM_Base_Start_IT(&htim2);
-
 
 	//Init the BTDevice library
 	initBTDevice();
@@ -156,29 +140,27 @@ int main(void)
 	BTDevice_AutoInitTypeDef defaultValues;
 	defaultValues.timerPeriodValue = 300;
 	defaultValues.autoModeStatus = AUTOMODE_ON;
-	while(1){
-		if(BTDevice_autoInitWithDefaultValues(defaultValues) == BTDevice_OK){
-			doTheLEDPlay();
-			break; //Only break the loop once the device is connected
-		}else{
-			BTDevice_initLoop();
-		}
-	}
+	while(BTDevice_initLoop(defaultValues) != BTDevice_OK)
+		;
+
+	doTheLEDPlay();
+
+	/**
+	 * Main Loop
+	 *
+	 * the library mainLoop fct will be called to process UART and TIM interupts
+	 *
+	 * when a message was received by the device (from the gateway), a special handler function is called
+	 */
 	while (1)
 	{
 		BTDevice_mainLoop();
 
-		//When data/command is received from the gateway, deviceCommandReceivedFlag is raised
+		//True when data is received from the gateway
 		if(deviceCommandReceivedFlag){
-			deviceCommandReceivedFlag = 0;
-			deviceCommandReceivedHandler();
+			deviceCommandReceivedFlag = 0; //Lower the flag
+			deviceCommandReceived(); //Call the handler to analyse the received data.
 		}
-
-//		if(periodicDataSentFlag == 1){
-//			doTheLEDPlay();
-//			periodicDataSentFlag = 0;
-//		}
-
 	}
 }
 
@@ -192,19 +174,19 @@ int main(void)
 /**
  * To enable this callback, TIMx CHANNELx must be started in PWM_IT mode.
  *
- * This callback will be called when the PWM pulse is done (I dont know when it's the case, either when TIMx->CNT = TIMx->CCRx or = TIMx->ARR)
+ * This callback will be executed when the PWM pulse is done (I dont know when it's the case, either when TIMx->CNT = TIMx->CCRx or = TIMx->ARR)
  * Here is the right place to change the TIMx->CCRx value
  *
  * (TIMx->ARR/TIMx->CCRx = pwm duty cycle. Change either ARR or CCRx registers to change duty cycle)
  * Then PWM pulse will be set to high while TIMx->CNT is lower (or equal ?) to TIMx->CCRx. When it's greater, the pulse will be set to low
  * When TIMx->CNT is equals to TIMx->ARR, TIM->CNT is set to 0 thus repeating the previous sequence.
  */
-
 void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim){
 	if(htim->Instance == TIM4){
 		//			TIM4->CCR3 = (uint32_t)5000/(notes[level]*2); //Set new value for the pwm duty cycle
 	}
 }
+
 
 /**
  * To enable this callback, TIMx CHANNELx must be started in PWM_IT mode
@@ -230,7 +212,7 @@ void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim){
 /**
  * Return a JSON formatted dynamically allocated(with malloc) string (= uint8_t *buffer) containing the
  * value from @getSensorValue
- * Dont forget to the buffer's address as soon as it's not needed anymore (currently in TIM Callback)
+ * This allocated buffer is then free'd (call to 'free' in the library) once it's data has been sent.
  */
 static uint8_t * getSensorData(void){
 	uint32_t value = getSensorValue();
@@ -239,9 +221,10 @@ static uint8_t * getSensorData(void){
 	sprintf((char *)dataBuffer,"{\"brightness\":\"%lu\"}",value);
 	return dataBuffer;
 }
+
+
 /**
- * Return the light value
- * @pre CPU temperature sensor must have been initialized before (ADC1 Channel 16)
+ * Return the light sensor's value
  */
 static uint32_t getSensorValue(void){
 	uint32_t sensorValue;
@@ -254,26 +237,28 @@ static uint32_t getSensorValue(void){
 
 
 /**
- * This callback is called from the library whenever a command/data was received by the BTDevice (sent by the Gateway thus following a REST API post)
+ * This callback is called from the library whenever a command/data was received by the
+ * BTDevice (sent by the Gateway which means following a REST API post)
  *
- * This function's address must be provided to the library during the BTDevice_Init();
+ * It will copy the data received into a local buffer and raise a flag so that the data will be analyzed next time CPU is "free"
  *
+ * @pre this function's address must be provided to the library during the BTDevice_Init();
+ * @pre the localDataBuffer must be clear of trash (recommend to use memset to fill with zeroes)
  */
 void deviceCommandReceivedCallback(uint8_t *dataBuffer, uint16_t dataLength){
-	//Here we can simply display the data on the userHuart or do some special action
-
 	strcpy((char *)localDataBuffer,(char *)dataBuffer); //Get a copy of the data we received
 	localDataLength = dataLength;
 	deviceCommandReceivedFlag = 1; //Raise the flag. See main loop
 }
 
+
 /*
- * This handler will be called when data/command has been received from the gateway
- *
+ * This function will be called from Main Loop when data/command has been received from the gateway.
  */
-//TODO PREVENT SPAM IN THE LIBRARY
-void deviceCommandReceivedHandler(){
-	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_3); //Start the TIM4 on channel 3 (pin PB8) to generate PWM
+void deviceCommandReceived(){
+	//Start the TIM4 on channel 3 (pin PB8) to generate PWM
+	HAL_TIM_PWM_Start(&htim4,TIM_CHANNEL_3);
+
 	//Display the received data on userUart
 	uint8_t txBuffer[128];
 	memset(txBuffer, 0 ,sizeof(txBuffer));
@@ -282,20 +267,25 @@ void deviceCommandReceivedHandler(){
 	HAL_UART_Transmit(&huart1, localDataBuffer, localDataLength,10);
 	HAL_UART_Transmit(&huart1, (uint8_t *)"\r\n",sizeof("\r\n"),10);
 
-	if(strcmp((const char *)localDataBuffer,"Hello World!")){
+
+	//Analyze the received data
+	if(strcmp((const char *)localDataBuffer,"DoorAlert")){ //Door has been opened for too long
+
 		//Make some flashy moves with the LEDs to signal data/command was received
 		doTheLEDPlay();
 
-		//Play the Imperial March melody
+		//Play the Imperial March melody with the buzzer
 		Buzzer_playImperialMarch();
 
 		//Signal the end of the melody with flashy moves
 		doTheLEDPlay();
-	}else if(strcmp((const char *)localDataBuffer,"FireAlert")){
+
+	}else if(strcmp((const char *)localDataBuffer,"FireAlert")){ //Temperature is too high
 		doTheLEDPlay();
 		Buzzer_playImperialMarch();
 		doTheLEDPlay();
 	}
+
 	//No more PWM to generate, stop the TIM4 Channel 3
 	HAL_TIM_PWM_Stop(&htim4,TIM_CHANNEL_3);
 }
@@ -329,15 +319,16 @@ static void doTheLEDPlay(){
  * 		=> set the UART peripherals to be used : userUart and deviceUart
  * 		=> set the buffer's address to be used to analyze received characters from user input : userInputBuffer
  * 		=> set the user input buffer reset routine : resetInputBufferHandler
- * 		=> set the routine to handle commands/data received by the node from the gateway
+ * 		=> set the function to handle commands/data received by the node from the gateway : deviceCommandReceivedFunction
+ * 		=> set the function to perform the data sensing and formatting (JSON format) : getSensorDataFunction
+ * 		=> set the function to be called when the sensor's data has been sent : dataSentCallback
+ * 		=> set the maximum length of the data payload : sensorDataMaxLength
  */
 static void initBTDevice(void){
 
 	BTDevice_InitTypeDef BTDevice_InitStruct;
 	BTDevice_InitStruct.userHuart = &huart1;
 	BTDevice_InitStruct.deviceHuart = &huart2;
-	BTDevice_InitStruct.userInputBuffer = rxITBuffer;
-	BTDevice_InitStruct.resetInputBufferHandler = &resetInputBuffer;
 	BTDevice_InitStruct.deviceCommandReceivedHandler = &deviceCommandReceivedCallback;
 	BTDevice_InitStruct.getSensorDataFunction = &getSensorData;
 	BTDevice_InitStruct.dataSentCallback = &doTheLEDPlay;
@@ -346,71 +337,40 @@ static void initBTDevice(void){
 }
 
 
-/*
- * Store the received character from user input into the buffer
- * This routine will be called by the UART IT Callback
- * @pre rxITIndex must be initialized to zero
- * @pre rxITBuffer should be filled with zeroes
- */
-void storeNewValueIntoInputBuffer() {
-	rxITBuffer[rxITIndex] = husart1RxBuffer;
-	rxITIndex++;
-}
-
 /**
- * Fill the user input buffer with zeroes and set it's index to zero.
- */
-void resetInputBuffer() {
-	memset(rxITBuffer, 0, sizeof(rxITBuffer));
-	rxITIndex = 0;
-}
-
-/**
- * Every second, this callback will be called following a TIM PeriodEllapsed interruption
- * The following process is executed :
- * 		=>Call BTDevice_timerCallback() to check if new data should be sent (it depends on the time ellapsed
- * 		since last data was sent)
- * 		=>When it's time to send new data, it will call getSensorData (which should return a dynamically allocated
- * 		uint8_buffer * 		containing the data) and then send it through the deviceUart using BTDevice_sendData()
- * 		=>rise a flag to perform some LED visuals to signal the user that data is beeing sent
+ * Every second, this callback will be executed following a TIM PeriodEllapsed interruption
+ * Read the library comments for complete details on the process.
+ *
+ * @brief Check if enough time since last transfer has been waited. If so, send the data, if not, wait. Time between two transfer can be changed
+ * through commands
  * @pre TIMx should be configured to trigger an IT every second
  *
  **/
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if(htim->Instance == TIM2){
 		BTDevice_timerCallback();
-//		if(timerCallback()){
-//
-//			uint8_t *tmp = getSensorData();
-//			BTDevice_sendData(tmp,SENSOR_DATA_MAX_LENGTH);
-//			free(tmp);
-//			periodicDataSentFlag = 1;
-//		}
 	}
 }
 
 /**
  * Each time a character is received on either userUart or deviceUart, this callback will be called by the IRQHandler
+ *
  * The following process is executed :
- * 		## if the character was received on userUart, the character is store into the user input buffer by calling
- * 		storeNewValueIntoInputBuffer()
- * 		=>Then the userInputBuffer is analyzed by the lirabry to recognize a command. The reception process is
- * 		restarting in IT mode to enable the next character reception using HAL_UART_Receive_IT
+ *
+ * 		## if the character was received on userUart, the character is store into the user input buffer.
+ * 		Then the library's userInputBuffer is analyzed to recognize a command. Finally, Reception for next character is enabled
  *
  *		## If the character was received on the deviceUart, BTDevice_deviceUartCallback will be called. This routine
- *		will send analyse the byte received, then will enable reception for the rest of the message and will
- *		process it. Finally, once the full message has been received and processed, it will enable the next character
- *		reception using HAL_UART_Receive_IT
+ *		will analyse the byte received, then will enable reception for the rest of the message and will
+ *		process it. Finally, once the full message has been received and processed, it will enable reception for the next message
  */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	if(huart->Instance == USART2){
 		BTDevice_deviceUartCallback(&husart2RxBuffer);
 	}
 	if(huart->Instance == USART1){
-		storeNewValueIntoInputBuffer();
-		//BTDevice_userUartCallback();
 		BTDevice_userUartCallback(&husart1RxBuffer);
- 	}
+	}
 }
 
 /*******************************************************************************

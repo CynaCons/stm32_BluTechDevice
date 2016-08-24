@@ -48,44 +48,51 @@
 
 #define NB_MENU_LINES 27 /*!< Number of lines to display in the menu */
 
-#define DEVICE_DATA_MAX_LENGTH 256 /*!< The maximum size of data that can be sent using a BTDevice */
+#define DEVICE_DATA_MAX_LENGTH 256 /*!< The maximum size of data that can be received by a BTDevice. This is not a choice, see BT specs */
 
+#define USER_RX_BUFFER_LENGTH 128 /*!< Length of the buffer used to store user input */
 
 /********************************
  * Private functions prototypes
  ********************************/
 static uint8_t checkForInputBufferReset(void);
 static void displayMenu();
+static uint8_t getAutoModeStatus(void);
+static uint32_t getPeriodCounter(void);
+static uint32_t getTimerPeriod(void);
+static void incrementPeriodCounter(void);
+static void resetPeriodCounter(void);
+static void resetDeviceInputBuffer(void);
+static void sendDataToDevice(uint8_t *dataBuffer, uint16_t dataBufferLength);
 static void setUserUartInTimerSettingsMode(void);
 static void setUserUartInDataInputMode(void);
 static void setUserUartInCommandMode(void);
 static void setDeviceHuart(UART_HandleTypeDef *huartx);
 static void setDeviceCommandReceivedHandler(void (*fPtr)(uint8_t *dataBuffer, uint16_t dataLength));
 static void setDataSentCallback(void (*fPtr)(void));
+static void setUserHuart(UART_HandleTypeDef *huartx);
 static void setSensorDataFunction(uint8_t* (*fPtr)(void));
 static void setSensorDataMaxLength(uint16_t maxLength);
-static void setUserHuart(UART_HandleTypeDef *huartx);
-static void setUserInputBuffer(uint8_t *ptrBuffer);
-static void setResetInputBufferHandler(void (*fPtr)());
-static void sendDataToDevice(uint8_t *dataBuffer, uint16_t dataLength);
+static uint8_t setTimerPeriod();
 static void startAutoMode();
 static void stopAutoMode();
-static uint8_t setTimerPeriod();
-static void resetPeriodCounter(void);
-static uint8_t getAutoModeStatus(void);
-static void incrementPeriodCounter(void);
-static uint32_t getPeriodCounter(void);
-static uint32_t getTimerPeriod(void);
-static void resetDeviceInputBuffer(void);
+static void resetInputBuffer();
+static void storeNewValueIntoInputBuffer(uint8_t newCharacter);
+static void Throw_Error(BTDevice_Error errorCode);
+
+
 
 
 //Handlers for each command
 static void autoModeOnHandler(void);
 static void autoModeOffHandler(void);
+static void deviceStatusHandler(void);
+static void flushSensorDataHandler(void);
 static uint8_t getDataFromUser(void);
+static void getAutoModeStatusHandler(void);
 static void getNetworkStatusHandler(void);
-static void getTimerPeriodHandler(void);
 static void getSensorValueHandler(void);
+static void getTimerPeriodHandler(void);
 static void menuHandler(void);
 static void networkJoinHandler(void);
 static void rfSignalCheckHandler(void);
@@ -93,9 +100,6 @@ static void rsHandler(void);
 static void sendDataHandler(void);
 static void sendSampleDataHandler(void);
 static void setTimerPeriodHandler(void);
-static void flushSensorDataHandler(void);
-static void getAutoModeStatusHandler(void);
-static void deviceStatusHandler(void);
 
 
 
@@ -117,10 +121,10 @@ typedef enum {
 	SENDSAMPLEDATA, /*!< Send data sample to the device */
 	SET_TIMER_PERIOD, /*!< Set the timer period */
 	GET_TIMER_PERIOD, /*!< Returns the current timer period*/
-	GET_NETWORK_STATUS, /*<! Returns the current state of network (joined or not)*/
-	FLUSH_SENSOR_DATA, /*<! Force the sending of sensor data and reset the period counter */
-	GET_AUTOMODE_STATUS, //TODO COMMENT
-	DEVICE_STATUS,
+	GET_NETWORK_STATUS, /*!< Returns the current state of network (joined or not)*/
+	FLUSH_SENSOR_DATA, /*!< Force the sending of sensor data and reset the period counter */
+	GET_AUTOMODE_STATUS, /*!< Display the current AutoMode state (ON or OFF) */
+	DEVICE_STATUS, /*!< Display numerous indicators and states of the devices */
 	COMMAND_NB/*!< Total number of commands that the user can send */
 } commandID;
 
@@ -219,8 +223,6 @@ static UART_HandleTypeDef *deviceHuart; /*!< This uart is used to send/receive c
 
 static uint32_t periodCounter = 0; /*!< Number of seconds that have passed since last data transfer */
 
-void (*resetInputBufferHandler)();/*!< Function pointer to the function used to reset the user input buffer */
-
 void (*deviceCommandReceivedHandler)(uint8_t *dataBuffer, uint16_t dataLength); /*!< Function pointer the function
 that will process the received data/command (received by the node from the gateway)*/
 
@@ -238,33 +240,34 @@ static volatile uint16_t rcvDataLength = 0; /*!< Global container to store how m
 
 static uint32_t timerPeriod = 5; /*!<Default value for period between two transfer. Use menu to change or AutoInit procedure */
 
-static uint8_t *userInputBuffer = NULL; /*!< Adress of the buffer that is read to analyse user's input */
-
 static UART_HandleTypeDef *userHuart; /*!< This uart is used to communicate with the user through serial cable */
 
 static uint8_t userUartMode = COMMAND_MODE;/*!< Current state for the userUart. See enum definition*/
 
 static uint8_t * savedDataBuffer = NULL; /*!< Dynamicaly allocated(strdup) buffer containing the last data sent */ 
 
-//TODO
-//Flags
-static uint8_t userUartCallbackFlag = 0;
+static uint8_t userUartCallbackFlag = 0; /*!< Flag to signal a character was received on userUart. It triggers received data analysis */
 
-static uint8_t deviceUartCallbackFlag = 0;
+static uint8_t deviceUartCallbackFlag = 0; /*!< Flag to signal a character was received on deviceUart. It triggers received data analysis */
 
-static uint8_t timerCallbackFlag = 0;
+static uint8_t timerCallbackFlag = 0; /*!< Flag to signal a second has ellapsed. It triggers data sending when enough time has bee waited */
 
-static uint8_t *localDeviceUartRxBuffer = NULL;
+static uint8_t *localDeviceUartRxBuffer = NULL; /*!< Address of the syngle-byte buffer used to receive user input */
 
-static uint8_t* (*getSensorData)(void);
+static uint8_t* (*getSensorData)(void); /*!< Function pointer to the function that will return sensor data in JSON format */
 
-static uint16_t sensorDataMaxLength = 0;
+static uint16_t sensorDataMaxLength = 0; /*!< Maximum length of the sensor data */
 
-static void (*dataSentCallback)(void);
+static void (*dataSentCallback)(void); /*!< Function pointer to the function to be called once data has been sent */
 
-static uint32_t lastInterruptTick = 0;
+static uint32_t lastInterruptTick = 0; /*!< Used in order to create a short delay between a character received on userUart and analysis of the data*/
 
-static uint8_t rfSignalCheckCopy[4] = ""; // length = 4. 3 bytes for signal info and one byte for terminating '\0'
+static uint8_t rfSignalCheckCopy[3] = ""; /*!< Used to store the last  signal information. Three bytes to store : RSSI (2 bytes) and SNR (1 byte) */
+
+static uint8_t userInputBuffer[USER_RX_BUFFER_LENGTH] = ""; /*!< Buffer to store the characters typed by the user */
+
+static uint16_t userInputBufferIndex = 0; /*!< Current index of where to write in the userInputBuffer */
+
 
 /*********************
  * Private functions
@@ -285,13 +288,12 @@ static uint8_t checkForInputBufferReset(void){
 }
 
 
-
-
 /**
- * Display the application menu
+ * Display the application menu and commands name
  */
 static void displayMenu(void){
-	uint8_t *menuContent[NB_MENU_LINES] = {
+	//Static strings for the menu
+	const uint8_t *menuContent[NB_MENU_LINES] = {
 			(uint8_t *)"= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = \r\n",
 			(uint8_t *)"			                APPLICATION MENU		                       	\r\n",
 			(uint8_t *)"	                                                                        \r\n",
@@ -321,12 +323,14 @@ static void displayMenu(void){
 			(uint8_t *)"= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = \r\n",
 
 	};
+
 	//Display the menu
 	uint8_t menuIterator = 0;
 	for(menuIterator = 0; menuIterator < NB_MENU_LINES; menuIterator++){
 		HAL_UART_Transmit(userHuart,(uint8_t *)menuContent[menuIterator], strlen((const char *)menuContent[menuIterator]),10);
 	}
 }
+
 
 /**
  * Return the value of networkJoinStatus variable.
@@ -354,6 +358,7 @@ static void setUserUartInTimerSettingsMode(){
 	HAL_UART_Transmit(userHuart,buffer,sizeof(buffer),10);
 }
 
+
 /**
  * Set user uart in data input mode
  */
@@ -378,21 +383,6 @@ static void setUserUartInCommandMode(){
 
 
 /**
- * Set the function pointer for the resetInputBuffer handler.
- * 		# The user input buffer (declared and filled in main, it's address is given to the library during Init so
- * 			that the library can analyze it
- * 		# The function to reset this buffer should be written in main.c by the user and the function's pointer
- * 		should be passed to the library during init so that the buffer could be cleaned FROM the library.
- *		# The function can then be called using the function pointer "resetInputBufferHandler();"
- *
- *	@param *fptr function pointer to the routine that should perform the reset
- */
-static void setResetInputBufferHandler(void (*fPtr)()){
-	resetInputBufferHandler = fPtr;
-}
-
-
-/**
  * Set the uart to be used as user uart for the BTDevice library. This user uart is then used to display the UI and configure the board.
  * @param [in] huartx UART_HandleTypeDef's address of the uart handler to use.
  * @pre The uartx must have been initialized before in IT mode.
@@ -412,7 +402,7 @@ void setDeviceHuart(UART_HandleTypeDef *huartx){
 }
 
 
-/*
+/**
  * Set the function pointer for the deviceCommandReceivedHandler
  *		#The function that should process the received data/command should be written in main.c
  *		#This's function's pointer should then be passed to the library during Init so that the library can call
@@ -428,28 +418,51 @@ static void setDeviceCommandReceivedHandler(void (*fPtr)(uint8_t *dataBuffer, ui
 
 }
 
+
+/**
+ * Set the function pointer for the function that will returns the sensor data correctly formated (JSON format)
+ * The function can be exectuted in the library by a direct call to the function pointer's name "getSensorData()"
+ *
+ * @param [in] fPtr pointer to the function's address
+ * @pre the function pointed by the pointer must be defined in user space
+ */
 static void setSensorDataFunction(uint8_t* (*fPtr)(void))
-{ //TODO COMMENT
+{
 	getSensorData = fPtr;
 }
 
+
+/**
+ * Set the maximum length for the sensor data
+ *
+ * @param [in] maxLength the maximum length for the sensor data
+ */
 static void setSensorDataMaxLength(uint16_t maxLength)
 {
 	sensorDataMaxLength = maxLength;
 }
 
+
+/**
+ * Set the function pointer for the function that will be exectuted when the sensor data has been sent
+ * The function can be executed in the library by a direct call to the function pointer's name "dataSentCallback()"
+ *
+ * @param [in] fPtr pointer to the function's address
+ * @pre the function pointed by the pointer must be defined in user space
+ */
 static void setDataSentCallback(void (*fPtr)(void))
 {
 	dataSentCallback = fPtr;
 }
 
-/**
- * Set the user input buffer's address to be check to recognize user's commands and set it's length.
- * @param [in] ptrBuffer pointer to the user input buffer.
- */
-void setUserInputBuffer(uint8_t *ptrBuffer){
-	userInputBuffer = ptrBuffer;
-}
+
+///**
+// * Set the user input buffer's address to be check to recognize user's commands and set it's length.
+// * @param [in] ptrBuffer pointer to the user input buffer.
+// */
+//void setUserInputBuffer(uint8_t *ptrBuffer){
+//	userInputBuffer = ptrBuffer;
+//}
 
 
 /**
@@ -461,6 +474,7 @@ static uint8_t getDataFromUser(void){
 	memset(tmp,0,sizeof(tmp));
 	uint8_t data[64]; //buffer for the data to be sent. Must be followed by " end"
 	memset(data,0,sizeof(data));
+
 	//Make sure enough characters have been typed
 	uint16_t bufferLength  = strlen((const char *)userInputBuffer);
 	if(bufferLength >= 3){
@@ -488,12 +502,13 @@ static uint8_t getUserUartMode(void){
 	return userUartMode;
 }
 
+
 /**
  * Send a data buffer using the BT device. The sending is done using BT's UART commands and respects it's format (03 0xlength 0xData)
  * @param in dataBuffer pointer to the data buffer
  * @param in maxDataLength maximum size of the buffer
  */
-static void sendDataToDevice(uint8_t * dataBuffer, uint16_t dataMaxLength){
+static void sendDataToDevice(uint8_t * dataBuffer, uint16_t dataBufferLength){
 	const uint16_t dataLength = strlen((const char *)dataBuffer)+2*sizeof(uint8_t);
 	uint8_t commandBuffer[dataLength];
 	uint16_t i = 0;
@@ -507,12 +522,13 @@ static void sendDataToDevice(uint8_t * dataBuffer, uint16_t dataMaxLength){
 		}
 	}
 	HAL_UART_Transmit(deviceHuart,commandBuffer,sizeof(commandBuffer),10);
-	uint8_t txBuffer[dataMaxLength+sizeof("The following data was just sent : \r\n")];
+	uint8_t txBuffer[dataBufferLength+sizeof("The following data was just sent : \r\n")];
 	memset(txBuffer,0,sizeof(txBuffer));
 	sprintf((char *)txBuffer, "The following data was just sent : ");
 	strcat((char *)txBuffer,(const char *)dataBuffer);
 	strcat((char *)txBuffer,"\r\n");
 	HAL_UART_Transmit(userHuart,txBuffer,strlen((const char *)txBuffer),10);
+
 	//Make a copy of the last sent data
 	//If the pointer has been allocated before : Free, clean and allocate
 	if(savedDataBuffer != NULL){
@@ -548,20 +564,21 @@ static uint8_t setTimerPeriod(void){
 	return NO_RESET;
 }
 
+
 /**
  * Start to send temperature periodically
  */
 static void startAutoMode(void){
 	uint8_t txBuffer[128];
 	memset(txBuffer,0,sizeof(txBuffer));
-	sprintf((char *)txBuffer,"\r\nAutoMode Started !\r\n");
+	sprintf((char *)txBuffer,"AutoMode Started !\r\n");
 	HAL_UART_Transmit(userHuart,txBuffer, sizeof(txBuffer),10);
 	memset(txBuffer,0,sizeof(txBuffer));
 	sprintf((char *)txBuffer,"Data will now be sent periodically\r\n");
 	HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 	uint32_t timerPeriodValue = getTimerPeriod();
 	memset(txBuffer,0,sizeof(txBuffer));
-	sprintf((char *)txBuffer,"\r\nCurrent timer period value : %lu seconds\r\n",timerPeriodValue);
+	sprintf((char *)txBuffer,"Current timer period value : %lu seconds\r\n",timerPeriodValue);
 	HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 	autoModeStatus = AUTOMODE_ON;
 }
@@ -572,7 +589,7 @@ static void startAutoMode(void){
 static void stopAutoMode(void){
 	uint8_t txBuffer[128];
 	memset(txBuffer,0,sizeof(txBuffer));
-	sprintf((char *)txBuffer,"\r\nAutoMode Stopped !\r\nData will not be sent periodically\r\n");
+	sprintf((char *)txBuffer,"AutoMode Stopped !\r\nData will not be sent periodically\r\n");
 	HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 	autoModeStatus = AUTOMODE_OFF;
 }
@@ -592,7 +609,7 @@ static void menuHandler(void){
 static void rsHandler(void){
 	uint8_t txBuffer[128];
 	memset(txBuffer,0,sizeof(txBuffer));
-	sprintf((char *)txBuffer,"\r\nInput buffer reset. Start typing a new command\r\n");
+	sprintf((char *)txBuffer,"Input buffer reset. Start typing a new command\r\n");
 	HAL_UART_Transmit(userHuart,txBuffer, sizeof(txBuffer),10);
 }
 
@@ -608,7 +625,7 @@ static void flushSensorDataHandler(void){
 	uint8_t txBuffer[128];
 	memset(txBuffer,0, sizeof(txBuffer));
 	flushSensorDataFlag = 1;
-	sprintf((char *)txBuffer,"\r\nFlushing the sensor data...\r\n");
+	sprintf((char *)txBuffer,"Flushing the sensor data...\r\n");
 	HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 }
 
@@ -616,13 +633,14 @@ static void getAutoModeStatusHandler(void){
 	uint8_t txBuffer[128];
 	memset(txBuffer,0,sizeof(txBuffer));
 	if(getAutoModeStatus() == AUTOMODE_OFF){
-		sprintf((char *)txBuffer, "\r\nAutoMode is OFF\r\n");
+		sprintf((char *)txBuffer, "AutoMode is OFF\r\n");
 		HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 	}else{
-		sprintf((char *)txBuffer, "\r\nAutoMode is ON\r\n");
+		sprintf((char *)txBuffer, "AutoMode is ON\r\n");
 		HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 	}
 }
+
 
 static void deviceStatusHandler(void)
 {
@@ -635,13 +653,13 @@ static void deviceStatusHandler(void)
 	getNetworkStatusHandler();
 	memset(txBuffer,0,sizeof(txBuffer));
 	if(rfSignalCheckCopy[0] != '\0')
-		sprintf((char *)txBuffer,"Signal info : %s\r\n",rfSignalCheckCopy);
+		sprintf((char *)txBuffer,"Signal info : RSSI %x%x , SNR %x\r\n",rfSignalCheckCopy[0],rfSignalCheckCopy[1],rfSignalCheckCopy[2]);
 	else
 		sprintf((char *)txBuffer,"Signal info : no signal info available. Do \"rf signal check \" first\r\n");
 	HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 	getSensorValueHandler();
 	memset(txBuffer,0,sizeof(txBuffer));
-	sprintf((char *)txBuffer,"\r\n . . . . . . . .Device status report END. . . . . . . .\r\n");
+	sprintf((char *)txBuffer,". . . . . . . .Device status report END. . . . . . . .\r\n");
 	HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 }
 
@@ -653,9 +671,9 @@ static void getSensorValueHandler(void){
 	uint8_t txBuffer[128];
 	memset(txBuffer,0,sizeof(txBuffer));
 	if(savedDataBuffer != NULL){
-		sprintf((char *)txBuffer,"\r\nThis is the last sent data :\r\n%s\r\n",savedDataBuffer);
+		sprintf((char *)txBuffer,"This is the last sent data :%s\r\n",savedDataBuffer);
 	}else{
-		sprintf((char *)txBuffer,"\r\nNo data has been sent yet\r\n");
+		sprintf((char *)txBuffer,"No data has been sent yet\r\n");
 	}
 	HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 }
@@ -663,7 +681,7 @@ static void getSensorValueHandler(void){
 
 static void rfSignalCheckHandler(void){
 	uint8_t command[3];
-	uint8_t buffer[] = "\r\nrfsignalcheck command was sent\r\n";
+	uint8_t buffer[] = "rfsignalcheck command was sent\r\n";
 	command[0] = 0x01; command[1] = 0x01; command[2] = 0x01;
 	HAL_UART_Transmit(deviceHuart,command,sizeof(command),10);
 	HAL_UART_Transmit(userHuart, buffer, sizeof(buffer),10);
@@ -672,7 +690,7 @@ static void rfSignalCheckHandler(void){
 
 static void networkJoinHandler(void){
 	uint8_t command[3];
-	uint8_t buffer[] = "\r\nnetworkjoin command was sent\r\n";
+	uint8_t buffer[] = "networkjoin command was sent\r\n";
 	command[0] = 0x02; command[1] = 0x01; command[2] = 0x01;
 	HAL_UART_Transmit(deviceHuart, command,sizeof(command),10);
 	HAL_UART_Transmit(userHuart, buffer,sizeof(buffer),10);
@@ -688,7 +706,7 @@ static void sendSampleDataHandler(void){
 	HAL_UART_Transmit(deviceHuart, command,sizeof(command),10);
 	uint8_t txBuffer[64];
 	memset(txBuffer,0,sizeof(txBuffer));
-	sprintf((char *)txBuffer,"\r\nThis data was sent : %d %d %d %d %d\r\n",command[2],command[3],
+	sprintf((char *)txBuffer,"This data was sent : %d %d %d %d %d\r\n",command[2],command[3],
 			command[4],command[5],command[6]);
 	HAL_UART_Transmit(userHuart,txBuffer, sizeof(txBuffer), 10);;
 }
@@ -697,10 +715,10 @@ static void getNetworkStatusHandler(void){
 	uint8_t txBuffer[128];
 	memset(txBuffer,0,sizeof(txBuffer));
 	if(getNetworkJoinStatus() == NETWORK_JOIN_OK){
-		sprintf((char *)txBuffer,"\r\nCurrent network status : NETWORK JOIN OK\r\n");
+		sprintf((char *)txBuffer,"Current network status : NETWORK JOIN OK\r\n");
 		HAL_UART_Transmit(userHuart, txBuffer, sizeof(txBuffer),10);
 	}else{
-		sprintf((char *)txBuffer, "\r\nCurrent network status : NETWORK JOIN ERROR\r\n");
+		sprintf((char *)txBuffer, "Current network status : NETWORK JOIN ERROR\r\n");
 		HAL_UART_Transmit(userHuart, txBuffer, sizeof(txBuffer),10);
 	}
 
@@ -710,7 +728,7 @@ static void getTimerPeriodHandler(void){
 	uint32_t timerPeriodValue = getTimerPeriod();
 	uint8_t txBuffer[64];
 	memset(txBuffer,0,sizeof(txBuffer));
-	sprintf((char *)txBuffer,"\r\nCurrent timer period value : %lu seconds\r\n",timerPeriodValue);
+	sprintf((char *)txBuffer,"Current timer period value : %lu seconds\r\n",timerPeriodValue);
 	HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 }
 
@@ -751,7 +769,6 @@ static void incrementPeriodCounter(){
 }
 
 
-
 /**
  * Reset the number of seconds waited since last data transfer
  */
@@ -767,43 +784,69 @@ static void resetDeviceInputBuffer(void){
 }
 
 
+/**
+ * Fill the user input buffer with zeroes and set it's index to zero.
+ */
+static void resetInputBuffer() {
+	memset(userInputBuffer, 0, sizeof(userInputBuffer));
+	userInputBufferIndex = 0;
+}
+
+
+/*
+ * Store the received character from user input into the buffer
+ * This routine will be called by the UART Callback
+ * @pre rxITIndex must be initialized to zero
+ * @pre rxITBuffer should be filled with zeroes
+ */
+void storeNewValueIntoInputBuffer(uint8_t newCharacter) {
+	userInputBuffer[userInputBufferIndex] = newCharacter;
+	userInputBufferIndex++;
+}
+
+
 /*****************************
  * BTDevice public functions
  *****************************/
 
 
 /*
- * This function should be used and called from user main when a device must be initialized on startup without further configuration.
- *
+ * This function will be called by BTDevice_intitLoop() when a device must be initialized on startup without further configuration.
  * This function will set the timer period value, the automode status and will perform a network join
- * Then it waits 4 seconds in blocking mode and check whether or not the network join was successful
- * If network join was successful it returns BTDevice_OK, otherwise it returns BTDevice_ERROR
  *
- * See formatted commenting in the header file
+ * @param [in] defaultValues the structure containing initialisation parameters
+ * @retVal BTDevice_OK if connected, BTDevice_ERROR otherwise
  */
-BTDevice_Status BTDevice_autoInitWithDefaultValues(BTDevice_AutoInitTypeDef defaultValues){
+BTDevice_Status autoInitWithDefaultValues(BTDevice_AutoInitTypeDef defaultValues){
 	static uint32_t startTick = 0;
-	static uint8_t txBuffer[128];
+	static uint8_t txBuffer[256];
 
-
-	if((HAL_GetTick() - startTick) >= 10000 || startTick == 0){
-		memset(txBuffer,0,sizeof(txBuffer));
-		sprintf((char *)txBuffer,"\r\n . . . . . . . .Launching AutoInit Procedure. . . . . . . .\r\n");
-		HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
-		startTick = HAL_GetTick();
+	//At first execution, set the timer and AutoMode status
+	if(startTick == 0){
+		//Set the new timer value with the parameter
 		timerPeriod = defaultValues.timerPeriodValue;
+
+		//Set the AutoMode status with the parameter
 		if(defaultValues.autoModeStatus == AUTOMODE_OFF)
 			autoModeOffHandler();
 		else
 			autoModeOnHandler();
-
-		networkJoinHandler();
-		//Wait 10 second to receive the network join confirmation
-
 	}
+	//Every 10 seconds, perform a network join. This behaviour should be repeated untill the device is connected.
+	if((HAL_GetTick() - startTick) >= 20000 || startTick == 0){
+		memset(txBuffer,0,sizeof(txBuffer));
+		sprintf((char *)txBuffer,"\r\n****************Launching AutoInit Procedure****************\r\n");
+		HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
+
+		//Send a network join request and save current time
+		startTick = HAL_GetTick();
+		networkJoinHandler();
+	}
+
+	//Check the network join status. If connected, returns BTDevice_OK which should break the loop
 	if(getNetworkJoinStatus() == NETWORK_JOIN_OK){
 		memset(txBuffer,0,sizeof(txBuffer));
-		sprintf((char *)txBuffer,"\r\n . . . . . . . .AutoInit Procedure Succes:. . . . . . . .\r\n");
+		sprintf((char *)txBuffer,"****************AutoInit Procedure Succes****************\r\n");
 		HAL_UART_Transmit(userHuart,txBuffer,sizeof(txBuffer),10);
 		return BTDevice_OK;
 	}
@@ -813,10 +856,9 @@ BTDevice_Status BTDevice_autoInitWithDefaultValues(BTDevice_AutoInitTypeDef defa
 
 /**
  * This function handle the communication from the BTDevice to the MCU
- * First, we receive the "head" (the first byte). Depending on the head value,
- * we start IT reception process for the rest of the message.
- * Once the message is completely received, we then display it to the user
- * through the userUart.
+ *
+ * The "head" (the first byte) is recevied first. Depending on the head value, start IT reception process for the rest of the message.
+ * Once the message is completely received, it is displayed to the user through the userUart and reception for the next messsage is enabled
  */
 //TODO : Sometimes when trying to receive the body of a command we probably receive some other commands at the same time.
 //TODO : The right solution  would probably be to store all the incoming bytes on IT and then read what we received in a queued manner
@@ -921,30 +963,41 @@ void BTDevice_displayMenu(void){
 /**
  * This function initializes all the required references. Call this before doing anything else.
  * The structure must be filled with references to the peripherals that should be used by this driver
+ *
+ * This function will initialize the library :
+ * 		=> set the UART peripherals to be used : userUart and deviceUart
+ * 		=> set the buffer's address to be used to analyze received characters from user input : userInputBuffer
+ * 		=> set the user input buffer reset routine : resetInputBufferHandler
+ * 		=> set the function to handle commands/data received by the node from the gateway : deviceCommandReceivedFunction
+ * 		=> set the function to perform the data sensing and formatting (JSON format) : getSensorDataFunction
+ * 		=> set the function to be called when the sensor's data has been sent : dataSentCallback
+ * 		=> set the maximum length of the data payload : sensorDataMaxLength
  */
 void BTDevice_init(BTDevice_InitTypeDef *BTDevice_InitStruct){
 	setUserHuart(BTDevice_InitStruct->userHuart);
 	setDeviceHuart(BTDevice_InitStruct->deviceHuart);
-	setUserInputBuffer(BTDevice_InitStruct->userInputBuffer);
-	setResetInputBufferHandler(BTDevice_InitStruct->resetInputBufferHandler);
+	//	setUserInputBuffer(BTDevice_InitStruct->userInputBuffer);
+	//	setResetInputBufferHandler(BTDevice_InitStruct->resetInputBufferHandler);
 	setDeviceCommandReceivedHandler(BTDevice_InitStruct->deviceCommandReceivedHandler);
 	setSensorDataFunction(BTDevice_InitStruct->getSensorDataFunction);
 	setSensorDataMaxLength(BTDevice_InitStruct->sensorDataMaxLength);
 	setDataSentCallback(BTDevice_InitStruct->dataSentCallback);
 }
 
-
 /**
- * This function is called each time the user input a character in the userUart.
- * There are several differents behavior according to the current userUart mode.
- * In COMMAND_MODE : user input buffer is analysed to recognize a known command.
- * 		If a command is recognized, the input buffer is reset and the corresponding
- * 		command handler is called.
- * In DATA_INPUT : user is prompted to input custom data to send via the BTDevice
- * 		User's data message must be finished with " end" to signal the end of the input process.
- * 		Then the adequate function is called to send the data
- * In TIMER_SETTINGS : user is prompted to input a value for the timer period. To signal the end
- * 		of the input process, user must type " end". The value is then used to time data transfers
+ *
+ * This function should be called by BTDevice_mainLoop following a received character  in the userUart
+ *
+ * There are three "modes" that handle three different cases :
+ *
+ * 		COMMAND_MODE : user is typing a command
+ * 		DATA INPUT : user is entering data to send to the gateway
+ * 		TIMER SETTINGS : user is entering a new value for the timer period
+ *
+ * 	DATA INPUT and TIMER SETTINGS mode require the user to type a special word in order to signal the end of it's input : " end" (notice the space)
+ *
+ * 	When in COMMAND MODE, the user input is compared against a set of reference strings (@commandArray)
+ * 	If a command is recognized, the appropriate handler function is executed (or the mode is changed to fit the new context)
  */
 void readInputBuffer(){
 	uint8_t commandIterator;
@@ -953,10 +1006,13 @@ void readInputBuffer(){
 	HAL_UART_Transmit(userHuart, &userInputBuffer[len-1],sizeof(uint8_t),10);
 	switch(getUserUartMode()){
 	case  COMMAND_MODE:
+		//Before looking for a command, check for 'rs' wich is a special command to reset the userInputBuffer
 		if(checkForInputBufferReset() == 1){
+			HAL_UART_Transmit(userHuart,(uint8_t *)"\r\n",sizeof((uint8_t *)"\r\n"),10);
 			rsHandler();
-			resetInputBufferHandler();
+			resetInputBuffer();
 		}else{
+			//Compare userInputBuffer against the reference strings (@commandArray)
 			for(commandIterator = 0; commandIterator < COMMAND_NB; commandIterator++){
 				if(strcmp((const char *)commandArray[commandIterator],(const char *)userInputBuffer) == 0){
 					commandRecognized = 1;
@@ -964,31 +1020,41 @@ void readInputBuffer(){
 				}
 			}
 		}
+		//If a command is recognized, it will call the appropriate handler. This require a bit more details.
+		//There are two arrays of same length : one for the reference strings (@commandArray) and one for the corresponding handler
+		//function (@commandFunctionArray). They work by pair and have the same index in the array.
 		if(commandRecognized == 1){
+			HAL_UART_Transmit(userHuart,(uint8_t *)"\r\n",sizeof((uint8_t *)"\r\n"),10);
 			(commandFunctionArray[commandIterator])();
-			resetInputBufferHandler();
+			resetInputBuffer();
 		}
 		break;
 	case DATA_INPUT:
 		if(getDataFromUser() == RESET_BUFFER){
-			resetInputBufferHandler();
+			resetInputBuffer();
 		}
 		break;
 	case TIMER_SETTINGS:
 		if(setTimerPeriod() == RESET_BUFFER){
-			resetInputBufferHandler();
+			resetInputBuffer();
 		}
 		break;
 	}
 }
 
-
 /**
  * This function send a data buffer via the BTDevice.
  * A copy of the data is displayed via the userUart.
  * When automode is turned ON, this function is called periodically.
+ *
+ * WARNING : Please be aware that dataBuffer must have been dynamically allocated before being passed in parameters. It is free'd deeper in
+ * the library
+ *
+ * @param [in] dataBuffer the data so be sent
+ * @param [in] the maximum size of the data buffer
+ * @pre dataBuffer must be dynamically allocated (malloc). It is free'd (free) deeper in the library.
  */
-void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataMaxLength){
+void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataBufferLength){
 
 	uint8_t txBuffer[64];
 	memset(txBuffer,0, sizeof(txBuffer));
@@ -999,15 +1065,20 @@ void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataMaxLength){
 		sprintf((char *)txBuffer,"AutoMode is OFF\r\n");
 		HAL_UART_Transmit(userHuart, txBuffer,sizeof(txBuffer),10);
 	}
-	sendDataToDevice(dataBuffer,dataMaxLength);
+	sendDataToDevice(dataBuffer,dataBufferLength);
+	free(dataBuffer);
 }
 
 
 /**
- * This function must be called inside the timer up callback.
- * First, the number of seconds waited since last data transfer is increased
- * Then, this number of second is compared to the timer period value (set with user menu)
- * If enough time has been waited since last data transfer, reset the counter and return 1.
+ * This function should be called from the BTDevice_mainLoop following a timer UP interupt (supposed to happen every second) or a flush command
+ *
+ * When user ask for a flush command, the number of seconds waited since last transfer is reset and 1 is returned
+ *
+ * Otherwise, if AutoMode status is ON, it will compare the number of seconds waited since last data transfer against the timer period value
+ * set during Init process or changed using the appropriate command. If enough seconds have been waited, return 1 to trigger the data sending
+ *
+ * @retval 1 to trigger the sending of data, 0 to skip the sending for this call
  */
 uint8_t timerReadyToSend(){
 	if(flushSensorDataFlag == 1){
@@ -1024,27 +1095,62 @@ uint8_t timerReadyToSend(){
 	return 0;
 }
 
-//TODO Move the RXBuffer inside the library
+/**
+ * This function should be called from the Uart Rx Complete callback following the reception of one character on the userUart
+ * It will raise a flag to signal the mainLoop that it should analyze the received data to check for a command
+ *
+ * The current tick is saved in lastInteruptTick and will be used to wait a short time (50ms) before starting to analyze the userInputBuffer
+ * This short time allow reception of several characters in high speed since the CPU is not busy analyzing what was received
+ *
+ * @param [in] *userUartTxBuffer A single byte buffer that is used to receive characters one by one from input in interput mode
+ */
 void BTDevice_userUartCallback(uint8_t *userUartRxBuffer)
 {
+	storeNewValueIntoInputBuffer(*userUartRxBuffer);
 	userUartCallbackFlag = 1;
 	HAL_UART_Receive_IT(userHuart,userUartRxBuffer, 1);
 	lastInterruptTick = HAL_GetTick();
 }
 
+
+/**
+ * This function should be called from the UART Rx Complete callback following the reception of one character on the deviceUart
+ * It will raise a flag to signal to the mainLoop that it should analyze and process the received data
+ *
+ * If the received byte is the head of a message, the reception for the rest of the message will be allwed by the library to match the
+ * message's length
+ *
+ * @param [in] *deviceUartRxBuffer A single byte buffer to receive characters one by one from input in interupt mode
+ */
 void BTDevice_deviceUartCallback(uint8_t *deviceUartRxBuffer)
 {
 	deviceUartCallbackFlag = 1;
 	localDeviceUartRxBuffer = deviceUartRxBuffer;
 }
 
+
+/**
+ * This function should be called from the TIM Period Ellapsed calback following an interupt (which should occur every second if well configured)
+ *
+ * It will raise a flag to signal to the mainLoop to check wheter or not it should send a new set of data. When AutoMode is on, data will be
+ * sent periodically, mainLoop will check how much time was waited since last data transfer and compare it to the reference timer period value.
+ * If enough time has been waited, data will be sent.
+ *
+ */
 void BTDevice_timerCallback()
 {
 	timerCallbackFlag = 1;
 }
 
-
-void BTDevice_initLoop(){
+/**
+ * This function will initialize the library according to the values specified in the init structure
+ *
+ * It will loop untill the gateway network is joined.
+ *
+ * When the intialisation process fail, it will call the initFailed function.
+ * If the process is successful, it will call the initSucces function.
+ */
+BTDevice_Status BTDevice_initLoop(BTDevice_AutoInitTypeDef defaultValues){
 	if(deviceUartCallbackFlag){
 		deviceUartCallbackFlag = 0;
 		deviceUartCallback(localDeviceUartRxBuffer);
@@ -1060,36 +1166,75 @@ void BTDevice_initLoop(){
 			memset(txBuffer,0,sizeof(txBuffer));
 			sprintf((char *)txBuffer, "\r\n >>WARNING<< Device Initialization process running. Wait till end before typing commands\r\n");
 			HAL_UART_Transmit(userHuart, txBuffer, sizeof(txBuffer), 10);
-			resetInputBufferHandler();
+			resetInputBuffer();
 		}
 	}
+
+	return autoInitWithDefaultValues(defaultValues);
 }
 
+
+/**
+ * This function is the mainLoop of the library. It should be called indefinitely from user space
+ *
+ * It will check for the peripherals flags (UART IT or TIM IT) evoqued above and will call the appropriate functions depending on the situation.
+ *
+ */
 void BTDevice_mainLoop()
 {
+	//A character was received on the deviceUart
 	if(deviceUartCallbackFlag){
 		deviceUartCallbackFlag = 0;
 		deviceUartCallback(localDeviceUartRxBuffer);
 	}
 
+	//A TIM PeriodEllapsed interupt has occured
 	if(timerCallbackFlag){
 		timerCallbackFlag = 0;
 		if(timerReadyToSend()){
-			uint8_t *tmp = getSensorData(); //fPtr must be passed during init
-			BTDevice_sendData(tmp, sensorDataMaxLength); //alue must be passed during init
-			free(tmp);
-			dataSentCallback();//Implement this to INIT procedure
+			uint8_t *tmp = getSensorData(); //Get the data (WARNING ! getSensorData must return a dynamically allocated buffer
+			BTDevice_sendData(tmp, sensorDataMaxLength);  //Send the data and free the buffer
+			dataSentCallback(); //Execute Callback once the data has been sent
 		}
 	}
+	//A character was received on the userUart
 	//Wait at least 25ms without IT to begin process userInput
 	if((HAL_GetTick() - lastInterruptTick) > 25){
 		if(userUartCallbackFlag){
 			userUartCallbackFlag = 0;
 			readInputBuffer();
 		}
-
 	}
 }
+
+/*****************************
+ * ERROR HANDLER
+ *****************************/
+
+/**
+ * Handle errors
+ *
+ * @param [in] errorCode The error code corresponding to the error
+ * @pre the error code must have been declared in BTDevice_Error enumeration
+ */
+static void Throw_Error(BTDevice_Error errorCode){
+	switch(errorCode)
+	{
+	case BT_HAL_DEVICE_UART_ERROR :
+		break;
+	case BT_SIGNAL_ERROR :
+		break;
+	case BT_INIT_TIMEOUT_ERROR :
+		break;
+	case BT_SENSOR_DATA_ERROR :
+		break;
+	case BT_SENDING_TIMEOUT_ERROR :
+		break;
+	case BT_INIT_STRUCTURE_ERROR :
+		break;
+	}
+}
+
 
 
 
