@@ -326,7 +326,8 @@ static void doTheLEDPlay(){
  */
 static void initBTDevice(void){
 
-	BTDevice_InitTypeDef BTDevice_InitStruct;
+	BTDevice_InitTypeDef BTDevice_InitStruct = {0};
+
 	BTDevice_InitStruct.userHuart = &huart1;
 	BTDevice_InitStruct.deviceHuart = &huart2;
 	BTDevice_InitStruct.deviceCommandReceivedHandler = &deviceCommandReceivedCallback;

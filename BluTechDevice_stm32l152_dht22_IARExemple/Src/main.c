@@ -216,7 +216,7 @@ void deviceCommandReceivedHandler(){
 	sprintf((char *)txBuffer,"The following data was received by the device :\r\n");
 	HAL_UART_Transmit(&huart1, txBuffer, sizeof(txBuffer),10);
 	HAL_UART_Transmit(&huart1, localDataBuffer, localDataLength,10);
-	HAL_UART_Transmit(&huart1, (uint8_t *)"\r\n",sizeof("\r\n"),10);
+	HAL_UART_Transmit(&huart1, (uint8_t *)"\r\n",2,10);
 
 	if(strcmp((const char *)localDataBuffer,"Hello World!")){
 		//Make some flashy moves with the LEDs to signal data/command was received
@@ -283,7 +283,12 @@ void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef* htim){
  */
 static void initBTDevice(void){
 
-	BTDevice_InitTypeDef BTDevice_InitStruct;
+	BTDevice_InitTypeDef BTDevice_InitStruct = {0};
+
+
+	if(BTDevice_InitStruct.userHuart == NULL){
+		printf("Hello\r\n");
+	}
 	BTDevice_InitStruct.userHuart = &huart1;
 	BTDevice_InitStruct.deviceHuart = &huart2;
 	BTDevice_InitStruct.deviceCommandReceivedHandler = &deviceCommandReceivedCallback;
