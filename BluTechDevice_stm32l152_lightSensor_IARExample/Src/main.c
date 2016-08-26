@@ -44,7 +44,7 @@
 
 
 #define RX_IT_BUFFER_LENGTH 128
-#define SENSOR_DATA_MAX_LENGTH 128
+#define SENSOR_DATA_MAX_LENGTH 64
 
 
 /* USER CODE END Includes */
@@ -137,7 +137,7 @@ int main(void)
 
 	//Automatically initialize the BTDevice with default settings and perfom a signal check
 	//The device will try to join the network untill successful. LED visuals will signal success.
-	BTDevice_AutoInitTypeDef defaultValues;
+	BTDevice_AutoInitTypeDef defaultValues = {0};
 	defaultValues.timerPeriodValue = 300;
 	defaultValues.autoModeStatus = AUTOMODE_ON;
 	while(BTDevice_initLoop(defaultValues) != BTDevice_OK)
@@ -218,7 +218,7 @@ static uint8_t * getSensorData(void){
 	uint32_t value = getSensorValue();
 	uint8_t *dataBuffer = malloc(sizeof(uint8_t)*SENSOR_DATA_MAX_LENGTH);
 	memset(dataBuffer,0,SENSOR_DATA_MAX_LENGTH);
-	sprintf((char *)dataBuffer,"{\"brightness\":\"%lu\"}",value);
+	sprintf((char *)dataBuffer,"{\"11 - brightness\":\"%lu\"}",value);
 	return dataBuffer;
 }
 
@@ -332,7 +332,7 @@ static void initBTDevice(void){
 	BTDevice_InitStruct.deviceHuart = &huart2;
 	BTDevice_InitStruct.deviceCommandReceivedHandler = &deviceCommandReceivedCallback;
 	BTDevice_InitStruct.getSensorDataFunction = &getSensorData;
-	BTDevice_InitStruct.dataSentCallback = &doTheLEDPlay;
+//	BTDevice_InitStruct.dataSentCallback = &doTheLEDPlay;
 	BTDevice_InitStruct.sensorDataMaxLength = SENSOR_DATA_MAX_LENGTH;
 	BTDevice_init(&BTDevice_InitStruct);
 }

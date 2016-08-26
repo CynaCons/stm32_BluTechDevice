@@ -54,14 +54,17 @@ typedef struct{
  * @brief Error code to be given to the BTDevice_ErrorHandler
  */
 typedef enum{
-	BTERROR_DEVICE_ANSWER_UNEXPECTED = 0,/*<! The device answser was not expected */
-	BTERROR_DEVICE_ANSWER_TIMEOUT, /*!< The device did not reply following a command */
+	BTERROR_AUTOINIT_STRUCTURE = 0, /*!< The auto-init structure was not filled properly */
+	BTERROR_AUTOINIT_TIMEOUT, /*<! Init was not succesful after 1min */
 	BTERROR_BAD_SIGNAL, /*<! The device received bad signal information */
-	BTERROR_INIT_TIMEOUT, /*<! Init was not succesful after 1min */
+	BTERROR_DEVICE_ANSWER_UNEXPECTED,/*<! The device answser was not expected */
+	BTERROR_DEVICE_ANSWER_TIMEOUT, /*!< The device did not reply following a command */
+	BTERROR_DEVICE_PAYLOAD_OVFL, /*!< Too many bytes to send in the payload */
+	BTERROR_INIT_STRUCTURE, /*!< The init structure was not filled properly */
 	BTERROR_SENSOR_DATA_FORMAT, /*<! The sensor data function "getSensorData()" did not reply a data buffer */
 	BTERROR_SENDING_TIMEOUT, /*<! The sensor data was not sent by the device */
 	BTERROR_SENSOR_UNRESPONSIVE, /*!< The sensor data is wrong (eg = 0), should probably check wiring */
-	BTERROR_INIT_STRUCTURE /*!< The init structure was not filled properly */
+	BTERROR_NUMBER_OF_ERRORS /*<! The number of different errors that can be detected */
 }BTDevice_Error;
 
 /**

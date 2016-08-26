@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 /**
  * Includes specific to board model.
@@ -50,6 +51,9 @@
 #define DEVICE_DATA_MAX_LENGTH 256 /*!< The maximum size of data that can be received by a BTDevice. This is not a choice, see BT specs */
 
 #define USER_RX_BUFFER_LENGTH 128 /*!< Length of the buffer used to store user input */
+
+#define NB_FAILED_INIT 5 /*!< During auto-init process, networkJoin request is sent every 10 seconds untill the device join the network.
+								After NB_FAILED_INIT failed requests, there will be an error (if value = 5, then after 5*10 seconds there will be an error */
 
 
 
@@ -298,28 +302,46 @@ static uint8_t checkForInputBufferReset(void){
 	return 0;
 }
 
+
+/**
+ * Analyse a buffer : check if it is JSON formatted, if the dataBuffer won't cause an overflow ( more than 128 bytes )
+ * and if the sensor values in the JSON are good (if value = 0 it is considered bad)
+ *
+ * @param [in] tmp the buffer
+ */
 static void checkSensorData(uint8_t *tmp){
-	//Parse JSON data values to detect errors
+	//Warning : pointer p is incremented in the loops' condition
+	//*p++  means that p value is used for the test, and then it is incremented)
+
 	uint8_t *p = tmp; //p points to the beginning of the JSON string
 	uint8_t sensorUnresponsive = 1; //Assume the values are wrong (==0) and we must send an error
-	while(*p != '}' && (p-tmp) <= sensorDataMaxLength){
+
+	while(*p != '}' && (p-tmp) < sensorDataMaxLength){
 		//Jump to firt semi-column
-		while(*p++ != ':' && (p-tmp) <= sensorDataMaxLength)
+		while(*p++ != ':' && (p-tmp) < sensorDataMaxLength)
 			;
+		if((p-tmp) == sensorDataMaxLength)
+			break;
 		p++; //Skip "
-		//check the number
-		if(atoi((const char *)p) != 0){
+		//check if the json field. If it's not a number, dont sent an error
+		//If it's a number and it's != 0, then dont send an error
+		if(!isdigit(*p) || (isdigit(*p) && atoi((const char *)p) != 0)){
 			sensorUnresponsive = 0; //Found a sensor value != 0, do not send the error
 		}
 
 		//Jump to next comma or end of json
-		while(*p++ != ',' && *p != '}' && (p-tmp) <= sensorDataMaxLength)
+		while(*p++ != ',' && *p != '}' && (p-tmp) < sensorDataMaxLength)
 			;
 	}
+
+
 	if(sensorUnresponsive == 1)
 		ThrowError(BTERROR_SENSOR_UNRESPONSIVE);
-	if((p-tmp) > sensorDataMaxLength)
+	if((p-tmp) >= sensorDataMaxLength)
 		ThrowError(BTERROR_SENSOR_DATA_FORMAT);
+	else
+		if((p-tmp) >= sensorDataMaxLength)
+			ThrowError(BTERROR_DEVICE_PAYLOAD_OVFL);
 }
 
 
@@ -341,14 +363,14 @@ static void displayMenu(void){
 			(uint8_t *)"    --> set automode on     : start sending data periodically\r\n",
 			(uint8_t *)"    --> set automode off    : stop sending data periodically\r\n",
 			(uint8_t *)"    --> get automode status : display the automode status (ON or OFF)\r\n",
-			(uint8_t *)"    --> send data           : input some ascii data that will be sent to the gateway\r\n",
-			(uint8_t *)"    --> flush sensor data   : instantly send sensor data and reset the timer period\r\n",
 			(uint8_t *)"\r\n",
 			(uint8_t *)"+++   BLUTECH DEVICE CONTROL\r\n",
 			(uint8_t *)"    --> rf signal check     : perform a signal check\r\n",
 			(uint8_t *)"    --> network join        : join the gateway network\r\n",
-			(uint8_t *)"    --> send sample data    : send a sample of data for testing\r\n",
 			(uint8_t *)"    --> get network status  : display the network status (CONNECTED or not)\r\n",
+			(uint8_t *)"    --> flush sensor data   : instantly send sensor data and reset the timer period\r\n",
+			(uint8_t *)"    --> send data           : input some ascii data that will be sent to the gateway\r\n",
+			(uint8_t *)"    --> send sample data    : send a sample of data for testing\r\n",
 			(uint8_t *)"\r\n",
 			(uint8_t *)"+++   TIMER CONTROL\r\n",
 			(uint8_t *)"    --> set timer period    : set the timer period\r\n",
@@ -489,15 +511,6 @@ static void setDataSentCallback(void (*fPtr)(void))
 {
 	dataSentCallback = fPtr;
 }
-
-
-///**
-// * Set the user input buffer's address to be check to recognize user's commands and set it's length.
-// * @param [in] ptrBuffer pointer to the user input buffer.
-// */
-//void setUserInputBuffer(uint8_t *ptrBuffer){
-//	userInputBuffer = ptrBuffer;
-//}
 
 
 /**
@@ -883,7 +896,7 @@ BTDevice_Status autoInitWithDefaultValues(BTDevice_AutoInitTypeDef defaultValues
 		networkJoinHandler();
 
 		//Keep track of the number of failed tests, if >=5 (~50 seconds) it will throw an error
-		if(numberOfFailedTests++ >= 5) ThrowError(BTERROR_INIT_TIMEOUT); //Check the current value and increment for next check
+		if(numberOfFailedTests++ >= NB_FAILED_INIT) ThrowError(BTERROR_AUTOINIT_TIMEOUT); //Check the current value and increment for next check
 	}
 
 	//Check the network join status. If connected, returns BTDevice_OK which should break the loop
@@ -976,6 +989,10 @@ void deviceUartCallback(uint8_t *deviceUartRxBuffer){
 			}else{
 				sprintf((char *)txBuffer,"Data Transfer failed\r\n");
 				HAL_UART_Transmit(userHuart, txBuffer, sizeof(txBuffer),10);
+
+				//The device failed to send the data. Throw an error to display a message on UART and send a error message to the server
+				//Of course, if the device is not connected, the error message won't be sent ^^
+				ThrowError(BTERROR_SENDING_TIMEOUT);
 			}
 			rxDeviceState = RCV_HEAD;
 			HAL_UART_Receive_IT(deviceHuart,deviceUartRxBuffer,1);
@@ -1021,12 +1038,14 @@ void BTDevice_displayMenu(void){
  * 		=> set the maximum length of the data payload : sensorDataMaxLength
  */
 void BTDevice_init(BTDevice_InitTypeDef *BTDevice_InitStruct){
-	if(BTDevice_InitStruct->userHuart == NULL) ThrowError(BTERROR_INIT_STRUCTURE);
-	if(BTDevice_InitStruct->deviceHuart == NULL) ThrowError(BTERROR_INIT_STRUCTURE);
-	if(BTDevice_InitStruct->deviceCommandReceivedHandler == NULL) ThrowError(BTERROR_INIT_STRUCTURE);
-	if(BTDevice_InitStruct->getSensorDataFunction == NULL) ThrowError(BTERROR_INIT_STRUCTURE);
-	if(BTDevice_InitStruct->sensorDataMaxLength == 0) ThrowError(BTERROR_INIT_STRUCTURE);
-	if(BTDevice_InitStruct->dataSentCallback == NULL) ThrowError(BTERROR_INIT_STRUCTURE);
+	uint8_t errorDetected = 0; //Assume there is no error
+
+	if(BTDevice_InitStruct->userHuart == NULL) errorDetected = 1;
+	if(BTDevice_InitStruct->deviceHuart == NULL) errorDetected = 1;
+	if(BTDevice_InitStruct->deviceCommandReceivedHandler == NULL) errorDetected = 1;
+	if(BTDevice_InitStruct->getSensorDataFunction == NULL) errorDetected = 1;
+	if(BTDevice_InitStruct->sensorDataMaxLength == 0) errorDetected = 1;
+	if(BTDevice_InitStruct->dataSentCallback == NULL) errorDetected = 1;
 
 
 	setUserHuart(BTDevice_InitStruct->userHuart);
@@ -1035,6 +1054,9 @@ void BTDevice_init(BTDevice_InitTypeDef *BTDevice_InitStruct){
 	setSensorDataFunction(BTDevice_InitStruct->getSensorDataFunction);
 	setSensorDataMaxLength(BTDevice_InitStruct->sensorDataMaxLength);
 	setDataSentCallback(BTDevice_InitStruct->dataSentCallback);
+
+	if(errorDetected == 1)
+		ThrowError(BTERROR_INIT_STRUCTURE);
 }
 
 /**
@@ -1095,6 +1117,9 @@ void readInputBuffer(){
 	}
 }
 
+
+//TODO ADD INDEX TO THE DATA SO YOU CAN SEE WHEN DATA IS MISSING
+
 /**
  * This function send a data buffer via the BTDevice.
  * A copy of the data is displayed via the userUart.
@@ -1109,6 +1134,9 @@ void readInputBuffer(){
  */
 void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataBufferLength){
 
+	//Analyze the sensor data in case of format error, device unresponsive or payload overflow
+	checkSensorData(dataBuffer);
+
 	uint8_t txBuffer[64];
 	memset(txBuffer,0, sizeof(txBuffer));
 	if(getAutoModeStatus() == AUTOMODE_ON){
@@ -1118,6 +1146,11 @@ void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataBufferLength){
 		sprintf((char *)txBuffer,"AutoMode is OFF\r\n");
 		HAL_UART_Transmit(userHuart, txBuffer,sizeof(txBuffer),10);
 	}
+
+
+
+
+
 	sendDataToDevice(dataBuffer,dataBufferLength);
 	free(dataBuffer);
 }
@@ -1204,6 +1237,9 @@ void BTDevice_timerCallback()
  * If the process is successful, it will call the initSucces function.
  */
 BTDevice_Status BTDevice_initLoop(BTDevice_AutoInitTypeDef defaultValues){
+	if(defaultValues.autoModeStatus == 0) ThrowError(BTERROR_AUTOINIT_STRUCTURE);
+	if(defaultValues.timerPeriodValue == 0) ThrowError(BTERROR_AUTOINIT_STRUCTURE);
+
 	if(deviceUartCallbackFlag){
 		deviceUartCallbackFlag = 0;
 		deviceUartCallback(localDeviceUartRxBuffer);
@@ -1246,7 +1282,6 @@ void BTDevice_mainLoop()
 		timerCallbackFlag = 0;
 		if(timerReadyToSend()){
 			uint8_t *tmp = getSensorData(); //Get the data (WARNING ! getSensorData must return a dynamically allocated buffer
-			checkSensorData(tmp); //Analyze the sensor data in case of format error or device unresponsive
 			BTDevice_sendData(tmp, sensorDataMaxLength);  //Send the data and free the buffer
 			dataSentCallback(); //Execute Callback once the data has been sent
 		}
@@ -1265,8 +1300,7 @@ void BTDevice_mainLoop()
 /*****************************
  * ERROR HANDLING
  *****************************/
-//TODO UART necessaire ?? (etant donné qu'on affiche les données quand elles sont envoyées
-//TODO Rajouter le code d'erreur dans le message d'erreur
+//TODO Improve by passing the error message in parameters
 /**
  * Handle incoming errors. An error message will be displayed on the userUart if possible.
  * The error message will be forwarded to the server if possible
@@ -1275,95 +1309,151 @@ void BTDevice_mainLoop()
  * @pre the error code must have been declared in BTDevice_Error enumeration
  */
 static void ThrowError(BTDevice_Error errorCode){
+
+	//Array of flags for each error case. Set flag to 1 to prevent another error message of the same type.
+	static uint8_t errorDisabledArray[BTERROR_NUMBER_OF_ERRORS] = {0};
+
 	uint8_t errorMessage[256];
 	uint16_t errorMessageLength = 0;
 	memset(errorMessage,0,sizeof(errorMessage));
 
+	//System tick at the time of the error. Save the value to keep track of the time.
+	static uint32_t sendingTimeoutErrorTick = 0; //When sending error occur, it will be re-enabled after a short while
+	static uint32_t sensorUnresponsiveErrorTick = 0;
+
+
 	switch(errorCode)
 	{
 	case BTERROR_DEVICE_ANSWER_UNEXPECTED : //Build the answer stack for it to work
-		errorMessageLength = sprintf((char *)errorMessage,
-				"ERROR -- MCU received an unexpected anwser from the device");
-//		if(userHuart != NULL){
-//			HAL_UART_Transmit(userHuart,errorMessage,sizeof(errorMessage),10);
-//			HAL_UART_Transmit(userHuart,"\r\n",2,10);
-//
-//		}
-		forwardErrorToServer(errorMessage, errorMessageLength); //Send the error message via lora to be displayed on the log
+
+		if(errorDisabledArray[BTERROR_DEVICE_ANSWER_UNEXPECTED] == 0){//Check that the error was not disabled
+			errorMessageLength = sprintf((char *)errorMessage,
+					"MCU received unexpected anwser..");
+			forwardErrorToServer(errorMessage, errorMessageLength); //Send the error message via lora to be displayed on the log
+		}
 		break;
 
 
-	case BTERROR_DEVICE_ANSWER_TIMEOUT: //TODO Throw error
-		errorMessageLength = sprintf((char *)errorMessage,
-				"ERROR -- MCU did not receive an answer from the device");
-//		if(userHuart != NULL){
-//			HAL_UART_Transmit(userHuart,errorMessage,sizeof(errorMessage),10);
-//			HAL_UART_Transmit(userHuart,"\r\n",2,10);
-//		}
-		forwardErrorToServer(errorMessage, errorMessageLength); //Send the error message to the server to be displayed on the log
-		//TODO Pop from answer stack
+	case BTERROR_DEVICE_ANSWER_TIMEOUT: //TODO Build stack first
+		if(errorDisabledArray[BTERROR_DEVICE_ANSWER_TIMEOUT] == 0){//Check that the error was not disabled
+
+			errorMessageLength = sprintf((char *)errorMessage,
+					"MCU did not receive confirmation/ACK");
+			forwardErrorToServer(errorMessage, errorMessageLength); //Send the error message to the server to be displayed on the log
+			//TODO Pop from answer stack
+		}
 		break;
 
 
-	case BTERROR_BAD_SIGNAL :
-		errorMessageLength = sprintf((char *)errorMessage,
-				"ERROR -- The signal characteristics returned by the device are abnormally bad");
-//		if(userHuart != NULL){
-//			HAL_UART_Transmit(userHuart,errorMessage,sizeof(errorMessage),10);
-//			HAL_UART_Transmit(userHuart,"\r\n",2,10);
-//		}
-		forwardErrorToServer(errorMessage,errorMessageLength);
+	case BTERROR_BAD_SIGNAL : //To be tested
+		if(errorDisabledArray[BTERROR_BAD_SIGNAL] == 0){//Check that the error was not disabled
+
+			errorMessageLength = sprintf((char *)errorMessage,
+					"RF signal is abnormally poor.");
+			forwardErrorToServer(errorMessage,errorMessageLength);
+		}
 		break;
 
 
-	case BTERROR_INIT_TIMEOUT : //Test ok
-		errorMessageLength = sprintf((char *)errorMessage,
-				"ERROR -- The device is taking an abnormally long time to connect to the gateway");
-//		if(userHuart != NULL){
-//			HAL_UART_Transmit(userHuart,errorMessage,sizeof(errorMessage),10);
-//			HAL_UART_Transmit(userHuart,"\r\n",2,10);
-//		}
-		forwardErrorToServer(errorMessage,errorMessageLength);
+	case BTERROR_AUTOINIT_TIMEOUT : //Test OK
+		if(errorDisabledArray[BTERROR_AUTOINIT_TIMEOUT] == 0){//Check that the error was not disabled
+
+			errorMessageLength = sprintf((char *)errorMessage,
+					"Device is taking an abnormally long time.");
+			forwardErrorToServer(errorMessage,errorMessageLength);
+
+			//Prevent sending this error message again (structure won't fill itself, no point repeating the message)
+			errorDisabledArray[BTERROR_AUTOINIT_STRUCTURE] = 1;
+		}
 		break;
 
 
-	case BTERROR_SENSOR_DATA_FORMAT ://TODO Test ok for brightness
-		errorMessageLength = sprintf((char *)errorMessage,
-				"ERROR -- The sensor data that was sent does not match JSON format");
-//		if(userHuart != NULL){
-//			HAL_UART_Transmit(userHuart,errorMessage,sizeof(errorMessage),10);
-//			HAL_UART_Transmit(userHuart,"\r\n",2,10);
-//		}
-		forwardErrorToServer(errorMessage,errorMessageLength);
+	case BTERROR_SENSOR_DATA_FORMAT ://Test OK
+		if(errorDisabledArray[BTERROR_SENSOR_DATA_FORMAT] == 0){//Check that the error was not disabled
+
+			errorMessageLength = sprintf((char *)errorMessage,
+					"Sensor data does not match JSON format.");
+			forwardErrorToServer(errorMessage,errorMessageLength);
+
+			//Prevent sending this error message again (format won't change itself, no point repeating the message)
+			errorDisabledArray[BTERROR_SENSOR_DATA_FORMAT] = 1;
+		}
 		break;
 
 
 	case BTERROR_SENSOR_UNRESPONSIVE : //Test OK
-		errorMessageLength = sprintf((char *)errorMessage,
-				"ERROR -- The sensor data is null (=0). Sensor might be unresponsive. Check wiring");
-//		if(userHuart != NULL){
-//			HAL_UART_Transmit(userHuart,errorMessage,sizeof(errorMessage),10);
-//			HAL_UART_Transmit(userHuart,"\r\n",2,10);
-//		}
-		forwardErrorToServer(errorMessage,errorMessageLength);
+		if(errorDisabledArray[BTERROR_SENSOR_UNRESPONSIVE] == 0){//Check that the error was not disabled
+			errorMessageLength = sprintf((char *)errorMessage,
+					"Sensor data was wrong. Device unresponsive");
+			forwardErrorToServer(errorMessage,errorMessageLength);
+
+			//Prevent sending this error message again. It will be enabled again after some time (see below)
+			errorDisabledArray[BTERROR_SENSOR_UNRESPONSIVE] = 1;
+
+			//Save the current Tick to be able to re-enable the error after some time
+			sensorUnresponsiveErrorTick = HAL_GetTick();
+		}
+		//After some time, re-enable the error to check whether the problem was solved of not
+		if((HAL_GetTick() - sensorUnresponsiveErrorTick) > 10000) errorDisabledArray[BTERROR_SENSOR_UNRESPONSIVE] = 0;
+
 		break;
 
 
-	case BTERROR_SENDING_TIMEOUT :
-//		if(userHuart != NULL){
-//			sprintf((char *)errorMessage, "ERROR -- During BTDevice_init, init structure was not properly filled");
-//			HAL_UART_Transmit(userHuart,errorMessage,sizeof(errorMessage),10);
-//			HAL_UART_Transmit(userHuart,"\r\n",2,10);
-//		}
+		//TODO WHEN NETWORK CANT BE REACHED, YOU SHOULD MAKE SOME LED SIGNAL TO RECOGNIZE THE ERROR
+	case BTERROR_SENDING_TIMEOUT : //Test OK
+		if(errorDisabledArray[BTERROR_SENDING_TIMEOUT] == 0){//Check that the error was not disabled
+			errorMessageLength = sprintf((char *)errorMessage,
+					"The device could not send the data in time.");
+			forwardErrorToServer(errorMessage,errorMessageLength);
+
+			//Prevent sending this error message again. It will be enabled again after some time (see below)
+			errorDisabledArray[BTERROR_SENDING_TIMEOUT] = 1;
+
+			// Save the current tick to be able to re-enable the error after some time
+			sendingTimeoutErrorTick = HAL_GetTick();
+		}
+
+		//After some time, re-enable the error to check whether the problem was solved of not
+		if((HAL_GetTick() - sendingTimeoutErrorTick) > 10000) errorDisabledArray[BTERROR_SENDING_TIMEOUT] = 0;
 		break;
 
 
-	case BTERROR_INIT_STRUCTURE :
-//		if(userHuart != NULL){
-//			sprintf((char *)errorMessage, "ERROR -- During BTDevice_init, init structure was not properly filled");
-//			HAL_UART_Transmit(userHuart,errorMessage,sizeof(errorMessage),10);
-//			HAL_UART_Transmit(userHuart,"\r\n",2,10);
-//		}
+	case BTERROR_INIT_STRUCTURE : //TEST FAILED. CANNOT SEND ERROR MESSAGE, NOT CONNECTED...
+		if(errorDisabledArray[BTERROR_INIT_STRUCTURE] == 0){//Check that the error was not disabled
+			errorMessageLength = sprintf((char *)errorMessage,
+					"The init structure not properly filled.");
+			forwardErrorToServer(errorMessage,errorMessageLength);
+
+			//Prevent sending this error message again (structure won't fill itself, no point repeating the message)
+			errorDisabledArray[BTERROR_INIT_STRUCTURE] = 1;
+		}
+		break;
+
+
+	case BTERROR_AUTOINIT_STRUCTURE ://TEST FAILED. CANNOT SEND ERROR MESSAGE, NOT CONNECTED...
+		if(errorDisabledArray[BTERROR_AUTOINIT_STRUCTURE] == 0){//Check that the error was not disabled
+			errorMessageLength = sprintf((char *)errorMessage,
+					"The auto-init structure not properly filled.");
+			forwardErrorToServer(errorMessage,errorMessageLength);
+
+			//Prevent sending this error message again (structure won't fill itself, no point repeating the message)
+			errorDisabledArray[BTERROR_AUTOINIT_STRUCTURE] = 1;
+		}
+		break;
+
+	case BTERROR_DEVICE_PAYLOAD_OVFL : //TEST OK
+		if(errorDisabledArray[BTERROR_DEVICE_PAYLOAD_OVFL] == 0){//Check that the error was not disabled
+			errorMessageLength = sprintf((char *)errorMessage,
+					"Data payload overflow.");
+			forwardErrorToServer(errorMessage,errorMessageLength);
+
+			//Prevent sending this error message again (no point repeating the message)
+			errorDisabledArray[BTERROR_DEVICE_PAYLOAD_OVFL] = 1;
+		}
+		break;
+
+
+	case BTERROR_NUMBER_OF_ERRORS: //To prevent warning for not handling all enum cases
 		break;
 	}
 }
@@ -1371,10 +1461,10 @@ static void ThrowError(BTDevice_Error errorCode){
 
 static void forwardErrorToServer(uint8_t *errorMessage, uint16_t errorMessageLength){
 	//Create a buffer fit for the error message (dynamically allocated, it is free'd by BTDevice_sendData)
-	uint8_t *txBuffer = malloc((sizeof(uint8_t)*errorMessageLength)+sizeof("{\"ERROR\",\"\"}"));
+	uint8_t *txBuffer = malloc((sizeof(uint8_t)*errorMessageLength)+sizeof("{\"ERROR\":\"\"}"));
 
 	//Format the error message in following format : {"ERROR","ERROR_MESSAGE"}
-	sprintf((char *)txBuffer,"\"{ERROR\",\"%s\"}",errorMessage);
+	sprintf((char *)txBuffer,"{\"ERROR\":\"%s\"}",errorMessage);
 
 	//Send the message to the server and free the buffer
 	BTDevice_sendData(txBuffer, strlen((const char *)txBuffer));
