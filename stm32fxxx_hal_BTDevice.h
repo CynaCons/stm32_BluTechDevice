@@ -23,9 +23,8 @@ typedef struct {
 	void (*resetInputBufferHandler)(void); /* function pointer to function that reset the userInputBuffer and make it ready to be filled again. */
 	void (*deviceCommandReceivedHandler)(uint8_t *dataBuffer, uint16_t dataLength); /* func pointer to routine that should handle the data/commands
 	received by the device from the gateway */
-	void (*dataSentCallback)(void); /*!< Function pointer to the function to call when data has been sent */
+	void (*signalEventFunction)(void *); /*!< Function pointer to the function to call when data has been sent */
 	uint8_t * (*getSensorDataFunction)(void); /*!< Function pointer to the function returning the sensor data in JSON format */
-	uint16_t sensorDataMaxLength; /*!< Maximum length of the sensor data */
 } BTDevice_InitTypeDef;
 
 
@@ -48,7 +47,7 @@ typedef struct{
 	uint8_t autoModeStatus; // Fill with a AutoModeStatus enum value
 }BTDevice_AutoInitTypeDef;
 
-//TODO Write that fking BTDevice_ErrorHandler
+
 /**
  * @typedef BTDevice_Error
  * @brief Error code to be given to the BTDevice_ErrorHandler
@@ -72,7 +71,7 @@ typedef enum{
  * @brief State of the periodic data transfer mode
  */
 typedef enum {
-	AUTOMODE_OFF, /*!< OFF = no data will be sent periodically */
+	AUTOMODE_OFF = 1, /*!< OFF = no data will be sent periodically */
 	AUTOMODE_ON /*!<ON = data will be sent every period. Period is set using menu */
 }AutoModeStatus;
 
