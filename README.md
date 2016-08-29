@@ -1,6 +1,6 @@
 # stm32_BluTechDevice
 
-#What does this lirabry do ?
+#What is this repository ?
 
 This repository contains : 
 
@@ -31,7 +31,7 @@ Check the provided example project for copyable code. Only the lightSensor proje
 
 ## How does it work ? (visual description at the end of this file) : 
 
-This lirabry will use two UART :
+This librabry will use two UART :
 
 The first one, called "deviceUart" will send commands to the BluTech device and receive the command's answer or receive data sent from the REST API
 
@@ -41,7 +41,7 @@ The second UART is optionnal, only plug it to setup the device and then you can 
 
 Follow the guide below or read the source file in the example projects to write the appropriate code to have a functionnal device. 
 
-## What can I do with this ? 
+## Functionnalities 
 
 Once it is functionnal this library allows you to use the following commands : 
 
@@ -75,6 +75,35 @@ Once it is functionnal this library allows you to use the following commands :
 
 
 You can for example configure you device the send the sensor's data periodically, configure the period, perform a signal test or send any data that you input with yout keyboard. 
+
+##Example projects
+
+Example projects can be found in the "Projects" folder.
+
+The project architecture is the following :
+
+		.
+		├── BluTechDevice_stm32l152_lightSensor.ioc //STM32CubeMX project file
+		├── Drivers //HAL library and board related files
+		├── EWARM //IAR project files
+		├── Inc //Header file
+		│   ├── buzzer.h 
+		│   ├── mxconstants.h
+		│   ├── stm32fxxx_hal_BTDevice.h //Library code header file
+		│   ├── stm32l152c_discovery.h
+		│   ├── stm32l1xx_hal_conf.h
+		│   └── stm32l1xx_it.h 
+		├── Src
+		│   ├── buzzer.c //C Source file to play sound with the buzzer
+		│   ├── main.c //C Source file to init the peripherals, call the library public functions and handle peripherals callbacks
+			       // main.c will also setup HAL, config the system clock and start the peripheral init procedure that call   // hal_msp.c functions
+		│   ├── stm32fxxx_hal_BTDevice.c //Library core C Source file
+		│   ├── stm32l152c_discovery.c
+		│   ├── stm32l1xx_hal_msp.c //C Source file to initializa low level peripherals (USART / TIMER pins, IT, NVIC ...)
+		│   └── stm32l1xx_it.c // C Source file where peripherals IRQHandler will can the appropriate HAL_IRQHandler (and then 				// the appropriate HAL_XX_Callback in main.c)
+		└── SW4STM32 //Eclipse(SW4STM32) project files
+
+
 
 #How to make a device to send periodically the sensor data ?
 
