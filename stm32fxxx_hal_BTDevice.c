@@ -975,10 +975,11 @@ void deviceUartCallback(uint8_t *deviceUartRxBuffer){
 			if(rxDeviceBuffer[1] == 0x01){
 				sprintf((char *)txBuffer,"Data Transfer success\r\n");
 				HAL_UART_Transmit(userHuart, txBuffer, sizeof(txBuffer),10);
+				networkJoinStatus = NETWORK_JOIN_OK;
 			}else{
 				sprintf((char *)txBuffer,"Data Transfer failed\r\n");
 				HAL_UART_Transmit(userHuart, txBuffer, sizeof(txBuffer),10);
-
+				networkJoinStatus = NETWORK_JOIN_ERROR;
 				//The device failed to send the data. Throw an error to display a message on UART and send a error message to the server
 				//Of course, if the device is not connected, the error message won't be sent ^^
 				ThrowError(BTERROR_SENDING_TIMEOUT);
@@ -1251,6 +1252,8 @@ BTDevice_Status BTDevice_initLoop(BTDevice_AutoInitTypeDef defaultValues){
  */
 void BTDevice_mainLoop()
 {
+
+	static uint32_t lastSignalTick = 0;
 	//A character was received on the deviceUart
 	if(deviceUartCallbackFlag){
 		deviceUartCallbackFlag = 0;
@@ -1278,9 +1281,15 @@ void BTDevice_mainLoop()
 		}
 	}
 
-	//When the device is disconnected, blink the LED constantly
-	if(getNetworkJoinStatus() == NETWORK_JOIN_ERROR)
+	//When the device is disconnected, every 5 seconds, blink the LED and try to reconnect
+	if(getNetworkJoinStatus() == NETWORK_JOIN_ERROR && ((HAL_GetTick() - lastSignalTick) > 10000 || lastSignalTick == 0)){
 		signalEventFunction(NULL);
+		uint8_t txBuffer[128] = "";
+		sprintf((char *)txBuffer,"Device disconnected. Trying to reconnect\r\n");
+		HAL_UART_Transmit(userHuart, txBuffer,sizeof(txBuffer),10);
+		networkJoinHandler();
+		lastSignalTick = HAL_GetTick();
+	}
 }
 
 /*****************************
