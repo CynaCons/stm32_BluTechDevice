@@ -20,11 +20,20 @@ typedef struct {
 	UART_HandleTypeDef *userHuart; /* Pointer to the userUart handler structure */
 	UART_HandleTypeDef *deviceHuart; /* pointer to the deviceUart handler structure */
 	uint8_t *userInputBuffer; /* reference to the buffer filled by the user input */
-	void (*resetInputBufferHandler)(void); /* function pointer to function that reset the userInputBuffer and make it ready to be filled again. */
-	void (*deviceCommandReceivedHandler)(uint8_t *dataBuffer, uint16_t dataLength); /* func pointer to routine that should handle the data/commands
+
+    /* function pointer to function that reset the userInputBuffer
+         and make it ready to be filled again. */
+	void (*resetInputBufferHandler)(void); 
+ 
+     /* func pointer to routine that should handle the data/commands
 	received by the device from the gateway */
-	void (*signalEventFunction)(void *); /*!< Function pointer to the function to call when data has been sent */
-	uint8_t * (*getSensorDataFunction)(void); /*!< Function pointer to the function returning the sensor data in JSON format */
+	void (*deviceCommandReceivedHandler)(uint8_t *dataBuffer, uint16_t dataLength); 
+    
+     /* Function pointer to the function to call when data has been sent */   
+	void (*signalEventFunction)(void *); 
+
+    /* Function pointer to the function returning the sensor data in JSON format */   
+	uint8_t * (*getSensorDataFunction)(void); 
 } BTDevice_InitTypeDef;
 
 
