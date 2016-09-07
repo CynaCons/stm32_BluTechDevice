@@ -318,12 +318,9 @@ static void doTheLEDPlay(void * p){
 /**
  * Initialize the library :
  * 		=> set the UART peripherals to be used : userUart and deviceUart
- * 		=> set the buffer's address to be used to analyze received characters from user input : userInputBuffer
- * 		=> set the user input buffer reset routine : resetInputBufferHandler
  * 		=> set the function to handle commands/data received by the node from the gateway : deviceCommandReceivedFunction
  * 		=> set the function to perform the data sensing and formatting (JSON format) : getSensorDataFunction
  * 		=> set the function to be called when the sensor's data has been sent : dataSentCallback
- * 		=> set the maximum length of the data payload : sensorDataMaxLength
  */
 static void initBTDevice(void){
 
@@ -331,7 +328,7 @@ static void initBTDevice(void){
 
 	BTDevice_InitStruct.userHuart = &huart1;
 	BTDevice_InitStruct.deviceHuart = &huart2;
-	BTDevice_InitStruct.deviceCommandReceivedHandler = &deviceCommandReceivedCallback;
+	BTDevice_InitStruct.deviceCommandReceivedFunction = &deviceCommandReceivedCallback;
 	BTDevice_InitStruct.getSensorDataFunction = &getSensorData;
 	BTDevice_InitStruct.signalEventFunction = &doTheLEDPlay;
 	BTDevice_init(&BTDevice_InitStruct);
