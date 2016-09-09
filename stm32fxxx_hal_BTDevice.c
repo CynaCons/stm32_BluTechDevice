@@ -7,6 +7,7 @@
  * https://github.com/CynaCons/stm32_BluTechDevice
  */
 
+//HARD LINK TEST
 
 /************
  * Includes
@@ -68,7 +69,7 @@
 static uint8_t checkForInputBufferReset(void);
 static void checkSensorData(uint8_t *tmp);
 static void displayMenu();
-static uint8_t getAuto(void);
+static uint8_t getAutoModeStatus(void);
 static uint32_t getPeriodCounter(void);
 static uint32_t getTimerPeriod(void);
 static void incrementPeriodCounter(void);
@@ -190,7 +191,7 @@ typedef enum{
  * Indicator to know whether or not it is required to reset the input buffer after one character is received
  */
 typedef enum{
-	NO_RESET, 
+	NO_RESET,
 	RESET_BUFFER
 }InputBufferStatus;
 
@@ -512,9 +513,8 @@ static uint8_t getDataFromUser(void){
 		memset(userInputBuffer, 0, sizeof(userInputBuffer));
 		userInputBufferIndex = 0;
 	}
-	if(bufferLength >= 3){
+	else if(bufferLength >= 3){
 		if(userInputBuffer[bufferLength-1] == 'd' && userInputBuffer[bufferLength-2] == 'n' && userInputBuffer[bufferLength-3] == 'e'){
-//			sscanf((const char *)userInputBuffer,"%s %s", data, tmp);
 			strncpy((char *)data, (const char *)userInputBuffer, bufferLength -4);
 			sprintf((char *)tmp,"The following data will be sent : ");
 			HAL_UART_Transmit(userHuart, tmp, sizeof(tmp),10);
@@ -859,7 +859,7 @@ BTDevice_Status autoInitWithDefaultValues(BTDevice_AutoInitTypeDef defaultValues
 	static uint32_t startTick = 0;
 	static uint8_t txBuffer[256];
 
-	//To keep track of the number of times the initialization failed
+	//To keep track of the number of times the initialization failed. Incremented every ~10 seconds
 	static uint16_t numberOfFailedTests = 0;
 
 	//At first execution, set the timer and AutoMode status
@@ -873,9 +873,7 @@ BTDevice_Status autoInitWithDefaultValues(BTDevice_AutoInitTypeDef defaultValues
 		else
 			autoModeOnHandler();
 	}
-
 	//Every 10 seconds, perform a network join. This behaviour should be repeated untill the device is connected.
-	//The exact condition is : if (waitedMoreThan20Seconds OR FirstTimeExecutingThisCode)
 	if((HAL_GetTick() - startTick) >= 20000 || startTick == 0){
 		memset(txBuffer,0,sizeof(txBuffer));
 		sprintf((char *)txBuffer,"\r\n****************Launching AutoInit Procedure****************\r\n");
@@ -883,13 +881,12 @@ BTDevice_Status autoInitWithDefaultValues(BTDevice_AutoInitTypeDef defaultValues
 
 		//Send a network join request and save current time
 		startTick = HAL_GetTick();
-        networkJoinHandler();
+		networkJoinHandler();
 
-		//Keep track of the number of failed tests, if >=5 (~110 seconds) it will throw an error
-		if(numberOfFailedTests++ >= NB_FAILED_INIT){
-		    ThrowError(BTERROR_AUTOINIT_TIMEOUT); //Throw Error because the Init is taking too much time.
-            return BTDevice_OK; //This will break the initLoop even though the device is not connected.
-		}
+		//Keep track of the number of failed tests, if >=5 (~50 seconds) it will throw an error
+		if(numberOfFailedTests++ >= NB_FAILED_INIT) ThrowError(BTERROR_AUTOINIT_TIMEOUT); //Check the current value and increment for next check
+
+
 	}
 
 	//Check the network join status. If connected, returns BTDevice_OK which should break the loop
@@ -1321,52 +1318,38 @@ static void ThrowError(BTDevice_Error errorCode){
 	switch(errorCode)
 	{
 
-
-
-	case BTERROR_DEVICE_ANSWER_UNEXPECTED : 
-
-		if(errorDisabledArray[BTERROR_DEVICE_ANSWER_UNEXPECTED] == 0){//Check that the error was not disabled
-			errorMessageLength = sprintf((char *)errorMessage,
-					"MCU received unexpected anwser..");
-			forwardErrorToServer(errorMessage, errorMessageLength); //Send the error message via lora to be displayed on the log
-		}
-		break;
-
-
-	case BTERROR_DEVICE_ANSWER_TIMEOUT: 
-		if(errorDisabledArray[BTERROR_DEVICE_ANSWER_TIMEOUT] == 0){//Check that the error was not disabled
-
-			errorMessageLength = sprintf((char *)errorMessage,
-					"MCU did not receive confirmation/ACK");
-			forwardErrorToServer(errorMessage, errorMessageLength); //Send the error message to the server to be displayed on the log
-		}
-		break;
-
-
-	case BTERROR_BAD_SIGNAL : //To be tested
+	/*
+	 * The device received bad signal information (RSSI = 0 and SNR = 0)
+	 */
+	case BTERROR_BAD_SIGNAL :
 		if(errorDisabledArray[BTERROR_BAD_SIGNAL] == 0){//Check that the error was not disabled
 
 			errorMessageLength = sprintf((char *)errorMessage,
-					"RF signal is abnormally poor.");
+					"RF signal is abnormally poor: RSSI = 0 and SNR = 0");
 			forwardErrorToServer(errorMessage,errorMessageLength);
 		}
 		break;
 
-
-	case BTERROR_AUTOINIT_TIMEOUT : //Test OK
+		/*
+		 * AutoInit procedure was not succesful after five cycles
+		 */
+	case BTERROR_AUTOINIT_TIMEOUT :
 		if(errorDisabledArray[BTERROR_AUTOINIT_TIMEOUT] == 0){//Check that the error was not disabled
 
 			errorMessageLength = sprintf((char *)errorMessage,
 					"Device taking too long to join netwok");
 			forwardErrorToServer(errorMessage,errorMessageLength);
 
-			//Prevent sending this error message again (structure won't fill itself, no point repeating the message)
-			errorDisabledArray[BTERROR_AUTOINIT_STRUCTURE] = 1;
+			//Prevent sending this error message again (Can't repeat AutoInit procedure anyway)
+			errorDisabledArray[BTERROR_AUTOINIT_TIMEOUT] = 1;
 		}
 		break;
 
 
-	case BTERROR_SENSOR_DATA_FORMAT ://Test OK
+		/*
+		 * The sensor data function "getSensorData()" did not reply a formatted data buffer (JSON format)
+		 */
+	case BTERROR_SENSOR_DATA_FORMAT :
 		if(errorDisabledArray[BTERROR_SENSOR_DATA_FORMAT] == 0){//Check that the error was not disabled
 
 			errorMessageLength = sprintf((char *)errorMessage,
@@ -1379,10 +1362,13 @@ static void ThrowError(BTDevice_Error errorCode){
 		break;
 
 
-	case BTERROR_SENSOR_UNRESPONSIVE : //Test OK
+		/*
+		 * The sensor data is wrong (eg = 0), should probably check wiring and peripheral init.
+		 */
+	case BTERROR_SENSOR_UNRESPONSIVE :
 		if(errorDisabledArray[BTERROR_SENSOR_UNRESPONSIVE] == 0){//Check that the error was not disabled
 			errorMessageLength = sprintf((char *)errorMessage,
-					"Sensor data was wrong. Device unresponsive");
+					"Sensor data was null. Sensor unresponsive");
 			forwardErrorToServer(errorMessage,errorMessageLength);
 
 			//Prevent sending this error message again. It will be enabled again after some time (see below)
@@ -1396,7 +1382,9 @@ static void ThrowError(BTDevice_Error errorCode){
 
 		break;
 
-
+		/*
+		 * The sensor data was not sent by the device (received a Data Transfer Fail message from the LoRa Module)
+		 */
 	case BTERROR_SENDING_TIMEOUT : //Test OK
 		if(errorDisabledArray[BTERROR_SENDING_TIMEOUT] == 0){//Check that the error was not disabled
 			errorMessageLength = sprintf((char *)errorMessage,
@@ -1415,7 +1403,10 @@ static void ThrowError(BTDevice_Error errorCode){
 		break;
 
 
-	case BTERROR_INIT_STRUCTURE : //TEST FAILED. CANNOT SEND ERROR MESSAGE, NOT CONNECTED...
+		/*
+		 * The init structure was not filled properly
+		 */
+	case BTERROR_INIT_STRUCTURE:
 		if(errorDisabledArray[BTERROR_INIT_STRUCTURE] == 0){//Check that the error was not disabled
 			errorMessageLength = sprintf((char *)errorMessage,
 					"The init structure not properly filled.");
@@ -1427,7 +1418,10 @@ static void ThrowError(BTDevice_Error errorCode){
 		break;
 
 
-	case BTERROR_AUTOINIT_STRUCTURE ://TEST FAILED. CANNOT SEND ERROR MESSAGE, NOT CONNECTED...
+		/*
+		 * The AutoInit structure was not filled properly
+		 */
+	case BTERROR_AUTOINIT_STRUCTURE :
 		if(errorDisabledArray[BTERROR_AUTOINIT_STRUCTURE] == 0){//Check that the error was not disabled
 			errorMessageLength = sprintf((char *)errorMessage,
 					"The auto-init structure not properly filled.");
@@ -1438,7 +1432,10 @@ static void ThrowError(BTDevice_Error errorCode){
 		}
 		break;
 
-	case BTERROR_DEVICE_PAYLOAD_OVFL : //TEST OK
+		/*
+		 * Too many bytes to send in the payload
+		 */
+	case BTERROR_DEVICE_PAYLOAD_OVFL :
 		if(errorDisabledArray[BTERROR_DEVICE_PAYLOAD_OVFL] == 0){//Check that the error was not disabled
 			errorMessageLength = sprintf((char *)errorMessage,
 					"Data payload overflow.");
@@ -1450,7 +1447,9 @@ static void ThrowError(BTDevice_Error errorCode){
 		break;
 
 
-	case BTERROR_NUMBER_OF_ERRORS: //To prevent warning for not handling all enum cases
+	case BTERROR_NUMBER_OF_ERRORS:
+		//No need to do anything here.
+		//It's just to prevent warning for not handling all enum cases
 		break;
 	}
 }
