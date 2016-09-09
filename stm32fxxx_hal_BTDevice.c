@@ -7,7 +7,6 @@
  * https://github.com/CynaCons/stm32_BluTechDevice
  */
 
-//HARD LINK TEST
 
 /************
  * Includes
@@ -69,7 +68,7 @@
 static uint8_t checkForInputBufferReset(void);
 static void checkSensorData(uint8_t *tmp);
 static void displayMenu();
-static uint8_t getAutoModeStatus(void);
+static uint8_t getAuto(void);
 static uint32_t getPeriodCounter(void);
 static uint32_t getTimerPeriod(void);
 static void incrementPeriodCounter(void);
@@ -191,7 +190,7 @@ typedef enum{
  * Indicator to know whether or not it is required to reset the input buffer after one character is received
  */
 typedef enum{
-	NO_RESET,
+	NO_RESET, 
 	RESET_BUFFER
 }InputBufferStatus;
 
@@ -860,7 +859,7 @@ BTDevice_Status autoInitWithDefaultValues(BTDevice_AutoInitTypeDef defaultValues
 	static uint32_t startTick = 0;
 	static uint8_t txBuffer[256];
 
-	//To keep track of the number of times the initialization failed. Incremented every ~10 seconds
+	//To keep track of the number of times the initialization failed
 	static uint16_t numberOfFailedTests = 0;
 
 	//At first execution, set the timer and AutoMode status
@@ -874,7 +873,9 @@ BTDevice_Status autoInitWithDefaultValues(BTDevice_AutoInitTypeDef defaultValues
 		else
 			autoModeOnHandler();
 	}
+
 	//Every 10 seconds, perform a network join. This behaviour should be repeated untill the device is connected.
+	//The exact condition is : if (waitedMoreThan20Seconds OR FirstTimeExecutingThisCode)
 	if((HAL_GetTick() - startTick) >= 20000 || startTick == 0){
 		memset(txBuffer,0,sizeof(txBuffer));
 		sprintf((char *)txBuffer,"\r\n****************Launching AutoInit Procedure****************\r\n");
@@ -882,12 +883,13 @@ BTDevice_Status autoInitWithDefaultValues(BTDevice_AutoInitTypeDef defaultValues
 
 		//Send a network join request and save current time
 		startTick = HAL_GetTick();
-		networkJoinHandler();
+        networkJoinHandler();
 
-		//Keep track of the number of failed tests, if >=5 (~50 seconds) it will throw an error
-		if(numberOfFailedTests++ >= NB_FAILED_INIT) ThrowError(BTERROR_AUTOINIT_TIMEOUT); //Check the current value and increment for next check
-
-
+		//Keep track of the number of failed tests, if >=5 (~110 seconds) it will throw an error
+		if(numberOfFailedTests++ >= NB_FAILED_INIT){
+		    ThrowError(BTERROR_AUTOINIT_TIMEOUT); //Throw Error because the Init is taking too much time.
+            return BTDevice_OK; //This will break the initLoop even though the device is not connected.
+		}
 	}
 
 	//Check the network join status. If connected, returns BTDevice_OK which should break the loop
@@ -1318,7 +1320,10 @@ static void ThrowError(BTDevice_Error errorCode){
 
 	switch(errorCode)
 	{
-	case BTERROR_DEVICE_ANSWER_UNEXPECTED : //Build the answer stack for it to work
+
+
+
+	case BTERROR_DEVICE_ANSWER_UNEXPECTED : 
 
 		if(errorDisabledArray[BTERROR_DEVICE_ANSWER_UNEXPECTED] == 0){//Check that the error was not disabled
 			errorMessageLength = sprintf((char *)errorMessage,
@@ -1328,7 +1333,7 @@ static void ThrowError(BTDevice_Error errorCode){
 		break;
 
 
-	case BTERROR_DEVICE_ANSWER_TIMEOUT: //This error is not thrown at the moment
+	case BTERROR_DEVICE_ANSWER_TIMEOUT: 
 		if(errorDisabledArray[BTERROR_DEVICE_ANSWER_TIMEOUT] == 0){//Check that the error was not disabled
 
 			errorMessageLength = sprintf((char *)errorMessage,
