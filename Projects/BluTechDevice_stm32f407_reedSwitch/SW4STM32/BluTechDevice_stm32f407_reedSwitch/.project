@@ -26,6 +26,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>STM32F407VGTx_FLASH.ld</name>
+			<type>1</type>
+			<location>/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/SW4STM32/BluTechDevice_stm32f407_reedSwitch/STM32F407VGTx_FLASH.ld</location>
+		</link>
+		<link>
 			<name>Application/SW4STM32/startup_stm32f417xx.s</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/startup_stm32f417xx.s</locationURI>
