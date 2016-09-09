@@ -154,9 +154,15 @@ int main(void)
 	defaultValues.autoModeStatus = AUTOMODE_ON;
 	while(BTDevice_initLoop(defaultValues) != BTDevice_OK)
 		;
-
+	//Blink thge LEDs when the device joins the network or when it has failed 5 times
 	doTheLEDPlay(NULL);
 
+
+	/**
+	 * Main Loop
+	 * the library mainLoop fct will be called to process UART and TIM interupts
+	 * when a message was received by the device (from the gateway), a special handler function is called
+	 */
 	while (1)
 	{
 
@@ -172,6 +178,11 @@ int main(void)
 }
 
 
+/**
+ * Return a JSON formatted dynamically allocated(with malloc) string (= uint8_t *buffer) containing the
+ * value from @getSensorValue
+ * This allocated buffer is then free'd (call to 'free' in the library) once it's data has been sent.
+ */
 static uint8_t *getSensorData(void)
 {
 	DHT22_ReadData(&dht);
@@ -187,9 +198,7 @@ static uint8_t *getSensorData(void)
 
 
 /**
- * Return a JSON formatted dynamically allocated(with malloc) string (= uint8_t *buffer) containing the
- * value from @getSensorValue
- * Dont forget to the buffer's address as soon as it's not needed anymore (currently in TIM Callback)
+ * Return the value of the temperature of the humidity stored into the DHT Handle structure
  */
 static uint8_t *getTemperatureData(){
 	uint8_t *dataBuffer = malloc(sizeof(uint8_t)*SENSOR_DATA_MAX_LENGTH);
@@ -392,37 +401,6 @@ void SystemClock_Config(void)
 	HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
-///* ADC1 init function */
-//static void MX_ADC1_Init(void)
-//{
-//
-//	ADC_ChannelConfTypeDef sConfig;
-//
-//	/**Common config
-//	 */
-//	hadc1.Instance = ADC1;
-//	hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
-//	hadc1.Init.ContinuousConvMode = DISABLE;
-//	hadc1.Init.DiscontinuousConvMode = DISABLE;
-//	hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
-//	hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-//	hadc1.Init.NbrOfConversion = 1;
-//	if (HAL_ADC_Init(&hadc1) != HAL_OK)
-//	{
-//		Error_Handler();
-//	}
-//
-//	/**Configure Regular Channel
-//	 */
-//	sConfig.Channel = ADC_CHANNEL_4;
-//	sConfig.Rank = 1;
-//	sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
-//	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-//	{
-//		Error_Handler();
-//	}
-//
-//}
 
 /* TIM1 init function */
 static void MX_TIM1_Init(void)

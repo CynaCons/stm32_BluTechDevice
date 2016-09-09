@@ -148,7 +148,7 @@ int main(void)
 	while(BTDevice_initLoop(defaultValues) != BTDevice_OK)
 		;
 
-	//Blink thge LEDs when the device joins the network
+	//Blink thge LEDs when the device joins the network or when it has failed 5 times
 	doTheLEDPlay();
 
 	/**

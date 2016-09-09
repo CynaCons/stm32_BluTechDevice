@@ -148,8 +148,15 @@ int main(void)
 	while(BTDevice_initLoop(defaultValues) != BTDevice_OK)
 		;
 
+	//Blink thge LEDs when the device joins the network or when it has failed 5 times
 	doTheLEDPlay(NULL);
 
+
+	/**
+	 * Main Loop
+	 * the library mainLoop fct will be called to process UART and TIM interupts
+	 * when a message was received by the device (from the gateway), a special handler function is called
+	 */
 	while (1)
 	{
 
