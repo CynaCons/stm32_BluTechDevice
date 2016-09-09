@@ -62,8 +62,17 @@ typedef enum{
 uint8_t husart2RxBuffer;
 uint8_t husart6RxBuffer;
 
-static volatile uint32_t doorCloseCounter = 0;
-static volatile uint8_t doorState = DOOR_CLOSED;
+static uint8_t localDataBuffer[256]; /*!< Buffer to store the data received by the node from the gateway */
+
+static uint16_t localDataLength; /*!< The length of the data that was received */
+
+static volatile uint32_t doorCloseCounter = 0;/*<! Number of times the door was closed */
+
+static volatile uint8_t doorState = DOOR_CLOSED; /*<! State of the door (CLOSED or OPENED) */
+
+static uint8_t deviceCommandReceivedFlag = 0; /*<! Flag to signal that data was received by the node (from the gateway). 0 = nothing, 1 = data received */
+
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -83,7 +92,7 @@ static uint32_t getSensorValue();
 static void initReedSwitch();
 static void doTheLEDPlay(void *p);
 void deviceCommandReceivedCallback(uint8_t *dataBuffer, uint16_t dataLength);
-
+static void deviceCommandReceived(void);
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
@@ -104,28 +113,42 @@ int main(void)
 	MX_USART2_UART_Init();
 	MX_USART6_UART_Init();
 
-
+	//Clean the one-byte buffer used to for UART reception
 	husart6RxBuffer = 0;
 	husart2RxBuffer = 0;
 
-	HAL_UART_Receive_IT(&huart2, &husart2RxBuffer,1);
+	//Initialize the LEDs
+	BSP_LED_Init(LED3);
+	BSP_LED_Init(LED4);
+	BSP_LED_Init(LED5);
+	BSP_LED_Init(LED6);
+
+	BSP_LED_Toggle(LED3);
+	BSP_LED_Toggle(LED5);
+
+	//Clear the buffer to remove trash
+	memset(localDataBuffer,0, sizeof(localDataBuffer));
+	localDataLength = 0;
+
+	//Enable IT upon reception for userUart
 	HAL_UART_Receive_IT(&huart6, &husart6RxBuffer,1);
 
+	//Enable IT upon reception for deviceUart
+	HAL_UART_Receive_IT(&huart2, &husart2RxBuffer,1);
+
+	//Enable PeriodEllapsed IT for TIM3 (used for periodic data transfer)
 	HAL_TIM_Base_Start_IT(&htim3);
 
+	//Init the BTDevice library
 	initBTDevice();
+
+	//Init the reed switch sensor: GPIO, NVIC
 	initReedSwitch();
 
-
-
+	//Display the command menu on userUart
 	BTDevice_displayMenu();
 
-		BSP_LED_Init(LED3);
-		BSP_LED_Init(LED4);
-		BSP_LED_Init(LED5);
-		BSP_LED_Init(LED6);
-		BSP_LED_Toggle(LED3);
-		BSP_LED_Toggle(LED5);
+
 
 	//Automatically initialize the BTDevice with default settings and perfom a signal check
 	//The device will try to join the network untill successful. LED visuals will signal success.
@@ -140,42 +163,120 @@ int main(void)
 	doTheLEDPlay(NULL);
 
 
-	/* Infinite loop */
+	/**
+	 * Main Loop
+	 * the library mainLoop fct will be called to process UART and TIM interupts
+	 * when a message was received by the device (from the gateway), a special handler function is called
+	 */
 	while (1)
 	{
 		BTDevice_mainLoop();
 
+		//True when data is received from the gateway
+		if(deviceCommandReceivedFlag){
+			deviceCommandReceivedFlag = 0; //Lower the flag
+			deviceCommandReceived(); //Call the handler to analyse the received data.
+		}
 	}
 }
 
+
+/***************************************
+ * SENSOR PART : ONLY THIS HAS TO CHANGE
+ ***************************************/
+
+
+static uint8_t * getSensorData(void){
+	uint32_t value = getSensorValue();
+	uint8_t *dataBuffer = malloc(sizeof(uint8_t)*SENSOR_DATA_MAX_LENGTH);
+	memset(dataBuffer,0,SENSOR_DATA_MAX_LENGTH);
+	sprintf((char *)dataBuffer,"{\"doorCloseCounter\":\"%lu\"}",value);
+	return dataBuffer;
+}
+
+
+/**
+ * Return the light value
+ * @pre CPU temperature sensor must have been initialized before (ADC1 Channel 16)
+ */
+static uint32_t getSensorValue(void){
+	uint32_t tmp = doorCloseCounter;
+	doorCloseCounter = 0;
+	return tmp;
+}
+
+
+/**
+ * This callback is called from the library whenever a command/data was received by the
+ * BTDevice (sent by the Gateway which means following a REST API post)
+ *
+ * It will copy the data received into a local buffer and raise a flag so that the data will be analyzed next time CPU is "free"
+ *
+ * @pre this function's address must be provided to the library during the BTDevice_Init();
+ * @pre the localDataBuffer must be clear of trash (recommend to use memset to fill with zeroes)
+ */
 void deviceCommandReceivedCallback(uint8_t *dataBuffer, uint16_t dataLength){
-
+	strcpy((char *)localDataBuffer,(char *)dataBuffer); //Get a copy of the data we received
+	localDataLength = dataLength;
+	deviceCommandReceivedFlag = 1; //Raise the flag. See main loop
 }
 
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
-	if(huart->Instance == USART2){
-		BTDevice_deviceUartCallback(&husart2RxBuffer);
-	}
-	if(huart->Instance == USART6){
-		BTDevice_userUartCallback(&husart6RxBuffer);
-	}
+/*
+ * This function will be called from Main Loop when data/command has been received from the gateway.
+ */
+void deviceCommandReceived(){
+	//The door device is not supposed to receive anything.
+	//Just turn on the LEDs
+	doTheLEDPlay(NULL);
 }
 
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	if(htim->Instance == TIM3){
-		BTDevice_timerCallback();
+/*
+ * This function will make the LEDs blink every 50 ms for 1 seconds
+ */
+static void doTheLEDPlay(void * p){
+	uint32_t startTick = 0, currentTick = 0;
+	for(startTick = HAL_GetTick(); ((currentTick = HAL_GetTick() - startTick)) < 2000; currentTick = HAL_GetTick() - startTick){
+		if(currentTick % 200 <= 50){
+			BSP_LED_On(LED3);
+			BSP_LED_Off(LED4);
+			BSP_LED_Off(LED5);
+			BSP_LED_Off(LED6);
+		}else if(currentTick % 200 <= 100 && currentTick % 200 > 50){
+			BSP_LED_Off(LED3);
+			BSP_LED_On(LED4);
+			BSP_LED_Off(LED5);
+			BSP_LED_Off(LED6);
+		}else if(currentTick % 200 > 100 && currentTick % 200 <= 150){
+			BSP_LED_Off(LED3);
+			BSP_LED_Off(LED4);
+			BSP_LED_On(LED5);
+			BSP_LED_Off(LED6);
+		}else if(currentTick %200 > 150 && currentTick % 200 <= 200){
+			BSP_LED_Off(LED3);
+			BSP_LED_Off(LED4);
+			BSP_LED_Off(LED5);
+			BSP_LED_On(LED6);
+		}
 	}
+	BSP_LED_Off(LED3);
+	BSP_LED_Off(LED4);
+	BSP_LED_Off(LED5);
+	BSP_LED_Off(LED6);
 }
 
-//TODO TEST HIGH FREQUENCY IT
+/**
+ * This function will be called when the reed switch is triggered
+ * It will toggle the doorState and send the appropriate message to the Gateway.
+ *
+ * Need to wait 1000 ticks before toggling again
+ */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 	static uint32_t doorTick = 0;
 
-	if((HAL_GetTick() - doorTick) > 1000 || doorTick == 0){//Wait at least 2000 ticks before inverting doorState (unless it is the first time)
+	if((HAL_GetTick() - doorTick) > 1000 || doorTick == 0){//Wait at least 1000 ticks before inverting doorState (unless it is the first time)
 		uint8_t *txBuffer = malloc(sizeof(uint8_t)*SENSOR_DATA_MAX_LENGTH);
-		//uint8_t txBuffer[SENSOR_DATA_MAX_LENGTH];
 		memset(txBuffer,0,SENSOR_DATA_MAX_LENGTH);
 		if(GPIO_Pin == GPIO_PIN_15){
 			doorCloseCounter++;
@@ -194,37 +295,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 }
 
 
-static void initBTDevice(void){
-
-	BTDevice_InitTypeDef BTDevice_InitStruct = {0};
-
-	BTDevice_InitStruct.userHuart = &huart6;
-	BTDevice_InitStruct.deviceHuart = &huart2;
-	BTDevice_InitStruct.deviceCommandReceivedHandler = &deviceCommandReceivedCallback;
-	BTDevice_InitStruct.getSensorDataFunction = &getSensorData;
-	BTDevice_InitStruct.signalEventFunction = &doTheLEDPlay;
-	BTDevice_init(&BTDevice_InitStruct);
-}
-
-
-static uint8_t * getSensorData(void){
-	uint32_t value = getSensorValue();
-	uint8_t *dataBuffer = malloc(sizeof(uint8_t)*SENSOR_DATA_MAX_LENGTH);
-	memset(dataBuffer,0,SENSOR_DATA_MAX_LENGTH);
-	sprintf((char *)dataBuffer,"{\"doorCloseCounter\":\"%lu\"}",value);
-	return dataBuffer;
-}
 /**
- * Return the light value
- * @pre CPU temperature sensor must have been initialized before (ADC1 Channel 16)
+ * This function will initialize the reed switch sensor
  */
-static uint32_t getSensorValue(void){
-	uint32_t tmp = doorCloseCounter;
-	doorCloseCounter = 0;
-	return tmp;
-}
-
-
 static void initReedSwitch(){
 	//Init PC15 as external interupt !
 	GPIO_InitTypeDef GPIO_InitStruct;
@@ -242,39 +315,83 @@ static void initReedSwitch(){
 
 }
 
-/*
- * This function will make the LEDs blink every 50 ms for 1 seconds
+
+/******************************************************************************
+ * INIT & LIBRARY PART: THIS SHOULD NOT BE CHANGED UNLESS YOU KNOW WHAT YOU DO
+ ******************************************************************************/
+
+
+/**
+ * Initialize the library :
+ * 		=> set the UART peripherals to be used : userUart and deviceUart
+ * 		=> set the buffer's address to be used to analyze received characters from user input : userInputBuffer
+ * 		=> set the user input buffer reset routine : resetInputBufferHandler
+ * 		=> set the function to handle commands/data received by the node from the gateway : deviceCommandReceivedFunction
+ * 		=> set the function to perform the data sensing and formatting (JSON format) : getSensorDataFunction
+ * 		=> set the function to be called when the sensor's data has been sent : dataSentCallback
+ * 		=> set the maximum length of the data payload : sensorDataMaxLength
  */
-static void doTheLEDPlay(void * p){
-		uint32_t startTick = 0, currentTick = 0;
-		for(startTick = HAL_GetTick(); ((currentTick = HAL_GetTick() - startTick)) < 2000; currentTick = HAL_GetTick() - startTick){
-			if(currentTick % 200 <= 50){
-				BSP_LED_On(LED3);
-				BSP_LED_Off(LED4);
-				BSP_LED_Off(LED5);
-				BSP_LED_Off(LED6);
-			}else if(currentTick % 200 <= 100 && currentTick % 200 > 50){
-				BSP_LED_Off(LED3);
-				BSP_LED_On(LED4);
-				BSP_LED_Off(LED5);
-				BSP_LED_Off(LED6);
-			}else if(currentTick % 200 > 100 && currentTick % 200 <= 150){
-				BSP_LED_Off(LED3);
-				BSP_LED_Off(LED4);
-				BSP_LED_On(LED5);
-				BSP_LED_Off(LED6);
-			}else if(currentTick %200 > 150 && currentTick % 200 <= 200){
-				BSP_LED_Off(LED3);
-				BSP_LED_Off(LED4);
-				BSP_LED_Off(LED5);
-				BSP_LED_On(LED6);
-			}
-		}
-		BSP_LED_Off(LED3);
-		BSP_LED_Off(LED4);
-		BSP_LED_Off(LED5);
-		BSP_LED_Off(LED6);
+static void initBTDevice(void){
+
+	BTDevice_InitTypeDef BTDevice_InitStruct = {0};
+
+	BTDevice_InitStruct.userHuart = &huart6;
+	BTDevice_InitStruct.deviceHuart = &huart2;
+	BTDevice_InitStruct.deviceCommandReceivedHandler = &deviceCommandReceivedCallback;
+	BTDevice_InitStruct.getSensorDataFunction = &getSensorData;
+	BTDevice_InitStruct.signalEventFunction = &doTheLEDPlay;
+	BTDevice_init(&BTDevice_InitStruct);
 }
+
+/**
+ * Every second, this callback will be called following a TIM PeriodEllapsed interruption
+ * The following process is executed :
+ * 		=>Call BTDevice_timerCallback() to check if new data should be sent (it depends on the time ellapsed
+ * 		since last data was sent)
+ * 		=>When it's time to send new data, it will call getSensorData (which should return a dynamically allocated
+ * 		uint8_buffer * 	containing the data) and then send it through the deviceUart using BTDevice_sendData()
+ * @pre TIMx should be configured to trigger an IT every second
+ *
+ **/
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	if(htim->Instance == TIM3){
+		BTDevice_timerCallback();
+	}
+}
+
+
+/**
+ * Each time a character is received on either userUart or deviceUart, this callback will be called by the IRQHandler
+ * The following process is executed :
+ * 		## if the character was received on userUart, BTDevice_userUartCallback will be called
+ * 		   the received character is store into the library userInputBuffer
+ * 		   Then the userInputBuffer is analyzed by the lirabry to recognize a command. The reception process is
+ * 		   restarted in IT mode to enable the next character reception using HAL_UART_Receive_IT
+ *
+ *		## If the character was received on the deviceUart, BTDevice_deviceUartCallback will be called. This routine
+ *		will analyse the received byte, then will enable reception for the rest of the message and will
+ *		process it. Finally, once the full message has been received and processed, it will enable the next character
+ *		reception using HAL_UART_Receive_IT
+ *		(once the message has been fully received, enabling next character reception means receiving the head of the next message
+ */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+	if(huart->Instance == USART2){
+		BTDevice_deviceUartCallback(&husart2RxBuffer);
+	}
+	if(huart->Instance == USART6){
+		BTDevice_userUartCallback(&husart6RxBuffer);
+	}
+}
+
+
+/*******************************************************************************
+ * SYSTEM CLOCK Init and PERIPHERALS Init AUTOMATICALLY GENERATED BY STM32CUBEMX
+ *
+ * Some of these init functions will then call the appropriate MSP funtion.
+ * See stm32l1xx_hal_msp.c
+ *
+ * THIS SHOULD NOT BE MODIFIED UNLESS YOU KNOW WHAT YOU ARE DOING
+ *******************************************************************************/
 
 
 /** System Clock Configuration

@@ -1,11 +1,12 @@
 /*
- *  * @brief Driver to use and control a BluTech LoRa device
- *   * @file stm32fxxx_hal_BTDevice.h
- *    * @author constantin.chabirand@gmail.com
- *     *
- *      * Please refer to the tutorial and example available on github :
- *       * https://github.com/CynaCons/stm32_BluTechDevice
- *        */
+ * @brief Driver to use and control a BluTech LoRa device
+ * @file stm32fxxx_hal_BTDevice.h
+ * @author constantin.chabirand@gmail.com
+ *
+ * Please refer to the tutorial and example available on github :
+ * https://github.com/CynaCons/stm32_BluTechDevice
+ *
+ */
 
 #ifndef STM32FXXX_HAL_BTDEVICE_H_
 #define STM32FXXX_HAL_BTDEVICE_H_
@@ -20,11 +21,20 @@ typedef struct {
 	UART_HandleTypeDef *userHuart; /* Pointer to the userUart handler structure */
 	UART_HandleTypeDef *deviceHuart; /* pointer to the deviceUart handler structure */
 	uint8_t *userInputBuffer; /* reference to the buffer filled by the user input */
-	void (*resetInputBufferHandler)(void); /* function pointer to function that reset the userInputBuffer and make it ready to be filled again. */
-	void (*deviceCommandReceivedHandler)(uint8_t *dataBuffer, uint16_t dataLength); /* func pointer to routine that should handle the data/commands
+
+	/* function pointer to function that reset the userInputBuffer
+         and make it ready to be filled again. */
+	void (*resetInputBufferHandler)(void); 
+
+	/* func pointer to routine that should handle the data/commands
 	received by the device from the gateway */
-	void (*signalEventFunction)(void *); /*!< Function pointer to the function to call when data has been sent */
-	uint8_t * (*getSensorDataFunction)(void); /*!< Function pointer to the function returning the sensor data in JSON format */
+	void (*deviceCommandReceivedHandler)(uint8_t *dataBuffer, uint16_t dataLength); 
+
+	/* Function pointer to the function to call when data has been sent */
+	void (*signalEventFunction)(void *); 
+
+	/* Function pointer to the function returning the sensor data in JSON format */
+	uint8_t * (*getSensorDataFunction)(void); 
 } BTDevice_InitTypeDef;
 
 
@@ -40,7 +50,7 @@ typedef enum{
 
 /**
  * @typedef BTDevice_AutoInitTypeDef
- * @brief Structure to be filled and given to BTDevice_autoInitWithDefaultValues
+ * @brief Structure of default parameters to be filled and given to BTDevice_autoInitLoop
  */
 typedef struct{
 	uint32_t timerPeriodValue; //Any positive value but 0
@@ -53,16 +63,14 @@ typedef struct{
  * @brief Error code to be given to the BTDevice_ErrorHandler
  */
 typedef enum{
-	BTERROR_AUTOINIT_STRUCTURE = 0, /*!< The auto-init structure was not filled properly */
-	BTERROR_AUTOINIT_TIMEOUT, /*<! Init was not succesful after 1min */
-	BTERROR_BAD_SIGNAL, /*<! The device received bad signal information */
-	BTERROR_DEVICE_ANSWER_UNEXPECTED,/*<! The device answser was not expected */
-	BTERROR_DEVICE_ANSWER_TIMEOUT, /*!< The device did not reply following a command */
-	BTERROR_DEVICE_PAYLOAD_OVFL, /*!< Too many bytes to send in the payload */
 	BTERROR_INIT_STRUCTURE, /*!< The init structure was not filled properly */
-	BTERROR_SENSOR_DATA_FORMAT, /*<! The sensor data function "getSensorData()" did not reply a data buffer */
+	BTERROR_AUTOINIT_STRUCTURE, /*!< The auto-init structure was not filled properly */
+	BTERROR_AUTOINIT_TIMEOUT, /*<! Init was not succesful after 5 cycles */
 	BTERROR_SENDING_TIMEOUT, /*<! The sensor data was not sent by the device */
 	BTERROR_SENSOR_UNRESPONSIVE, /*!< The sensor data is wrong (eg = 0), should probably check wiring */
+	BTERROR_BAD_SIGNAL, /*<! The device received bad signal information */
+	BTERROR_DEVICE_PAYLOAD_OVFL, /*!< Too many bytes to send in the payload */
+	BTERROR_SENSOR_DATA_FORMAT, /*<! The sensor data function "getSensorData()" did not reply a formatted data buffer (JSON format) */
 	BTERROR_NUMBER_OF_ERRORS /*<! The number of different errors that can be detected */
 }BTDevice_Error;
 
@@ -80,7 +88,7 @@ typedef enum {
  * This function should be called from the HAL_UART_RxCompleteCallback function
  * It will signal that a character was received from the device which triggers processing of the received data in the mainLoop
  * @param [in] deviceUartRxBuffer Single byte buffer containing last received value from the BTDevice
-  * 	After reading the head of a message, the rest of the message reception will be handled inside the library
+ * 	After reading the head of a message, the rest of the message reception will be handled inside the library
  * 		The result will be prompted to user through user uart
  */
 void BTDevice_deviceUartCallback(uint8_t *deviceUartRxBuffer);
@@ -158,5 +166,6 @@ void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataBufferLength);
 
 
 #endif /* STM32FXXX_HAL_BTDEVICE_H_ */
+
 
 

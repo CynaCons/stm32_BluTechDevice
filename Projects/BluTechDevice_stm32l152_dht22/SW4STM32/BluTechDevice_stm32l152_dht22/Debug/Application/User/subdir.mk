@@ -6,7 +6,7 @@
 C_SRCS += \
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32l152_dht22/Src/dht22.c \
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32l152_dht22/Src/main.c \
-/home/cynako/git/CynaCons/stm32_BluTechDevice/stm32fxxx_hal_BTDevice.c \
+/home/cynako/Workspaces/openstm32/BluTechDevice_stm32l152_dht22/Src/stm32fxxx_hal_BTDevice.c \
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32l152_dht22/Src/stm32l152c_discovery.c \
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32l152_dht22/Src/stm32l1xx_hal_msp.c \
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32l152_dht22/Src/stm32l1xx_it.c 
@@ -45,7 +45,7 @@ Application/User/main.o: /home/cynako/Workspaces/openstm32/BluTechDevice_stm32l1
 	@echo 'Finished building: $<'
 	@echo ' '
 
-Application/User/stm32fxxx_hal_BTDevice.o: /home/cynako/git/CynaCons/stm32_BluTechDevice/stm32fxxx_hal_BTDevice.c
+Application/User/stm32fxxx_hal_BTDevice.o: /home/cynako/Workspaces/openstm32/BluTechDevice_stm32l152_dht22/Src/stm32fxxx_hal_BTDevice.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)

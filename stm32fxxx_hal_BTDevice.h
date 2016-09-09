@@ -168,3 +168,4 @@ void BTDevice_sendData(uint8_t *dataBuffer, uint16_t dataBufferLength);
 #endif /* STM32FXXX_HAL_BTDEVICE_H_ */
 
 
+

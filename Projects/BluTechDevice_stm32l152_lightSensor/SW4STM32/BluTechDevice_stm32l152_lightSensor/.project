@@ -43,7 +43,7 @@
 		<link>
 			<name>Application/User/stm32fxxx_hal_BTDevice.c</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Src/stm32fxxx_hal_BTDevice.c</locationURI>
+			<location>/home/cynako/Workspaces/openstm32/BluTechDevice_stm32l152_lightSensor/Src/stm32fxxx_hal_BTDevice.c</location>
 		</link>
 		<link>
 			<name>Application/User/stm32l152c_discovery.c</name>

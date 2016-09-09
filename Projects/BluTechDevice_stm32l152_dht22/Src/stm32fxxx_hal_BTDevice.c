@@ -7,7 +7,6 @@
  * https://github.com/CynaCons/stm32_BluTechDevice
  */
 
-//HARD LINK TEST
 
 /************
  * Includes
@@ -513,9 +512,8 @@ static uint8_t getDataFromUser(void){
 		memset(userInputBuffer, 0, sizeof(userInputBuffer));
 		userInputBufferIndex = 0;
 	}
-	if(bufferLength >= 3){
+	else if(bufferLength >= 3){
 		if(userInputBuffer[bufferLength-1] == 'd' && userInputBuffer[bufferLength-2] == 'n' && userInputBuffer[bufferLength-3] == 'e'){
-//			sscanf((const char *)userInputBuffer,"%s %s", data, tmp);
 			strncpy((char *)data, (const char *)userInputBuffer, bufferLength -4);
 			sprintf((char *)tmp,"The following data will be sent : ");
 			HAL_UART_Transmit(userHuart, tmp, sizeof(tmp),10);
@@ -975,10 +973,11 @@ void deviceUartCallback(uint8_t *deviceUartRxBuffer){
 			if(rxDeviceBuffer[1] == 0x01){
 				sprintf((char *)txBuffer,"Data Transfer success\r\n");
 				HAL_UART_Transmit(userHuart, txBuffer, sizeof(txBuffer),10);
+				networkJoinStatus = NETWORK_JOIN_OK;
 			}else{
 				sprintf((char *)txBuffer,"Data Transfer failed\r\n");
 				HAL_UART_Transmit(userHuart, txBuffer, sizeof(txBuffer),10);
-
+				networkJoinStatus = NETWORK_JOIN_ERROR;
 				//The device failed to send the data. Throw an error to display a message on UART and send a error message to the server
 				//Of course, if the device is not connected, the error message won't be sent ^^
 				ThrowError(BTERROR_SENDING_TIMEOUT);
@@ -1251,6 +1250,8 @@ BTDevice_Status BTDevice_initLoop(BTDevice_AutoInitTypeDef defaultValues){
  */
 void BTDevice_mainLoop()
 {
+
+	static uint32_t lastSignalTick = 0;
 	//A character was received on the deviceUart
 	if(deviceUartCallbackFlag){
 		deviceUartCallbackFlag = 0;
@@ -1278,9 +1279,15 @@ void BTDevice_mainLoop()
 		}
 	}
 
-	//When the device is disconnected, blink the LED constantly
-	if(getNetworkJoinStatus() == NETWORK_JOIN_ERROR)
+	//When the device is disconnected, every 5 seconds, blink the LED and try to reconnect
+	if(getNetworkJoinStatus() == NETWORK_JOIN_ERROR && ((HAL_GetTick() - lastSignalTick) > 10000 || lastSignalTick == 0)){
 		signalEventFunction(NULL);
+		uint8_t txBuffer[128] = "";
+		sprintf((char *)txBuffer,"Device disconnected. Trying to reconnect\r\n");
+		HAL_UART_Transmit(userHuart, txBuffer,sizeof(txBuffer),10);
+		networkJoinHandler();
+		lastSignalTick = HAL_GetTick();
+	}
 }
 
 /*****************************
@@ -1309,50 +1316,39 @@ static void ThrowError(BTDevice_Error errorCode){
 
 	switch(errorCode)
 	{
-	case BTERROR_DEVICE_ANSWER_UNEXPECTED : //Build the answer stack for it to work
 
-		if(errorDisabledArray[BTERROR_DEVICE_ANSWER_UNEXPECTED] == 0){//Check that the error was not disabled
-			errorMessageLength = sprintf((char *)errorMessage,
-					"MCU received unexpected anwser..");
-			forwardErrorToServer(errorMessage, errorMessageLength); //Send the error message via lora to be displayed on the log
-		}
-		break;
-
-
-	case BTERROR_DEVICE_ANSWER_TIMEOUT: //This error is not thrown at the moment
-		if(errorDisabledArray[BTERROR_DEVICE_ANSWER_TIMEOUT] == 0){//Check that the error was not disabled
-
-			errorMessageLength = sprintf((char *)errorMessage,
-					"MCU did not receive confirmation/ACK");
-			forwardErrorToServer(errorMessage, errorMessageLength); //Send the error message to the server to be displayed on the log
-		}
-		break;
-
-
-	case BTERROR_BAD_SIGNAL : //To be tested
+	/*
+	 * The device received bad signal information (RSSI = 0 and SNR = 0)
+	 */
+	case BTERROR_BAD_SIGNAL :
 		if(errorDisabledArray[BTERROR_BAD_SIGNAL] == 0){//Check that the error was not disabled
 
 			errorMessageLength = sprintf((char *)errorMessage,
-					"RF signal is abnormally poor.");
+					"RF signal is abnormally poor: RSSI = 0 and SNR = 0");
 			forwardErrorToServer(errorMessage,errorMessageLength);
 		}
 		break;
 
-
-	case BTERROR_AUTOINIT_TIMEOUT : //Test OK
+		/*
+		 * AutoInit procedure was not succesful after five cycles
+		 */
+	case BTERROR_AUTOINIT_TIMEOUT :
 		if(errorDisabledArray[BTERROR_AUTOINIT_TIMEOUT] == 0){//Check that the error was not disabled
 
 			errorMessageLength = sprintf((char *)errorMessage,
 					"Device taking too long to join netwok");
 			forwardErrorToServer(errorMessage,errorMessageLength);
 
-			//Prevent sending this error message again (structure won't fill itself, no point repeating the message)
-			errorDisabledArray[BTERROR_AUTOINIT_STRUCTURE] = 1;
+			//Prevent sending this error message again (Can't repeat AutoInit procedure anyway)
+			errorDisabledArray[BTERROR_AUTOINIT_TIMEOUT] = 1;
 		}
 		break;
 
 
-	case BTERROR_SENSOR_DATA_FORMAT ://Test OK
+		/*
+		 * The sensor data function "getSensorData()" did not reply a formatted data buffer (JSON format)
+		 */
+	case BTERROR_SENSOR_DATA_FORMAT :
 		if(errorDisabledArray[BTERROR_SENSOR_DATA_FORMAT] == 0){//Check that the error was not disabled
 
 			errorMessageLength = sprintf((char *)errorMessage,
@@ -1365,10 +1361,13 @@ static void ThrowError(BTDevice_Error errorCode){
 		break;
 
 
-	case BTERROR_SENSOR_UNRESPONSIVE : //Test OK
+		/*
+		 * The sensor data is wrong (eg = 0), should probably check wiring and peripheral init.
+		 */
+	case BTERROR_SENSOR_UNRESPONSIVE :
 		if(errorDisabledArray[BTERROR_SENSOR_UNRESPONSIVE] == 0){//Check that the error was not disabled
 			errorMessageLength = sprintf((char *)errorMessage,
-					"Sensor data was wrong. Device unresponsive");
+					"Sensor data was null. Sensor unresponsive");
 			forwardErrorToServer(errorMessage,errorMessageLength);
 
 			//Prevent sending this error message again. It will be enabled again after some time (see below)
@@ -1382,7 +1381,9 @@ static void ThrowError(BTDevice_Error errorCode){
 
 		break;
 
-
+		/*
+		 * The sensor data was not sent by the device (received a Data Transfer Fail message from the LoRa Module)
+		 */
 	case BTERROR_SENDING_TIMEOUT : //Test OK
 		if(errorDisabledArray[BTERROR_SENDING_TIMEOUT] == 0){//Check that the error was not disabled
 			errorMessageLength = sprintf((char *)errorMessage,
@@ -1401,7 +1402,10 @@ static void ThrowError(BTDevice_Error errorCode){
 		break;
 
 
-	case BTERROR_INIT_STRUCTURE : //TEST FAILED. CANNOT SEND ERROR MESSAGE, NOT CONNECTED...
+		/*
+		 * The init structure was not filled properly
+		 */
+	case BTERROR_INIT_STRUCTURE:
 		if(errorDisabledArray[BTERROR_INIT_STRUCTURE] == 0){//Check that the error was not disabled
 			errorMessageLength = sprintf((char *)errorMessage,
 					"The init structure not properly filled.");
@@ -1413,7 +1417,10 @@ static void ThrowError(BTDevice_Error errorCode){
 		break;
 
 
-	case BTERROR_AUTOINIT_STRUCTURE ://TEST FAILED. CANNOT SEND ERROR MESSAGE, NOT CONNECTED...
+		/*
+		 * The AutoInit structure was not filled properly
+		 */
+	case BTERROR_AUTOINIT_STRUCTURE :
 		if(errorDisabledArray[BTERROR_AUTOINIT_STRUCTURE] == 0){//Check that the error was not disabled
 			errorMessageLength = sprintf((char *)errorMessage,
 					"The auto-init structure not properly filled.");
@@ -1424,7 +1431,10 @@ static void ThrowError(BTDevice_Error errorCode){
 		}
 		break;
 
-	case BTERROR_DEVICE_PAYLOAD_OVFL : //TEST OK
+		/*
+		 * Too many bytes to send in the payload
+		 */
+	case BTERROR_DEVICE_PAYLOAD_OVFL :
 		if(errorDisabledArray[BTERROR_DEVICE_PAYLOAD_OVFL] == 0){//Check that the error was not disabled
 			errorMessageLength = sprintf((char *)errorMessage,
 					"Data payload overflow.");
@@ -1436,7 +1446,9 @@ static void ThrowError(BTDevice_Error errorCode){
 		break;
 
 
-	case BTERROR_NUMBER_OF_ERRORS: //To prevent warning for not handling all enum cases
+	case BTERROR_NUMBER_OF_ERRORS:
+		//No need to do anything here.
+		//It's just to prevent warning for not handling all enum cases
 		break;
 	}
 }
@@ -1452,4 +1464,5 @@ static void forwardErrorToServer(uint8_t *errorMessage, uint16_t errorMessageLen
 	//Send the message to the server and free the buffer
 	BTDevice_sendData(txBuffer, strlen((const char *)txBuffer));
 }
+
 

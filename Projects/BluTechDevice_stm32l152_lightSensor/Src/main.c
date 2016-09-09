@@ -94,7 +94,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 
 
-
 int main(void)
 {
 	/* MCU Configuration----------------------------------------------------------*/
@@ -113,9 +112,14 @@ int main(void)
 	MX_USART1_UART_Init(); //Init userHuart
 	MX_USART2_UART_Init(); //Init deviceHuart
 
+	//Clean the one-byte buffer used to for UART reception
+	husart1RxBuffer = 0;
+	husart2RxBuffer = 0;
+
 	//Initialize the LEDs
 	BSP_LED_Init(LED_GREEN);
 	BSP_LED_Init(LED_BLUE);
+
 	BSP_LED_Toggle(LED_BLUE);
 
 	//Clear the buffer to remove trash
@@ -127,7 +131,7 @@ int main(void)
 	//Enable IT upon reception for deviceUart
 	HAL_UART_Receive_IT(&huart2,&husart2RxBuffer,1);
 
-	//Enable IT for TIM2 (used for periodic data transfer)
+	//Enable PeriodEllapsed IT for TIM2 (used for periodic data transfer)
 	HAL_TIM_Base_Start_IT(&htim2);
 
 	//Init the BTDevice library
@@ -144,13 +148,12 @@ int main(void)
 	while(BTDevice_initLoop(defaultValues) != BTDevice_OK)
 		;
 
+	//Blink thge LEDs when the device joins the network
 	doTheLEDPlay();
 
 	/**
 	 * Main Loop
-	 *
 	 * the library mainLoop fct will be called to process UART and TIM interupts
-	 *
 	 * when a message was received by the device (from the gateway), a special handler function is called
 	 */
 	while (1)
@@ -318,9 +321,12 @@ static void doTheLEDPlay(void * p){
 /**
  * Initialize the library :
  * 		=> set the UART peripherals to be used : userUart and deviceUart
+ * 		=> set the buffer's address to be used to analyze received characters from user input : userInputBuffer
+ * 		=> set the user input buffer reset routine : resetInputBufferHandler
  * 		=> set the function to handle commands/data received by the node from the gateway : deviceCommandReceivedFunction
  * 		=> set the function to perform the data sensing and formatting (JSON format) : getSensorDataFunction
  * 		=> set the function to be called when the sensor's data has been sent : dataSentCallback
+ * 		=> set the maximum length of the data payload : sensorDataMaxLength
  */
 static void initBTDevice(void){
 
@@ -328,7 +334,7 @@ static void initBTDevice(void){
 
 	BTDevice_InitStruct.userHuart = &huart1;
 	BTDevice_InitStruct.deviceHuart = &huart2;
-	BTDevice_InitStruct.deviceCommandReceivedFunction = &deviceCommandReceivedCallback;
+	BTDevice_InitStruct.deviceCommandReceivedHandler = &deviceCommandReceivedCallback;
 	BTDevice_InitStruct.getSensorDataFunction = &getSensorData;
 	BTDevice_InitStruct.signalEventFunction = &doTheLEDPlay;
 	BTDevice_init(&BTDevice_InitStruct);
@@ -336,11 +342,12 @@ static void initBTDevice(void){
 
 
 /**
- * Every second, this callback will be executed following a TIM PeriodEllapsed interruption
- * Read the library comments for complete details on the process.
- *
- * @brief Check if enough time since last transfer has been waited. If so, send the data, if not, wait. Time between two transfer can be changed
- * through commands
+ * Every second, this callback will be called following a TIM PeriodEllapsed interruption
+ * The following process is executed :
+ * 		=>Call BTDevice_timerCallback() to check if new data should be sent (it depends on the time ellapsed
+ * 		since last data was sent)
+ * 		=>When it's time to send new data, it will call getSensorData (which should return a dynamically allocated
+ * 		uint8_buffer * 	containing the data) and then send it through the deviceUart using BTDevice_sendData()
  * @pre TIMx should be configured to trigger an IT every second
  *
  **/
@@ -352,15 +359,17 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
 /**
  * Each time a character is received on either userUart or deviceUart, this callback will be called by the IRQHandler
- *
  * The following process is executed :
- *
- * 		## if the character was received on userUart, the character is store into the user input buffer.
- * 		Then the library's userInputBuffer is analyzed to recognize a command. Finally, Reception for next character is enabled
+ * 		## if the character was received on userUart, BTDevice_userUartCallback will be called
+ * 		   the received character is store into the library userInputBuffer
+ * 		   Then the userInputBuffer is analyzed by the lirabry to recognize a command. The reception process is
+ * 		   restarted in IT mode to enable the next character reception using HAL_UART_Receive_IT
  *
  *		## If the character was received on the deviceUart, BTDevice_deviceUartCallback will be called. This routine
- *		will analyse the byte received, then will enable reception for the rest of the message and will
- *		process it. Finally, once the full message has been received and processed, it will enable reception for the next message
+ *		will analyse the received byte, then will enable reception for the rest of the message and will
+ *		process it. Finally, once the full message has been received and processed, it will enable the next character
+ *		reception using HAL_UART_Receive_IT
+ *		(once the message has been fully received, enabling next character reception means receiving the head of the next message
  */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	if(huart->Instance == USART2){

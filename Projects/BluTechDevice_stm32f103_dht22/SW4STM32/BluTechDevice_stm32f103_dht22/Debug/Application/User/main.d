@@ -28,7 +28,7 @@ Application/User/main.o: \
  /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f103_dht22/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h \
  /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f103_dht22/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
  /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f103_dht22/Inc/dht22.h \
- /home/cynako/git/CynaCons/stm32_BluTechDevice/stm32fxxx_hal_BTDevice.h
+ /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f103_dht22/Inc/stm32fxxx_hal_BTDevice.h
 
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f103_dht22/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 
@@ -86,4 +86,4 @@ Application/User/main.o: \
 
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f103_dht22/Inc/dht22.h:
 
-/home/cynako/git/CynaCons/stm32_BluTechDevice/stm32fxxx_hal_BTDevice.h:
+/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f103_dht22/Inc/stm32fxxx_hal_BTDevice.h:

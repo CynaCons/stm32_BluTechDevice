@@ -7,7 +7,6 @@
  * https://github.com/CynaCons/stm32_BluTechDevice
  */
 
-//HARD LINK TEST
 
 /************
  * Includes
@@ -1465,4 +1464,5 @@ static void forwardErrorToServer(uint8_t *errorMessage, uint16_t errorMessageLen
 	//Send the message to the server and free the buffer
 	BTDevice_sendData(txBuffer, strlen((const char *)txBuffer));
 }
+
 

@@ -6,8 +6,6 @@
  */
 
 #include "dht22.h"
-#include "stm32f1xx_hal.h"
-
 
 #define DHT22_StartIT()	if(HAL_TIM_IC_Start_IT(&handle->timHandle, handle->timChannel) != HAL_OK) return DHT22_ERROR
 #define DHT22_StopIT()	if(HAL_TIM_IC_Stop_IT(&handle->timHandle, handle->timChannel) != HAL_OK) return DHT22_ERROR
@@ -25,9 +23,10 @@ void DHT22_SetPinOUT(DHT22_HandleTypeDef* handle) {
 void DHT22_SetPinIN(DHT22_HandleTypeDef* handle) {
 	GPIO_InitTypeDef GPIO_InitStruct;
 	GPIO_InitStruct.Pin = handle->gpioPin;
-	GPIO_InitStruct.Mode = GPIO_MODE_AF_INPUT;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+	GPIO_InitStruct.Alternate = handle->gpioAlternateFunction;
 	HAL_GPIO_Init(handle->gpioPort, &GPIO_InitStruct);
 	HAL_NVIC_EnableIRQ(handle->timerIRQn);
 	HAL_NVIC_SetPriority(handle->timerIRQn, 0, 0);
@@ -41,9 +40,6 @@ DHT22_RESULT DHT22_Init(DHT22_HandleTypeDef* handle) {
 	if (HAL_TIM_IC_Init(&handle->timHandle) != HAL_OK) {
 		return DHT22_ERROR;
 	}
-
-
-
 	handle->timICHandle.ICPolarity = TIM_ICPOLARITY_FALLING;
 	handle->timICHandle.ICSelection = TIM_ICSELECTION_DIRECTTI;
 	handle->timICHandle.ICPrescaler = TIM_ICPSC_DIV1;
@@ -60,10 +56,8 @@ DHT22_RESULT DHT22_DeInit(DHT22_HandleTypeDef* handle) {
 }
 
 DHT22_RESULT DHT22_InitiateTransfer(DHT22_HandleTypeDef* handle) {
+
 	DHT22_SetPinOUT(handle);
-	//Probably useless to set the pin high
-	HAL_GPIO_WritePin(handle->gpioPort, handle->gpioPin, GPIO_PIN_SET);
-	HAL_Delay(2000);
 	HAL_GPIO_WritePin(handle->gpioPort, handle->gpioPin, GPIO_PIN_RESET);
 	HAL_Delay(2);
 	DHT22_SetPinIN(handle);
@@ -79,6 +73,7 @@ DHT22_RESULT DHT22_InitiateTransfer(DHT22_HandleTypeDef* handle) {
 }
 
 void DHT22_InterruptHandler(DHT22_HandleTypeDef* handle) {
+
 	uint16_t val = HAL_TIM_ReadCapturedValue(&handle->timHandle,
 			handle->timChannel);
 
@@ -115,7 +110,6 @@ void DHT22_InterruptHandler(DHT22_HandleTypeDef* handle) {
 
 	if(handle->bitPos==40){
 		handle->bitPos = -1;
-		//TODO This was changed (commented out) recently i'm not sure why
 		HAL_TIM_IC_Stop_IT(&handle->timHandle, handle->timChannel);
 		uint8_t sum = 0;
 		for (int i = 0; i < 4; i++) {
@@ -157,9 +151,7 @@ DHT22_RESULT DHT22_ReadData(DHT22_HandleTypeDef* handle) {
 
 	DHT22_InitiateTransfer(handle);
 	uint32_t startTick=HAL_GetTick();
-
 	while (handle->state == DHT22_RECEIVING && HAL_GetTick()-startTick<1000);
-
 	if(handle->crcErrorFlag==1){
 		return DHT22_CRC_ERROR;
 	}
