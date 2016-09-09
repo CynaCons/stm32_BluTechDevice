@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "Z:\home\cynako\Workspaces\openstm32\BluTechDevice_stm32l152_lightSensor\EWARM\settings\BluTechDevice_stm32l152_lightSensor.BluTechDevice_stm32l152_lightSensor.general.xcl" --backend -f "Z:\home\cynako\Workspaces\openstm32\BluTechDevice_stm32l152_lightSensor\EWARM\settings\BluTechDevice_stm32l152_lightSensor.BluTechDevice_stm32l152_lightSensor.driver.xcl" 
+"C:\Program Files\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\Projects\BluTechDevice_stm32l152_lightSensor\EWARM\settings\BluTechDevice_stm32l152_lightSensor.BluTechDevice_stm32l152_lightSensor.general.xcl" --backend -f "Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\Projects\BluTechDevice_stm32l152_lightSensor\EWARM\settings\BluTechDevice_stm32l152_lightSensor.BluTechDevice_stm32l152_lightSensor.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "Z:\home\cynako\Workspaces\openstm32\BluTechDevice_stm32l152_lightSensor\EWARM\settings\BluTechDevice_stm32l152_lightSensor.BluTechDevice_stm32l152_lightSensor.general.xcl" "--debug_file=%~1" --backend -f "Z:\home\cynako\Workspaces\openstm32\BluTechDevice_stm32l152_lightSensor\EWARM\settings\BluTechDevice_stm32l152_lightSensor.BluTechDevice_stm32l152_lightSensor.driver.xcl" 
+"C:\Program Files\IAR Systems\Embedded Workbench 7.2\common\bin\cspybat" -f "Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\Projects\BluTechDevice_stm32l152_lightSensor\EWARM\settings\BluTechDevice_stm32l152_lightSensor.BluTechDevice_stm32l152_lightSensor.general.xcl" "--debug_file=%~1" --backend -f "Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\Projects\BluTechDevice_stm32l152_lightSensor\EWARM\settings\BluTechDevice_stm32l152_lightSensor.BluTechDevice_stm32l152_lightSensor.driver.xcl" 
 
 @echo off 
 :end

@@ -1,16 +1,16 @@
-"Z:\home\cynako\Workspaces\openstm32\BluTechDevice_stm32f407_reedSwitch\Src\main.c"
+"Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\Projects\BluTechDevice_stm32f407_reedSwitch\Src\main.c"
 -std=c99
 -ferror-limit=100
 -I
-Z:\home\cynako\Workspaces\openstm32\BluTechDevice_stm32f407_reedSwitch\EWARM/../Inc
+Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\Projects\BluTechDevice_stm32f407_reedSwitch\EWARM/../Inc
 -I
-Z:\home\cynako\Workspaces\openstm32\BluTechDevice_stm32f407_reedSwitch\EWARM/../Drivers/STM32F4xx_HAL_Driver/Inc
+Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\Projects\BluTechDevice_stm32f407_reedSwitch\EWARM/../Drivers/STM32F4xx_HAL_Driver/Inc
 -I
-Z:\home\cynako\Workspaces\openstm32\BluTechDevice_stm32f407_reedSwitch\EWARM/../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy
+Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\Projects\BluTechDevice_stm32f407_reedSwitch\EWARM/../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy
 -I
-Z:\home\cynako\Workspaces\openstm32\BluTechDevice_stm32f407_reedSwitch\EWARM/../Drivers/CMSIS/Include
+Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\Projects\BluTechDevice_stm32f407_reedSwitch\EWARM/../Drivers/CMSIS/Include
 -I
-Z:\home\cynako\Workspaces\openstm32\BluTechDevice_stm32f407_reedSwitch\EWARM/../Drivers/CMSIS/Device/ST/STM32F4xx/Include
+Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\Projects\BluTechDevice_stm32f407_reedSwitch\EWARM/../Drivers/CMSIS/Device/ST/STM32F4xx/Include
 -I
 C:\Program Files\IAR Systems\Embedded Workbench 7.2\arm\CMSIS\Include
 -I
@@ -18,15 +18,15 @@ C:\Program Files\IAR Systems\Embedded Workbench 7.2\arm\inc
 -I
 C:\Program Files\IAR Systems\Embedded Workbench 7.2\arm\inc\c
 -I
-Z:\home\cynako\Workspaces\openstm32\BluTechDevice_stm32f407_reedSwitch\Inc
+Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\Projects\BluTechDevice_stm32f407_reedSwitch\Inc
 -I
-Z:\home\cynako\Workspaces\openstm32\BluTechDevice_stm32f407_reedSwitch\Drivers\STM32F4xx_HAL_Driver\Inc
+Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\Projects\BluTechDevice_stm32f407_reedSwitch\Drivers\STM32F4xx_HAL_Driver\Inc
 -I
-Z:\home\cynako\Workspaces\openstm32\BluTechDevice_stm32f407_reedSwitch\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy
+Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\Projects\BluTechDevice_stm32f407_reedSwitch\Drivers\STM32F4xx_HAL_Driver\Inc\Legacy
 -I
-Z:\home\cynako\Workspaces\openstm32\BluTechDevice_stm32f407_reedSwitch\Drivers\CMSIS\Include
+Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\Projects\BluTechDevice_stm32f407_reedSwitch\Drivers\CMSIS\Include
 -I
-Z:\home\cynako\Workspaces\openstm32\BluTechDevice_stm32f407_reedSwitch\Drivers\CMSIS\Device\ST\STM32F4xx\Include
+Z:\home\cynako\git\CynaCons\stm32_BluTechDevice\Projects\BluTechDevice_stm32f407_reedSwitch\Drivers\CMSIS\Device\ST\STM32F4xx\Include
 -I
 C:\Program Files\IAR Systems\Embedded Workbench 7.2\arm\CMSIS\Include
 -DUSE_HAL_DRIVER=1
