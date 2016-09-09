@@ -1,5 +1,5 @@
 Application/User/stm32fxxx_hal_BTDevice.o: \
- /home/cynako/git/CynaCons/stm32_BluTechDevice/stm32fxxx_hal_BTDevice.c \
+ /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Src/stm32fxxx_hal_BTDevice.c \
  /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc/stm32f4xx_hal_conf.h \
  /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc/mxconstants.h \
@@ -30,7 +30,7 @@ Application/User/stm32fxxx_hal_BTDevice.o: \
  /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
- /home/cynako/git/CynaCons/stm32_BluTechDevice/stm32fxxx_hal_BTDevice.h
+ /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc/stm32fxxx_hal_BTDevice.h
 
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 
@@ -92,4 +92,4 @@ Application/User/stm32fxxx_hal_BTDevice.o: \
 
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
 
-/home/cynako/git/CynaCons/stm32_BluTechDevice/stm32fxxx_hal_BTDevice.h:
+/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc/stm32fxxx_hal_BTDevice.h:

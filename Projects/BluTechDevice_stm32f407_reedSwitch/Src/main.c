@@ -135,7 +135,10 @@ int main(void)
 
 	while(BTDevice_initLoop(defaultValues) != BTDevice_OK)
 		;
+
+	//Blink the LEDS when the device joins the network
 	doTheLEDPlay(NULL);
+
 
 	/* Infinite loop */
 	while (1)

@@ -14,10 +14,13 @@ C_SRCS += \
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c \
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c \
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c \
+/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.c \
+/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.c \
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c \
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c \
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c \
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c \
+/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c \
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c \
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c \
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c 
@@ -33,10 +36,13 @@ OBJS += \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_flash_ex.o \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_flash_ramfunc.o \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_gpio.o \
+./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_i2c.o \
+./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_i2c_ex.o \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_pwr.o \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_pwr_ex.o \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc.o \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc_ex.o \
+./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_spi.o \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim.o \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim_ex.o \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_uart.o 
@@ -52,10 +58,13 @@ C_DEPS += \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_flash_ex.d \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_flash_ramfunc.d \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_gpio.d \
+./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_i2c.d \
+./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_i2c_ex.d \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_pwr.d \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_pwr_ex.d \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc.d \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc_ex.d \
+./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_spi.d \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim.d \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim_ex.d \
 ./Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_uart.d 
@@ -66,7 +75,7 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal.o: /home/cynako/Workspaces/openstm32/
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -74,7 +83,7 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_adc.o: /home/cynako/Workspaces/openst
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -82,7 +91,7 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_adc_ex.o: /home/cynako/Workspaces/ope
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -90,7 +99,7 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_cortex.o: /home/cynako/Workspaces/ope
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -98,7 +107,7 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_dma.o: /home/cynako/Workspaces/openst
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -106,7 +115,7 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_dma_ex.o: /home/cynako/Workspaces/ope
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -114,7 +123,7 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_flash.o: /home/cynako/Workspaces/open
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -122,7 +131,7 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_flash_ex.o: /home/cynako/Workspaces/o
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -130,7 +139,7 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_flash_ramfunc.o: /home/cynako/Workspa
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -138,7 +147,23 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_gpio.o: /home/cynako/Workspaces/opens
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	@echo 'Finished building: $<'
+	@echo ' '
+
+Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_i2c.o: /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.c
+	@echo 'Building file: $<'
+	@echo 'Invoking: MCU GCC Compiler'
+	@echo $(PWD)
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	@echo 'Finished building: $<'
+	@echo ' '
+
+Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_i2c_ex.o: /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.c
+	@echo 'Building file: $<'
+	@echo 'Invoking: MCU GCC Compiler'
+	@echo $(PWD)
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -146,7 +171,7 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_pwr.o: /home/cynako/Workspaces/openst
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -154,7 +179,7 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_pwr_ex.o: /home/cynako/Workspaces/ope
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -162,7 +187,7 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc.o: /home/cynako/Workspaces/openst
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -170,7 +195,15 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_rcc_ex.o: /home/cynako/Workspaces/ope
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	@echo 'Finished building: $<'
+	@echo ' '
+
+Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_spi.o: /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c
+	@echo 'Building file: $<'
+	@echo 'Invoking: MCU GCC Compiler'
+	@echo $(PWD)
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -178,7 +211,7 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim.o: /home/cynako/Workspaces/openst
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -186,7 +219,7 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_tim_ex.o: /home/cynako/Workspaces/ope
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -194,7 +227,7 @@ Drivers/STM32F4xx_HAL_Driver/stm32f4xx_hal_uart.o: /home/cynako/Workspaces/opens
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I/home/cynako/git/CynaCons/stm32_BluTechDevice  -Og -g -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -D__weak="__attribute__((weak))" -D__packed="__attribute__((__packed__))" -DUSE_HAL_DRIVER -DSTM32F4DISCOVERY -DSTM32F407xx -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Include" -I"/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Include"  -Os -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

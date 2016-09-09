@@ -1,6 +1,6 @@
 Application/User/stm32f4_discovery.o: \
  /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Src/stm32f4_discovery.c \
- /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc/stm32f4_discovery.h \
+ /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Src/stm32f4_discovery.h \
  /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc/stm32f4xx_hal_conf.h \
  /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc/mxconstants.h \
@@ -35,7 +35,7 @@ Application/User/stm32f4_discovery.o: \
  /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c.h \
  /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c_ex.h
 
-/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Inc/stm32f4_discovery.h:
+/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Src/stm32f4_discovery.h:
 
 /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 
