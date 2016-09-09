@@ -1,0 +1,10 @@
+!SESSION 2016-09-09 20:07:39.755 -----------------------------------------------
+eclipse.buildId=4.5.2.M20160212-1500
+java.version=1.8.0_91
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.cpp.product
+Command-line arguments:  -data /home/cynako/git/CynaCons/stm32_BluTechDevice/Projects -os linux -ws gtk -arch x86_64 -product org.eclipse.epp.package.cpp.product
+
+!ENTRY org.eclipse.cdt.core 1 0 2016-09-09 20:08:57.660
+!MESSAGE Indexed 'BluTechDevice_stm32f407_reedSwitch' (26 sources, 77 headers) in 7.78 sec: 6,342 declarations; 31,416 references; 0 unresolved inclusions; 55 syntax errors; 0 unresolved names (0%)

@@ -4,14 +4,14 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 S_SRCS += \
-/home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/startup_stm32f417xx.s 
+/home/cynako/git/CynaCons/stm32_BluTechDevice/Projects/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/startup_stm32f407xx.s 
 
 OBJS += \
-./Application/SW4STM32/startup_stm32f417xx.o 
+./Application/SW4STM32/startup_stm32f407xx.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-Application/SW4STM32/startup_stm32f417xx.o: /home/cynako/Workspaces/openstm32/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/startup_stm32f417xx.s
+Application/SW4STM32/startup_stm32f407xx.o: /home/cynako/git/CynaCons/stm32_BluTechDevice/Projects/BluTechDevice_stm32f407_reedSwitch/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/startup_stm32f407xx.s
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Assembler'
 	@echo $(PWD)

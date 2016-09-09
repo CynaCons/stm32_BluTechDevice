@@ -1,4 +1,4 @@
-"Application/SW4STM32/startup_stm32f417xx.o"
+"Application/SW4STM32/startup_stm32f407xx.o"
 "Application/User/main.o"
 "Application/User/stm32f4_discovery.o"
 "Application/User/stm32f4xx_hal_msp.o"
